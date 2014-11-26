@@ -499,7 +499,6 @@
             </dependency>
 		</dependencies>
 	</dependencyManagement>
-	
 	<modules>
 		<module>ysten-bims-service</module>
 		<module>ysten-bims-device</module>
