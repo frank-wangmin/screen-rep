@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.device.repository.mapper.DeviceCustomerAccountMapMapper">
+	<resultMap id="BaseResultMap" type="deviceCustomerAccountMap">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="customer_id" property="customerId" jdbcType="BIGINT" />
+		<result column="customer_code" property="customerCode" jdbcType="VARCHAR" />
+		<result column="user_id" property="userId" jdbcType="VARCHAR" />
+		<result column="ysten_id" property="ystenId" jdbcType="VARCHAR" />
+		<result column="device_id" property="deviceId" jdbcType="BIGINT" />
+		<result column="device_code" property="deviceCode" jdbcType="VARCHAR" />
+		<result column="device_sno" property="deviceSno" jdbcType="VARCHAR" />
+		<result column="account_id" property="accountId" jdbcType="BIGINT" />
+		<result column="account_code" property="accountCode" jdbcType="VARCHAR" />
+		<result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+		<result column="replacement" property="replacement" jdbcType="TINYINT"/> 
+	</resultMap>
+	
+	<resultMap id="customerRelationDeviceMap" type="customerRelationDeviceVo">
+		<result column="c_id" property="customerId" jdbcType="BIGINT" />
+		<result column="c_code" property="customerCode" jdbcType="VARCHAR" />
+		<result column="c_user_id" property="customerUserId" jdbcType="VARCHAR" />		
+		<result column="c_login_name" property="customerLoginName" jdbcType="VARCHAR" />
+		<result column="c_real_name" property="customerRealName" jdbcType="VARCHAR" />
+		<result column="c_nick_name" property="customerNickName" jdbcType="VARCHAR" />
+		<result column="c_identity_type" property="customerIdentityType" jdbcType="VARCHAR" />
+		<result column="c_identity_code" property="customerIdentityCode" jdbcType="VARCHAR" />
+		<result column="c_phone" property="customerPhone" jdbcType="VARCHAR" />
+		<result column="c_sex" property="customerSex" jdbcType="VARCHAR" />
+		<result column="c_address" property="customerAddress" jdbcType="VARCHAR" />
+		<result column="c_zip_code" property="customerZipCode" jdbcType="VARCHAR"/> 
+		<result column="d_id" property="deviceId" jdbcType="VARCHAR"/>
+		<result column="d_code" property="deviceCode" jdbcType="VARCHAR"/>
+		<result column="d_sno" property="deviceSno" jdbcType="VARCHAR"/>
+		<result column="d_mac" property="deviceMac" jdbcType="VARCHAR"/>
+		<result column="d_create_date" property="deviceCreateDate" jdbcType="TIMESTAMP"/>
+		<result column="c_is_lock" property="deviceIsLock" jdbcType="VARCHAR"/>
+		<result column="r_id" property="mapId" jdbcType="BIGINT"/>
+		<result column="d_ysten_id" property="ystenId" jdbcType="VARCHAR" />
+		<result column="d_activate_date" property="deviceActivateDate" jdbcType="TIMESTAMP"/>
+		<result column="d_expire_date" property="deviceExpireDate" jdbcType="TIMESTAMP"/>
+		<result column="r_create_date" property="relationCreateDate" jdbcType="TIMESTAMP"/>
+		
+		<association property="customerArea" javaType="area">
+        	<id column="c_area_id" property="id" jdbcType="BIGINT" />
+        	<result column="c_area_name" property="name" jdbcType="VARCHAR"/>
+    	</association>		
+		<association property="customerCity" javaType="city">
+        	<id column="c_city_id" property="id" jdbcType="BIGINT" />
+        	<result column="c_city_name" property="name" jdbcType="VARCHAR"/>
+    	</association>	 
+    	<association property="deviceType" javaType="deviceType">
+        	<id column="d_type_id" property="id" jdbcType="BIGINT" />
+        	<result column="d_type_name" property="name" jdbcType="VARCHAR"/>
+    	</association>	
+		<association property="deviceArea" javaType="area">
+        	<id column="d_area_id" property="id" jdbcType="BIGINT" />
+        	<result column="d_area_name" property="name" jdbcType="VARCHAR"/>
+    	</association>	  
+    	<association property="deviceCity" javaType="city">
+        	<id column="d_city_id" property="id" jdbcType="BIGINT" />
+        	<result column="c_city_name" property="name" jdbcType="VARCHAR"/>
+    	</association>	
+	</resultMap>	
+
+	<sql id="Base_Column_List">
+		id, account_id, customer_id,user_id,device_id,device_code,ysten_id,device_sno,customer_code,account_code,create_date,replacement
+	</sql>
+
+	<insert id="save" parameterType="deviceCustomerAccountMap" useGeneratedKeys="true" keyProperty="id">
+		insert into
+		bss_device_customer_account_map
+		(account_id,customer_id,user_id,device_id,device_code,ysten_id,device_sno,customer_code,account_code,create_date,replacement)
+		values
+		(#{accountId,jdbcType=BIGINT},#{customerId,jdbcType=BIGINT},#{userId,jdbcType=VARCHAR},#{deviceId,jdbcType=BIGINT},
+		#{deviceCode,jdbcType=VARCHAR},#{ystenId,jdbcType=VARCHAR},#{deviceSno,jdbcType=VARCHAR},#{customerCode,jdbcType=VARCHAR},
+		#{accountCode,jdbcType=VARCHAR},#{createDate,jdbcType=TIMESTAMP},#{replacement,jdbcType=TINYINT})
+	</insert>
+
+	<update id="update" parameterType="deviceCustomerAccountMap">
+		update
+		bss_device_customer_account_map set
+		account_id = #{accountId,jdbcType=BIGINT},
+		customer_id = #{customerId,jdbcType=BIGINT},
+		user_id = #{userId,jdbcType=VARCHAR},
+		device_id = #{deviceId,jdbcType=BIGINT},
+		device_code = #{deviceCode,jdbcType=VARCHAR},
+		ysten_id = #{ystenId,jdbcType=VARCHAR},
+		device_sno = #{deviceSno,jdbcType=VARCHAR},
+		customer_code = #{customerCode,jdbcType=VARCHAR},
+		account_code = #{accountCode,jdbcType=VARCHAR},
+		create_date = #{createDate,jdbcType=TIMESTAMP},
+		replacement =#{replacement,jdbcType=TINYINT}
+		where
+		id = #{id,jdbcType=BIGINT}
+	</update>
+	
+	<select id="getById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		from
+		bss_device_customer_account_map
+		where
+		id =  #{id,jdbcType=BIGINT}
+	</select>	
+
+	<select id="getByDeviceCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from bss_device_customer_account_map 
+		where 
+		device_code = #{deviceCode,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="getByYstenId" parameterType="java.lang.String" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from bss_device_customer_account_map 
+		where 
+		ysten_id = #{ystenId,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="getByDeviceId" parameterType="deviceCustomerAccountMap" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from bss_device_customer_account_map 
+		where device_id = #{deviceId,jdbcType=BIGINT}
+	</select>
+	
+	<select id="getByCustomerId" parameterType="deviceCustomerAccountMap" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from bss_device_customer_account_map 
+		where 
+		customer_id = #{customerId,jdbcType=BIGINT}
+	</select>
+	
+	<select id="getByCustomerCode" parameterType="deviceCustomerAccountMap" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from bss_device_customer_account_map 
+		where customer_code = #{customerCode,jdbcType=BIGINT}
+	</select>		
+	
+	<select id="getFirstReplacmentMapUnderCustomerCust" parameterType="deviceCustomerAccountMap" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from bss_device_customer_account_map
+		where replacement = 1
+		and customer_id in (select id from bss_customer where cust_id = #{custId, jdbcType=VARCHAR});
+	</select>
+
+	<select id="getCreatedLastDay" parameterType="map" resultMap="BaseResultMap">
+		select
+		dcam.id, dcam.account_id, dcam.customer_id,dcam.user_id,dcam.device_id,dcam.device_code,dcam.device_sno,dcam.customer_code,dcam.account_code,dcam.create_date,dcam.replacement
+		from bss_device_customer_account_map dcam
+		join bss_customer cus on dcam.customer_id = cus.id
+		where dcam.create_date between #{start} and #{end} and cus.source != #{source}
+	</select>	
+  
+	<select id="getCountByAera" parameterType="map" resultType="java.lang.Long">
+		select
+		count(dcam.id)
+		from bss_device_customer_account_map dcam
+		join bss_customer cus on dcam.customer_id = cus.id
+		where dcam.create_date between #{start} and #{end} and cus.source != #{source} and cus.area_id = #{province} 
+	</select>
+
+	<delete id="deleteDeviceCustomerAccountMap" parameterType="java.lang.Long">
+		delete from	bss_device_customer_account_map	where device_id = #{deviceId,jdbcType=BIGINT}
+    </delete>
+    
+    <delete id="delete" parameterType="java.lang.Long">
+		delete from	bss_device_customer_account_map	where id = #{id,jdbcType=BIGINT}
+    </delete>
+    
+	<select id="getTotalCountByCityAndDeviceType" parameterType="map" resultType="long">
+		select count(dcam.id) from bss_device_customer_account_map dcam
+		join bss_device bd on bd.id=dcam.device_id
+		join bss_device_type bdt on bdt.id=bd.device_type_id
+		join bss_customer cus on dcam.customer_id = cus.id
+		where bd.city_id = #{cityId} and bdt.code = #{deviceTypeCode} and cus.source != #{source} 
+	</select>
+	
+	<select id="findCustomerRelationByCondition" parameterType="map" resultMap="customerRelationDeviceMap">
+		select 
+		  c.id as c_id, c.login_name as c_login_name, c.real_name as c_real_name, c.nick_name as c_nick_name, c.identity_type as c_identity_type,
+		c.identity_code as c_identity_code, c.phone as c_phone, c.sex as c_sex, c.address as c_address, c.zip_code as c_zip_code, c.user_id as c_user_id,
+		c.code as c_code, c.area_id as c_area_id, c.region as c_city_id, 
+
+		  d.id as d_id, d.code as d_code, d.sno as d_sno, d.mac as d_mac, d.create_date as d_create_date, d.is_lock as d_is_lock, 
+		d.activate_date as d_activate_date, d.expire_date as d_expire_date, d.device_type_id as d_type_id,
+		d.area_id as d_area_id, d.city_id as d_city_id, d.ysten_id as d_ysten_id,
+
+		r.id as r_id, r.create_date as r_create_date
+		from bss_device_customer_account_map r
+        left outer join bss_device d on d.id = r.device_id
+        left outer join bss_customer c on c.id = r.customer_id
+        <where>
+			<if test="ystenId != null and ystenId != ''">
+				d.ysten_id like '%${ystenId}%'
+			</if>
+			<if test="customerUserId != null and customerUserId != ''">
+				and r.user_id like '%${customerUserId}%'
+			</if>
+			<if test="customerPhone != null and customerPhone != ''">
+				and c.phone like '%${customerPhone}%'
+			</if>			
+			<if test="deviceCode != null and deviceCode != ''">
+				and r.device_code like '%${deviceCode}%'
+			</if>
+			<if test="deviceSno != null and deviceSno != ''">
+				and r.device_sno like '%${deviceSno}%'
+			</if>	
+		</where>
+		order by c.id desc 
+		<if test="pageSize != null">
+			limit #{pageNo}, #{pageSize}
+		</if>
+	</select>
+	
+	<select id="findCustomerRelationByDeviceSno" parameterType="map" resultMap="customerRelationDeviceMap">
+		select 
+		  c.id as c_id, c.login_name as c_login_name, c.real_name as c_real_name, c.nick_name as c_nick_name, c.identity_type as c_identity_type,
+		c.identity_code as c_identity_code, c.phone as c_phone, c.sex as c_sex, c.address as c_address, c.zip_code as c_zip_code, c.user_id as c_user_id,
+		c.code as c_code, c.area_id as c_area_id, c.region as c_city_id, 
+
+		  d.id as d_id, d.code as d_code, d.sno as d_sno, d.mac as d_mac, d.create_date as d_create_date, d.is_lock as d_is_lock, 
+		d.activate_date as d_activate_date, d.expire_date as d_expire_date, d.device_type_id as d_type_id,
+		d.area_id as d_area_id, d.city_id as d_city_id, d.ysten_id as d_ysten_id,
+
+		r.id as r_id, r.create_date as r_create_date
+		from bss_device_customer_account_map r
+        left outer join bss_device d on d.id = r.device_id
+        left outer join bss_customer c on c.id = r.customer_id
+        <where>
+			<if test="snos!=null and snos!=''">
+            d.sno in(${snos})
+        	</if>	
+		</where>
+		order by c.id desc 
+		<if test="pageSize != null">
+			limit #{pageNo}, #{pageSize}
+		</if>
+	</select>
+	
+	<select id="getCountCustomerRelationByCondition" parameterType="map" resultType="int">
+		select count(1)
+		from bss_device_customer_account_map r, bss_customer c, bss_device d
+		where r.customer_id = c.id and r.device_id = d.id
+		<if test="ystenId != null and ystenId != ''">
+			and	d.ysten_id like '%${ystenId}%'
+		</if>
+		<if test="customerUserId != null and customerUserId != ''">
+			and c.user_id like '%${customerUserId}%'
+		</if>
+		<if test="customerPhone != null and customerPhone != ''">
+			and c.phone like '%${customerPhone}%'
+		</if>			
+		<if test="deviceCode != null and deviceCode != ''">
+			and d.code like '%${deviceCode}%'
+		</if>
+		<if test="deviceSno != null and deviceSno != ''">
+			and d.sno like '%${deviceSno}%'
+		</if>						
+	</select>
+	
+	<select id="getCountCustomerRelationByDeviceSno" parameterType="map" resultType="int">
+		select count(1)
+		from bss_device_customer_account_map r, bss_customer c, bss_device d
+		where r.customer_id = c.id and r.device_id = d.id
+		<if test="snos!=null and snos!=''">
+            and d.sno in(${snos})
+        </if>						
+	</select>	
+   
+    <select id="getCountByCityAndDeviceType" parameterType="map" resultType="java.lang.Long">
+    	select count(dcam.id) from bss_device_customer_account_map dcam
+		join bss_device bd on bd.id=dcam.device_id
+		join bss_customer cus on dcam.customer_id = cus.id
+		where bd.area_id = #{province} and bd.city_id = #{cityId} 
+		and cus.source != #{source} and bd.state = #{state}
+   		and bd.activate_date between #{start} and #{end}
+   		group by bd.city_id,bd.device_type_id having bd.device_type_id = #{deviceType} 
+    </select>
+ 
+   <select id="getCountByRegion" parameterType="map" resultType="java.lang.Long">
+		select
+		count(dcam.id)
+		from bss_device_customer_account_map dcam
+		join bss_customer cus on dcam.customer_id = cus.id
+		where dcam.create_date between #{start} and #{end} and cus.source != #{source} and cus.area_id = #{province} 
+        group by region having region = #{city}
+	</select>
+   
+    <select id="getCountByUidDid" parameterType="map" resultType="java.lang.Long">
+     select count(id) from bss_device_customer_account_map       
+        <where>
+            create_date &lt;= #{end}
+            <if test="customerIds != null and customerIds.size()> 0 and deviceIds != null and deviceIds.size()> 0">
+                and customer_id in
+                <foreach collection="customerIds" item="customerId" open="(" close=")" separator=",">
+                    #{customerId,jdbcType=BIGINT}
+                </foreach>
+                and device_id in
+                <foreach collection="deviceIds" item="deviceId" open="(" close=")" separator=",">
+                    #{deviceId,jdbcType=BIGINT}
+                </foreach>
+            </if>
+        </where>
+    </select>
+    
+    <select id="getCountByCreateDateAndUidDid" parameterType="map" resultType="java.lang.Long">
+    	select count(id) from bss_device_customer_account_map       
+        <where>
+           create_date between #{start} and #{end}
+            <if test="customerIds != null and customerIds.size()> 0 and deviceIds != null and deviceIds.size()> 0">
+                and customer_id in
+                <foreach collection="customerIds" item="customerId" open="(" close=")" separator=",">
+                    #{customerId,jdbcType=BIGINT}
+                </foreach>           
+                and device_id in
+                <foreach collection="deviceIds" item="deviceId" open="(" close=")" separator=",">
+                    #{deviceId,jdbcType=BIGINT}
+                </foreach>
+            </if>
+        </where>
+    </select>
+    
+    <select id="getDeviceCustomerAccountMapByDeviceCodeAndUserId" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from bss_device_customer_account_map 
+		where user_id = #{userId} and device_code=#{deviceCode}
+    
+    </select>
+</mapper>

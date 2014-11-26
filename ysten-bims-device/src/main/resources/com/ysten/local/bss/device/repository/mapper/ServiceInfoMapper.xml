@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.device.repository.mapper.ServiceInfoMapper" >
+  <resultMap id="BaseResultMap" type="serviceInfo" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="service_name" property="serviceName" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="service_type" property="serviceType" jdbcType="VARCHAR" />
+    <result column="service_url" property="serviceUrl" jdbcType="VARCHAR" />
+    <result column="service_ip" property="serviceIp" jdbcType="VARCHAR" />
+    <result column="service_collect_id" property="serviceCollectId" jdbcType="BIGINT" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+     <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+  </resultMap>
+    <sql id="Base_Column_List">
+    i.id,i.service_name,i.create_date,i.update_date,i.service_type,i.service_url,i.service_ip,i.service_collect_id,i.description
+    </sql>
+
+    <select id="getServiceInfoByServiceCollectId" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from bss_service_info i
+        where
+        i.service_collect_id = #{serviceCollectId,jdbcType=BIGINT}
+    </select>
+
+    <select id="getServiceInfoByDeviceGroupId" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from bss_service_collect s
+        LEFT JOIN bss_service_collect_device_group_map m on s.id = m.service_collect_id
+        LEFT JOIN bss_service_info i on i.service_collect_id = s.id
+        where m.device_group_id = #{deviceGroupId,jdbcType=BIGINT}
+    </select>
+    
+    <select id="getServiceInfoByYstenId" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from bss_service_collect s
+        LEFT JOIN bss_service_collect_device_group_map m on s.id = m.service_collect_id
+        LEFT JOIN bss_service_info i on i.service_collect_id = s.id
+        where m.ysten_id = #{ystenId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="getServiceInfoByDefaultService" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from bss_service_info i
+        LEFT JOIN bss_service_collect s on s.id = i.service_collect_id
+        where s.service_type = #{serviceType,jdbcType=VARCHAR}
+    </select>
+
+    <select id="getServiceInfoByDefaultServiceAndName" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from bss_service_info i
+        LEFT JOIN bss_service_collect s on s.id = i.service_collect_id
+        where s.service_type = #{serviceType,jdbcType=VARCHAR}
+        and i.service_name = #{name,jdbcType=VARCHAR}
+    </select>
+    
+    <select id="findServiceInfoListBySimpleCondition" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from bss_service_info i
+        where i.service_collect_id = #{serviceCollectId}
+        <if test="serviceName != null and serviceName != ''">
+        	and i.service_name like '%${serviceName}%'
+        </if>
+        <if test="serviceType != null and serviceType != ''">
+        	and i.service_type like '%${serviceType}%'
+        </if>         
+        order by i.id desc
+        limit #{pageNo}, #{pageSize}
+    </select>
+    
+    <select id="getServiceInfoCountBySimpleCondition" resultType="int">
+        select count(1) from bss_service_info i 
+        where i.service_collect_id = #{serviceCollectId}
+        <if test="serviceName != null and serviceName != ''">
+        	and i.service_name like '%${serviceName}%'
+        </if>
+        <if test="serviceType != null and serviceType != ''">
+        	and i.service_type like '%${serviceType}%'
+        </if>        
+    </select>
+    
+    <select id="getServiceInfoById" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from bss_service_info i
+        where i.id = #{id}    
+    </select>
+    
+    <select id="getServiceInfoByName" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select <include refid="Base_Column_List"/>
+        from bss_service_info i
+        where i.service_name = #{name,jdbcType=VARCHAR}
+        order by i.id desc
+		limit 1   
+    </select>
+    
+	<insert id="saveServiceInfo" useGeneratedKeys="true" keyProperty="id">
+		insert into bss_service_info(service_name, service_type, service_url, service_ip, service_collect_id, create_date, description,update_date)
+		values (#{serviceName}, #{serviceType}, #{serviceUrl}, #{serviceIp}, #{serviceCollectId}, #{createDate}, #{description},#{updateDate})
+	</insert>  
+	
+	<update id="updateServiceInfo">
+		update bss_service_info set 
+		service_name = #{serviceName},
+		service_type = #{serviceType},
+		service_url = #{serviceUrl},
+		service_ip = #{serviceIp},
+		service_collect_id = #{serviceCollectId},
+		description = #{description},
+		create_date = #{createDate},update_date = #{updateDate}
+		where id = #{id}
+	</update>  
+  
+</mapper>

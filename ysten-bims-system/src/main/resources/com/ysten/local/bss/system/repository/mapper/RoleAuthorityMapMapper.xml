@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.system.repository.mapper.RoleAuthorityMapMapper" >
+  <resultMap id="BaseResultMap" type="roleAuthorityMap" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <association property="role" javaType="role">
+        <id column="role_id" property="id"/>
+    </association>
+    <association property="authority" javaType="authority">
+        <id column="authority_id" property="id"/>
+    </association>
+  </resultMap>
+ 
+  <sql id="Base_Column_List" >
+    id, role_id, authority_id
+  </sql>
+  
+  <select id="get" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+        <include refid="Base_Column_List" />
+    from 
+        bss_role_authority_map
+    where 
+        id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  
+   <select id="findByRoleId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+        <include refid="Base_Column_List" />
+    from 
+        bss_role_authority_map
+    where 
+        role_id = #{roleId,jdbcType=BIGINT}
+  </select>
+  
+  <delete id="delete" parameterType="java.lang.Long" >
+    delete from 
+        bss_role_authority_map
+    where 
+        id = #{id,jdbcType=BIGINT}
+  </delete>
+  
+  <delete id="deleteRoleAuthorityMapByRoleId" parameterType="java.lang.Long" >
+    delete from 
+        bss_role_authority_map
+    where 
+        role_id = #{roleId,jdbcType=BIGINT}
+  </delete>
+ 
+ 
+  <insert id="save" parameterType="roleAuthorityMap" useGeneratedKeys="true" keyProperty="id">
+    insert into 
+        bss_role_authority_map 
+        (
+            role_id, authority_id
+        )
+    values 
+        (
+            #{role.id,jdbcType=BIGINT}, #{authority.id,jdbcType=BIGINT}
+        )
+  </insert>
+ 
+  <select id="getCount" resultType="java.lang.Integer" >
+    select 
+        count(*) 
+    from 
+        bss_role_authority_map
+  </select>
+  
+  <update id="update" parameterType="roleAuthorityMap" >
+    update 
+        bss_role_authority_map
+    set 
+        role_id = #{role.id,jdbcType=BIGINT},
+        authority_id = #{authority.id,jdbcType=BIGINT}
+    where 
+        id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

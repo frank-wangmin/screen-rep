@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.system.repository.mapper.OperatorRoleMapMapper" >
+  <resultMap id="BaseResultMap" type="operatorRoleMap" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <association property="operator" javaType="operator">
+        <id column="operator_id" property="id"/>
+    </association>
+    <association property="role" javaType="role">
+        <id column="role_id" property="id"/>
+    </association>
+  </resultMap>
+ 
+  <sql id="Base_Column_List" >
+    id, operator_id, role_id
+  </sql>
+  
+  <select id="get" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+        <include refid="Base_Column_List" />
+    from 
+        bss_operator_role_map
+    where 
+        id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="findByOperatorId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+        <include refid="Base_Column_List" />
+    from 
+        bss_operator_role_map
+    where 
+        operator_id = #{operatorId,jdbcType=BIGINT}
+  </select>
+  <select id="getOperatorRoleMapByRoleId" resultMap="BaseResultMap" parameterType="map" >
+    select 
+        <include refid="Base_Column_List" />
+    from 
+        bss_operator_role_map
+    where 
+        operator_id = #{operatorId,jdbcType=BIGINT}
+        and role_id =#{roleId,jdbcType=BIGINT}
+  </select>
+  
+  <delete id="delete" parameterType="java.lang.Long" >
+    delete from 
+        bss_operator_role_map
+    where 
+        id = #{id,jdbcType=BIGINT}
+  </delete>
+  
+  <delete id="deleteOperatorRoleMapByOperatorId" parameterType="java.lang.Long">
+    delete from 
+        bss_operator_role_map
+    where 
+        operator_id = #{operatorId}
+  </delete>
+  
+  <insert id="save" parameterType="operatorRoleMap" keyProperty="id" useGeneratedKeys="true" >
+    insert into 
+        bss_operator_role_map 
+        (
+            operator_id, role_id
+        )
+    values 
+        (
+            #{operator.id,jdbcType=BIGINT}, #{role.id,jdbcType=BIGINT}
+        )
+  </insert>
+  
+  <select id="getCount"  resultType="java.lang.Integer" >
+    select 
+        count(*) 
+    from 
+        bss_operator_role_map
+  </select>
+  
+  <update id="update" parameterType="operatorRoleMap" >
+    update 
+        bss_operator_role_map
+    set 
+        operator_id = #{operator.id,jdbcType=BIGINT},
+        role_id = #{role.d,jdbcType=BIGINT}
+    where 
+        id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

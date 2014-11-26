@@ -1,0 +1,1 @@
+insert into system_config (configkey, configvalue, zhname, depiction) values ('isAuthLog', 'true', '二次认证日志收集开关', '二次认证日志收集开关');

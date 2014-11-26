@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.device.repository.mapper.DeviceVendorMapper" >
+  <resultMap id="BaseResultMap" type="deviceVendor" >
+     <id column="id" property="id" jdbcType="BIGINT" />
+     <result column="code" property="code" jdbcType="VARCHAR"/>
+     <result column="name" property="name" jdbcType="VARCHAR" />
+     <result column="state" property="state" jdbcType="VARCHAR"/>
+     <result column="description" property="description" jdbcType="VARCHAR"/>
+     <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+     id, code,name,state,description,create_date
+  </sql>
+  
+  <sql id="Base_Table_Name">
+  	 bss_device_vendor
+  </sql>
+  
+  <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from 
+    <include refid="Base_Table_Name"/>
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="findAllDeviceVendors" resultMap="BaseResultMap" parameterType="map">
+    select 
+    <include refid="Base_Column_List" />
+    from <include refid="Base_Table_Name"/>
+    <where>
+    	<if test="deviceVendorName!=null and deviceVendorName!=''">
+    		name like '%${deviceVendorName}%'
+    	</if>
+    	<if test="deviceVendorCode!=null and deviceVendorCode!=''">
+    		and code like '%${deviceVendorCode}%'
+    	</if>
+    </where>
+    order by id desc
+    limit #{pageNo},#{pageSize}
+  </select>
+  
+    <select id="getCountByName" resultType="java.lang.Integer" parameterType="map" >
+    select count(*) from <include refid="Base_Table_Name"/>
+    <where>
+    	<if test="deviceVendorName!=null and deviceVendorName!=''">
+    		name like '%${deviceVendorName}%'
+    	</if>
+    	<if test="deviceVendorCode!=null and deviceVendorCode!=''">
+    		and code like '%${deviceVendorCode}%'
+    	</if>
+    </where>
+  </select>
+  
+    <insert id="save" parameterType="deviceVendor" useGeneratedKeys="true" keyProperty="id">
+    insert into <include refid="Base_Table_Name"/> (NAME,CODE,STATE,DESCRIPTION,create_date)
+    values (#{name,jdbcType=VARCHAR},#{code,jdbcType=VARCHAR},#{state,jdbcType=VARCHAR},#{description,jdbcType=VARCHAR},#{createDate,jdbcType=TIMESTAMP})
+  </insert>
+  
+    <update id="update" parameterType="deviceVendor" >
+    update <include refid="Base_Table_Name"/>
+     set 
+     name = #{name,jdbcType=VARCHAR},
+     code = #{code,jdbcType=VARCHAR},
+     state = #{state,jdbcType=VARCHAR},
+     description = #{description,jdbcType=VARCHAR},
+     create_date= #{createDate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+    <select id="findAllVendor" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from <include refid="Base_Table_Name"/>
+    <where>
+    	<if test="state!=null and state!=''">
+    		state = #{state}
+    	</if>
+    </where>
+    order by CODE
+  </select>
+  
+  <select id="getDeviceVendorByNameOrCode" resultMap="BaseResultMap" parameterType="map">
+	 select 
+    	<include refid="Base_Column_List" />
+    	from bss_device_vendor
+    	<where>
+	    	<if test="deviceVendorName!=null and deviceVendorName!=''">
+	    		name = #{deviceVendorName}
+	    	</if>
+	    	<if test="deviceVendorCode!=null and deviceVendorCode!=''">
+	    		code = #{deviceVendorCode}
+	    	</if>
+    </where> 
+  </select>
+
+    <select id="findVendorsById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        SELECT d.id,d.name from bss_device_vendor d
+
+        <if test="deviceVendorId != null and deviceVendorId!=''">
+        where d.device_vendor_id =  #{deviceVendorId}
+        </if>
+    </select>
+</mapper>

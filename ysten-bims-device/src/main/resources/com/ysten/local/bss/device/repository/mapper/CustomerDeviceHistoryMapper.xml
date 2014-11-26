@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.device.repository.mapper.CustomerDeviceHistoryMapper" >
+  
+  <resultMap id="BaseResultMap" type="customerDeviceHistory" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="device_id" property="deviceId" javaType="long" jdbcType="BIGINT" />
+    <result column="device_code" property="deviceCode" jdbcType="VARCHAR" />
+    <result column="ysten_id" property="ystenId" jdbcType="VARCHAR" />
+    <result column="device_sno" property="deviceSno" jdbcType="VARCHAR" />
+    <result column="device_state" property="deviceState" jdbcType="VARCHAR" />
+    <result column="device_create_date" property="deviceCreateDate" jdbcType="TIMESTAMP" />
+    <result column="device_activate_date" property="deviceActivateDate" jdbcType="TIMESTAMP" />
+    <result column="customer_code" property="customerCode" jdbcType="VARCHAR" />
+    <result column="customer_outer_code" property="customerOuterCode" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="login_name" property="loginName" jdbcType="VARCHAR" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="customer_activate_date" property="customerActivateDate" jdbcType="TIMESTAMP" />
+    <result column="customer_create_date" property="customerCreateDate" jdbcType="TIMESTAMP" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <association property="area" javaType="area">
+        <id column="area_id" property="id" jdbcType="BIGINT" />
+    </association>
+    <association property="city" javaType="city">
+         <id column="city_id" property="id" jdbcType="BIGINT" />
+    </association>
+  </resultMap>
+  <sql id="Base_Column_List" > 
+    id, area_id,city_id,customer_code,user_id,login_name,phone,customer_activate_date,customer_create_date,device_id,device_code,ysten_id,device_activate_date,customer_outer_code,create_date,description
+  </sql>
+  
+  <select id="getCustomerDeviceHistoryById" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List"/>
+    from bss_customer_device_history 
+    where 
+        id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="findHistoryListByConditions" resultMap="BaseResultMap" parameterType="map" >
+    select 
+    h.id, h.area_id,h.city_id,h.customer_code,h.user_id,h.login_name,h.phone,h.customer_activate_date,h.customer_create_date,h.device_id,h.device_code,h.ysten_id,
+    h.device_activate_date,h.customer_outer_code,h.create_date,h.description,d.sno as device_sno,d.create_date as device_create_date,d.state as device_state
+    from bss_customer_device_history h
+    left outer join bss_device d on d.id = h.device_id
+    <where>
+		    <if test="customerCode != null and customerCode != ''">
+		    		h.customer_code like '%${customerCode}%'
+		    </if>
+		    <if test="userId != null and userId != ''">
+		    		and h.user_id like '%${userId}%'
+		    </if>
+		    <if test="deviceCode != null and deviceCode != ''">
+		    		and h.device_code like '%${deviceCode}%'
+		    </if>
+		    <if test="ystenId != null and ystenId != ''">
+		    		and h.ysten_id like '%${ystenId}%'
+		    </if>
+        	<if test="customerCodes != null and customerCodes != ''">
+		    		h.customer_code in 
+		        <foreach collection="customerCodes" item="userCode"  open="(" separator="," close=")">  
+		            #{userCode} 
+		        </foreach>
+		    </if>
+		    <if test="userIds != null and userIds != ''">
+		    		and h.user_id in 
+		        <foreach collection="userIds" item="uId"  open="(" separator="," close=")">  
+		            #{uId} 
+		        </foreach>
+		    </if>
+		    <if test="deviceCodes != null and deviceCodes != ''">
+		    		and h.device_code in 
+		        <foreach collection="deviceCodes" item="dCode"  open="(" separator="," close=")">  
+		            #{dCode} 
+		        </foreach>
+		    </if>
+		    <if test="ystenIds != null and ystenIds != ''">
+		    		and h.ysten_id in 
+		        <foreach collection="ystenIds" item="yId"  open="(" separator="," close=")">  
+		            #{yId} 
+		        </foreach>
+		    </if>
+    	<if test="customerOuterCode != null and customerOuterCode != ''">
+	            and h.customer_outer_code in 
+		        <foreach collection="customerOuterCode" item="outerCode"  open="(" separator="," close=")">  
+		            #{outerCode} 
+		        </foreach>
+	     </if>
+    	<if test="loginName != null and loginName != ''">
+    		and h.login_name like '%${loginName}%'
+    	</if>
+    	<if test="phone != null and phone != ''">
+    		and h.phone like '%${phone}%'
+    	</if>
+    	<if test="city != null and city != ''">
+    		and h.city_id = #{city}
+    	</if> 
+    	<if test="area != null and area != '' and area != '0'">
+    		and h.area_id = #{area}
+    	</if> 
+    	<if test="deviceStartDate !=null and deviceStartDate !='' and deviceEndDate !=null and deviceEndDate !=''">
+      	 	and h.device_activate_date between #{deviceStartDate} and #{deviceEndDate} 
+        </if>
+      </where>
+     order by h.id desc
+    <if test="pageNo != null">
+	 limit #{pageNo}, #{pageSize}
+    </if>  
+  </select>
+  
+   <select id="getCountByConditions" resultType="java.lang.Integer" parameterType="map" >
+    select count(id)
+    from bss_customer_device_history h
+    <where>
+		    <if test="customerCode != null and customerCode != ''">
+		    		h.customer_code like '%${customerCode}%'
+		    </if>
+		    <if test="userId != null and userId != ''">
+		    		and h.user_id like '%${userId}%'
+		    </if>
+		    <if test="deviceCode != null and deviceCode != ''">
+		    		and h.device_code like '%${deviceCode}%'
+		    </if>
+		    <if test="ystenId != null and ystenId != ''">
+		    		and h.ysten_id like '%${ystenId}%'
+		    </if>
+		    <if test="customerCodes != null and customerCodes != ''">
+		    		h.customer_code in 
+		        <foreach collection="customerCodes" item="userCode"  open="(" separator="," close=")">  
+		            #{userCode} 
+		        </foreach>
+		    </if>
+		    <if test="userIds != null and userIds != ''">
+		    		and h.user_id in 
+		        <foreach collection="userIds" item="uId"  open="(" separator="," close=")">  
+		            #{uId} 
+		        </foreach>
+		    </if>
+		    <if test="deviceCodes != null and deviceCodes != ''">
+		    		and h.device_code in 
+		        <foreach collection="deviceCodes" item="dCode"  open="(" separator="," close=")">  
+		            #{dCode} 
+		        </foreach>
+		    </if>
+		    <if test="ystenIds != null and ystenIds != ''">
+		    		and h.ysten_id in 
+		        <foreach collection="ystenIds" item="yId"  open="(" separator="," close=")">  
+		            #{yId} 
+		        </foreach>
+		    </if>
+    	<if test="customerOuterCode != null and customerOuterCode != ''">
+	            and h.customer_outer_code in 
+		        <foreach collection="customerOuterCode" item="outerCode"  open="(" separator="," close=")">  
+		            #{outerCode} 
+		        </foreach>
+	    </if>
+    	<if test="loginName != null and loginName != ''">
+    		and login_name like '%${loginName}%'
+    	</if>
+    	<if test="phone != null and phone != ''">
+    		and phone like '%${phone}%'
+    	</if>
+    	<if test="city != null and city != ''">
+    		and city_id = #{city}
+    	</if> 
+    	<if test="area != null and area != '' and area != '0'">
+    		and area_id = #{area}
+    	</if> 
+    	<if test="deviceStartDate !=null and deviceStartDate !='' and deviceEndDate !=null and deviceEndDate !=''">
+      	 	and device_activate_date between #{deviceStartDate} and #{deviceEndDate} 
+        </if>
+      </where>
+  </select>
+  
+   <select id="findByUidAndCcodeAndOuterCode" resultMap="BaseResultMap" parameterType="map" >
+    select 
+    <include refid="Base_Column_List"/>
+    from bss_customer_device_history
+    where 
+        <if test="customerCode != null and customerCode != ''">
+    		customer_code like '%${customerCode}%'
+    	</if>
+    	<if test="userId != null and userId != ''">
+    		and user_id like '%${userId}%'
+    	</if>
+    	<if test="customerOuterCode != null and customerOuterCode != ''">
+    		and customer_outer_code like '%${customerOuterCode}%'
+    	</if>
+  </select>
+  
+   <select id="findByDeviceCode" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+        <include refid="Base_Column_List"/>
+    from bss_customer_device_history 
+    where 
+        device_code like '%${deviceCode}%'
+  </select> 
+  
+   <insert id="saveCustomerDeviceHistory" parameterType="customerDeviceHistory" >
+     insert into bss_customer_device_history 
+        (area_id,city_id,customer_code,user_id,login_name,phone,customer_activate_date,customer_create_date,
+        device_id,device_code,ysten_id,device_activate_date,customer_outer_code,create_date,description)
+		values
+		(#{area.id,jdbcType=INTEGER},
+		#{city.id,jdbcType=INTEGER},
+		#{customerCode,jdbcType=VARCHAR},
+		#{userId,jdbcType=VARCHAR},
+		#{loginName,jdbcType=VARCHAR},
+		#{phone,jdbcType=VARCHAR},
+		#{customerActivateDate,jdbcType=TIMESTAMP},
+		#{customer_create_date,jdbcType=TIMESTAMP},
+		#{deviceId,jdbcType=BIGINT},
+		#{deviceCode,jdbcType=VARCHAR},
+		#{ystenId,jdbcType=VARCHAR},
+		#{deviceActivateDate,jdbcType=TIMESTAMP},
+		#{customerOuterCode,jdbcType=VARCHAR},
+		#{createDate,jdbcType=TIMESTAMP},
+		#{description,jdbcType=VARCHAR})
+  </insert>
+  <select id="findHistoryListByIds" resultMap="BaseResultMap" parameterType="java.util.List" >
+    select 
+    h.id, h.area_id,h.city_id,h.customer_code,h.user_id,h.login_name,h.phone,h.customer_activate_date,h.customer_create_date,h.device_id,h.device_code,h.ysten_id,
+    h.device_activate_date,h.customer_outer_code,h.create_date,h.description,d.sno as device_sno,d.create_date as device_create_date,d.state as device_state
+    from bss_customer_device_history h
+    left outer join bss_device d on d.id = h.device_id
+     where h.id in 
+        <foreach collection="ids" item="id"  open="(" separator="," close=")">  
+            #{id} 
+        </foreach>
+     order by h.id desc
+  </select>
+</mapper>

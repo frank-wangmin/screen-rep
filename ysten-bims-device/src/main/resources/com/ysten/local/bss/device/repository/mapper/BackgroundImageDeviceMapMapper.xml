@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.device.repository.mapper.BackgroundImageDeviceMapMapper">
+    <resultMap id="BaseResultMap" type="backgroundImageDeviceMap">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="background_image_id" property="backgroundImageId" jdbcType="BIGINT"/>
+        <result column="ysten_id" property="ystenId" jdbcType="VARCHAR"/>
+        <result column="device_group_id" property="deviceGroupId" jdbcType="BIGINT"/>
+        <result column="create_date" property="createDate" jdbcType="TIMESTAMP"/>
+        <result column="type" property="type" jdbcType="VARCHAR"/>
+        <result column="loop_time" property="loopTime" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    id, background_image_id, ysten_id, device_group_id, create_date, type, loop_time
+    </sql>
+    
+    <insert id="save" parameterType="backgroundImageDeviceMap">
+    		insert into bss_background_image_device_map
+    		(background_image_id, ysten_id, device_group_id, create_date, type, loop_time)
+    		values
+    		(#{backgroundImageId, jdbcType=BIGINT}, #{ystenId,jdbcType=VARCHAR}, #{deviceGroupId,jdbcType=BIGINT},
+    		#{createDate,jdbcType=TIMESTAMP}, #{type,jdbcType=VARCHAR}, #{loopTime,jdbcType=BIGINT})
+    </insert>
+
+	<insert id="bulkSaveBackgroundMap" parameterType="java.util.List">
+    	insert into bss_background_image_device_map
+    	(background_image_id, ysten_id, device_group_id, create_date, type, loop_time)
+    	values
+    	 <foreach collection="list" item="item" index="index" separator="," >
+    	 (#{item.backgroundImageId, jdbcType=BIGINT}, #{item.ystenId,jdbcType=VARCHAR}, #{item.deviceGroupId,jdbcType=BIGINT},
+    		#{item.createDate,jdbcType=TIMESTAMP}, #{item.type,jdbcType=VARCHAR}, #{item.loopTime,jdbcType=BIGINT})
+    	</foreach>
+    </insert>
+
+    <select id="findMapByYstenId" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        bss_background_image_device_map
+        where
+        ysten_id = #{ystenId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="findMapByDeviceGroupId" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        bss_background_image_device_map
+        where
+        device_group_id = #{deviceGroupId,jdbcType=BIGINT}
+    </select>
+	<select id="findBGDeviceMapByBGId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+		select 
+		<include refid="Base_Column_List"/>
+        	from
+        	bss_background_image_device_map
+        	where background_image_id = #{id, jdbcType=BIGINT}
+	</select>
+	<select id="findMapByBGIdAndCode" parameterType="map" resultMap="BaseResultMap">
+		select 
+		<include refid="Base_Column_List"/>
+        	from
+        	bss_background_image_device_map
+        	where background_image_id = #{id, jdbcType=BIGINT}
+        	and ysten_id = #{ystenId,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="findMapByBGIdAndGroupId" parameterType="map" resultMap="BaseResultMap">
+		select 
+		<include refid="Base_Column_List"/>
+        	from
+        	bss_background_image_device_map
+        	where background_image_id = #{id, jdbcType=BIGINT}
+        	and device_group_id = #{deviceGroupId,jdbcType=BIGINT}
+	</select>
+	
+	<select id="getBGImageMapByBGIdAndType" parameterType="map" resultMap="BaseResultMap">
+		select 
+		<include refid="Base_Column_List"/>
+        	from
+        	bss_background_image_device_map
+        	where background_image_id = #{bgId, jdbcType=BIGINT}
+        	and type = #{type,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByBGId" parameterType="java.lang.Long">
+		delete from bss_background_image_device_map where background_image_id = #{id, jdbcType=BIGINT}
+	</delete>
+	<delete id="deleteByBGIdAndType" parameterType="map">
+		delete from ${tableName}
+		<where>
+		     background_image_id = #{groupId, jdbcType=BIGINT}
+	    	<if test="type != null and type !=''">
+    			 and type = #{type,jdbcType=VARCHAR}
+    		</if>
+	    </where>
+	</delete>
+	<delete id="deleteBackGroundMapByYstenIdsAndBgId" parameterType="map">
+      delete from ${tableName}
+       where background_image_id = #{bgId, jdbcType=BIGINT}
+       		 and ${character} in
+        <foreach collection="ystenIds" item="id"  open="(" separator="," close=")">  
+            #{id} 
+        </foreach>
+	</delete>
+	
+   <delete id="deleteBackGroundImageMapByGroupId" parameterType="java.lang.Long">
+  	delete from bss_background_image_device_map where device_group_id = #{groupId,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteBackGroundImageMapByCode" parameterType="java.lang.String">
+		delete from bss_background_image_device_map where ysten_id = #{ystenId,jdbcType=VARCHAR}
+	</delete>
+</mapper>

@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.device.repository.mapper.PanelPackageUserMapMapper" >
+  <resultMap id="BaseResultMap" type="com.ysten.local.bss.device.domain.PanelPackageUserMap" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="panel_package_id" property="panelPackageId" jdbcType="BIGINT" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="user_group_id" property="userGroupId" jdbcType="BIGINT" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, panel_package_id, code, user_group_id, create_date, type
+  </sql>
+    
+  <select id="findMapByPanelIdAndType" resultMap="BaseResultMap" parameterType="map">
+		select
+		<include refid="Base_Column_List" />
+		from
+		bss_panel_package_user_map
+		where
+		panel_package_id = #{panelPackageId,jdbcType=BIGINT} and type = #{type,jdbcType=VARCHAR}
+	</select>
+	
+  <select id="getMapByUserGroupId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+      select
+		<include refid="Base_Column_List" />
+		 from bss_panel_package_user_map where user_group_id = #{userGroupId,jdbcType=BIGINT}
+  </select>
+  <select id="getMapByUserCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+       select
+		<include refid="Base_Column_List" />
+		 from bss_panel_package_user_map where code = #{code,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from bss_panel_package_user_map
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPanelId" parameterType="java.lang.Long" >
+    delete from bss_panel_package_user_map
+    where panel_package_id = #{panelPackageId,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from bss_panel_package_user_map
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+
+
+    <insert id="bulkSaveUserPanelMap" parameterType="java.util.List">
+    insert into bss_panel_package_user_map (panel_package_id, code,
+      user_group_id, create_date, type
+      )
+    values
+    <foreach collection="list" index="index" item="item" separator=",">
+    (#{item.panelPackageId,jdbcType=BIGINT}, #{item.code,jdbcType=VARCHAR},
+      #{item.userGroupId,jdbcType=BIGINT}, #{item.createDate,jdbcType=TIMESTAMP}, #{item.type,jdbcType=VARCHAR}
+      )
+    </foreach>
+  </insert>
+
+  <insert id="insert" parameterType="com.ysten.local.bss.device.domain.PanelPackageUserMap" useGeneratedKeys="true" keyProperty="id">
+    insert into bss_panel_package_user_map (panel_package_id, code, 
+      user_group_id, create_date, type
+      )
+    values (#{panelPackageId,jdbcType=BIGINT}, #{code,jdbcType=VARCHAR}, 
+      #{userGroupId,jdbcType=BIGINT}, #{createDate,jdbcType=TIMESTAMP}, #{type,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.ysten.local.bss.device.domain.PanelPackageUserMap" >
+    insert into bss_panel_package_user_map
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="panelPackageId != null" >
+        panel_package_id,
+      </if>
+      <if test="code != null" >
+        code,
+      </if>
+      <if test="userGroupId != null" >
+        user_group_id,
+      </if>
+      <if test="createDate != null" >
+        create_date,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="panelPackageId != null" >
+        #{panelPackageId,jdbcType=BIGINT},
+      </if>
+      <if test="code != null" >
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="userGroupId != null" >
+        #{userGroupId,jdbcType=BIGINT},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ysten.local.bss.device.domain.PanelPackageUserMap" >
+    update bss_panel_package_user_map
+    <set >
+      <if test="panelPackageId != null" >
+        panel_package_id = #{panelPackageId,jdbcType=BIGINT},
+      </if>
+      <if test="code != null" >
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="userGroupId != null" >
+        user_group_id = #{userGroupId,jdbcType=BIGINT},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ysten.local.bss.device.domain.PanelPackageUserMap" >
+    update bss_panel_package_user_map
+    set panel_package_id = #{panelPackageId,jdbcType=BIGINT},
+      code = #{code,jdbcType=VARCHAR},
+      user_group_id = #{userGroupId,jdbcType=BIGINT},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      type = #{type,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <delete id="deleteMapByUserGroupId" parameterType="java.lang.Long">
+      delete from bss_panel_package_user_map where user_group_id = #{userGroupId,jdbcType=BIGINT}
+  </delete>
+  
+  <delete id="deleteMapByUserCode" parameterType="java.lang.String">
+      delete from bss_panel_package_user_map where code = #{code,jdbcType=VARCHAR}
+  </delete>
+</mapper>

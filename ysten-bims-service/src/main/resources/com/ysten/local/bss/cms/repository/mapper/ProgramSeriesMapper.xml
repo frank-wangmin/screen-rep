@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.ysten.local.bss.cms.repository.mapper.ProgramSeriesMapper" >
+  <resultMap id="BaseResultMap" type="programSeries" >
+    <id column="program_series_id" property="programSeriesId" jdbcType="BIGINT" />
+    <result column="program_series_name" property="programSeriesName" jdbcType="VARCHAR" />
+    <result column="program_pinyin" property="programPinyin" jdbcType="VARCHAR" />
+    <result column="program_series_alias" property="programSeriesAlias" jdbcType="VARCHAR" />
+    <result column="program_series_en_name" property="programSeriesEnName" jdbcType="VARCHAR" />
+    <result column="small_poster_addr" property="smallPosterAddr" jdbcType="VARCHAR" />
+    <result column="poster" property="poster" jdbcType="VARCHAR" />
+    <result column="big_poster_addr" property="bigPosterAddr" jdbcType="VARCHAR" />
+    <result column="program_series_desc" property="programSeriesDesc" jdbcType="VARCHAR" />
+    <result column="program_type_id" property="programTypeId" jdbcType="INTEGER" />
+    <result column="program_class" property="programClass" jdbcType="VARCHAR" />
+    <result column="program_count" property="programCount" jdbcType="INTEGER" />
+    <result column="program_total_count" property="programTotalCount" jdbcType="INTEGER" />
+    <result column="program_content_type" property="programContentType" jdbcType="VARCHAR" />
+    <result column="tag" property="tag" jdbcType="VARCHAR" />
+    <result column="definition_code" property="definitionCode" jdbcType="VARCHAR" />
+    <result column="director" property="director" jdbcType="VARCHAR" />
+    <result column="leading_role" property="leadingRole" jdbcType="VARCHAR" />
+    <result column="leading_role_pinyin" property="leadingRolePinyin" jdbcType="VARCHAR" />
+    <result column="script_writer" property="scriptWriter" jdbcType="VARCHAR" />
+    <result column="years" property="years" jdbcType="VARCHAR" />
+    <result column="language_id" property="languageId" jdbcType="INTEGER" />
+    <result column="competition" property="competition" jdbcType="VARCHAR" />
+    <result column="target_audience" property="targetAudience" jdbcType="VARCHAR" />
+    <result column="premiere_date" property="premiereDate" jdbcType="TIMESTAMP" />
+    <result column="publish_date" property="publishDate" jdbcType="TIMESTAMP" />
+    <result column="premiere_channel" property="premiereChannel" jdbcType="VARCHAR" />
+    <result column="sync_live_channel" property="syncLiveChannel" jdbcType="VARCHAR" />
+    <result column="sort_type" property="sortType" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="status_time" property="statusTime" jdbcType="TIMESTAMP" />
+    <result column="last_modify_date" property="lastModifyDate" jdbcType="TIMESTAMP" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="is3d" property="is3d" jdbcType="INTEGER" />
+    <result column="time_length" property="timeLength" jdbcType="INTEGER" />
+    <result column="is_customer" property="isCustomer" jdbcType="INTEGER" />
+    <result column="star_rating" property="starRating" jdbcType="INTEGER" />
+    <result column="mask_description" property="maskDescription" jdbcType="VARCHAR" />
+    <result column="data_provider" property="dataProvider" jdbcType="VARCHAR" />
+    <result column="out_source_id" property="outSourceId" jdbcType="VARCHAR" />
+    <result column="zone" property="zone" jdbcType="VARCHAR" />
+    <result column="cp_code" property="cpCodes" jdbcType="VARCHAR" />
+    <result column="copyright_start_date" property="copyrightStartDate" jdbcType="TIMESTAMP" />
+    <result column="copyright_end_date" property="copyrightEndDate" jdbcType="TIMESTAMP" />
+    <result column="copyright_id" property="copyrightId" jdbcType="INTEGER" />
+    <result column="cr_class_id" property="crClassId" jdbcType="INTEGER" />
+    <result column="ppv_code" property="ppvCode" jdbcType="VARCHAR" />
+    <result column="off_reason" property="offReason" jdbcType="VARCHAR" />
+    <result column="re_on_reason" property="reOnReason" jdbcType="VARCHAR" />
+    <result column="del_reason" property="delReason" jdbcType="VARCHAR" />
+    <result column="back_reason" property="backReason" jdbcType="VARCHAR" />
+    <result column="publish_platform_ids" property="publishPlatformIds" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+      program_series_id,program_series_name, program_pinyin, program_series_alias, 
+      program_series_en_name, poster, small_poster_addr,big_poster_addr, program_series_desc, program_type_id,
+      program_class,program_count, program_total_count, program_content_type,tag, definition_code, director, script_writer, 
+      leading_role, leading_role_pinyin, years, language_id, premiere_date, publish_date,premiere_channel, sync_live_channel,
+      sort_type, status, status_time,last_modify_date, create_date, is3d,time_length,
+      is_customer, star_rating,mask_description, out_source_id, zone,cp_code, copyright_start_date, copyright_end_date, 
+      copyright_id,cr_class_id,ppv_code,data_provider,off_reason,re_on_reason,del_reason,back_reason,publish_platform_ids,
+      competition,target_audience
+  </sql>
+  
+  <select id="findByIds" resultMap="BaseResultMap" parameterType="map">
+	select
+	<include refid="Base_Column_List" />
+	from
+	cms_program_series
+	<where>
+		<if test="programSeriesIds != null and programSeriesIds.size()>0">
+			program_series_id in
+			<foreach collection="programSeriesIds" item="programSeriesId" open="(" separator="," close=")">
+				#{programSeriesId,jdbcType=BIGINT}
+            </foreach>
+		</if>
+		<if test="state != null and state != ''">
+			and status = #{state}
+   		</if>
+   		<if test="programContentType != null and programContentType != ''">
+			and program_content_type != #{programContentType}
+   		</if>
+	</where>
+      order program_series_id desc
+  </select>
+  
+  <select id="findProgramSerialByCondition" parameterType="map" resultMap="BaseResultMap">
+	select
+	<include refid="Base_Column_List" />
+	from
+	cms_program_series
+	<where>
+		<if test="status != null and status !=''">
+			status = #{status}
+		</if>
+		<if test="type != null and type !=''">
+			 and program_content_type != #{type}
+		</if>
+		<if test="cpCode != null and cpCode !=''">
+			and cp_code = #{cpCode}
+		</if>
+	</where>
+      order by program_series_id desc  
+      limit #{offsetNumber}, #{pageNumber}  
+  </select>
+  
+  <select id="getProgramSeriesHasNoMcvdByIds" parameterType="map" resultMap="BaseResultMap">
+  	select
+  	<include refid="Base_Column_List" />
+	from
+	cms_program_series
+	
+	<if test="programSeriesIds != null and programSeriesIds.size()>0">
+		<where>
+			program_series_id in
+			<foreach collection="programSeriesIds" item="programSeriesId" open="(" separator="," close=")">
+				#{programSeriesId,jdbcType=BIGINT}
+			</foreach>
+			and program_content_type != 'micVideo'
+		</where>	
+	</if>
+  </select>
+  
+  <select id="getProgramSeriesById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+	select
+	<include refid="Base_Column_List" />
+	from
+	cms_program_series
+	where 
+		program_series_id = #{ProgramSeriesId} and
+		program_content_type != 'micVideo' and
+		cp_code = 'CMS';
+  </select>
+  
+  <select id="findProgramSeriesByConditions" parameterType="map" resultMap="BaseResultMap">
+	select
+	<include refid="Base_Column_List" />
+	from
+	cms_program_series
+	<where> 
+		1=1
+		<if test="contentName != null and contentName !=''">
+			 and program_series_name = #{contentName}
+		</if>
+		<if test="start != null and start !='' and end!=null and end!=''">
+			and (last_modify_date between #{start} and #{end})
+		</if>
+		<if test="stateList != null and stateList !=''">
+			and status in 
+			 <foreach collection="stateList" item="status" open="(" separator="," close=")">
+	                #{status}
+	         </foreach>
+		</if>
+		and cp_code=#{cpCode} and ppv_code is not null and ppv_code!=''
+	</where>
+  </select>
+  
+  <select id="findProgramSeriesByPage" resultMap="BaseResultMap">
+	select
+	<include refid="Base_Column_List" />
+	from
+	cms_program_series
+	where date_format(ifnull(last_modify_date, create_date), '%Y%m%d') &lt; date_format(now(), '%Y%m%d')
+	<if test="isFull != null and isFull != 'true'">
+		and date_format(ifnull(last_modify_date, create_date), '%Y%m%d') &gt; date_format(date_sub(now(), interval 2 day), '%Y%m%d')
+	</if>
+	order by last_modify_date
+	limit #{skip}, #{limit}
+  </select>
+</mapper>

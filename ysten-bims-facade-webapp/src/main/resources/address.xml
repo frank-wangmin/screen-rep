@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<services>
+    <service id="online">
+        <sysconfig>
+			<config key="TMS">http://tms.is.ysten.com:8080/yst-tms</config>
+		</sysconfig>
+    </service>
+
+</services>

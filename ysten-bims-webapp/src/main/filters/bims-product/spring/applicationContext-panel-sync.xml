@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jee="http://www.springframework.org/schema/jee"
+    xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+    <bean id="panelSyncFromEPGJob" class="com.ysten.local.bss.job.quartz.PanelSyncJob" />
+
+    <bean id="panelSyncFromEPGJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <ref bean="panelSyncFromEPGJob" />
+        </property>
+        <property name="targetMethod">
+            <value>executeSyncFromEpg</value>
+        </property>
+        <property name="concurrent">
+            <value>false</value>
+        </property>
+    </bean>
+
+    <bean id="cronReportTrigger-panelSyncFromEPGJob" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail">
+            <ref bean="panelSyncFromEPGJobDetail" />
+        </property>
+        <property name="cronExpression">
+            <value> 0 0/30 * * * ? </value>
+        </property>
+    </bean>
+    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">      
+            <list>
+                <ref local="cronReportTrigger-panelSyncFromEPGJob" />
+            </list>
+        </property>
+        <property name="autoStartup" value="true"/>
+    </bean> 
+</beans>

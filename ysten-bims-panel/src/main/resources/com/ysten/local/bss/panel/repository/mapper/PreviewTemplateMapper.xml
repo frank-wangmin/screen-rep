@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.panel.repository.mapper.PreviewTemplateMapper">
+    <resultMap id="BaseResultMap" type="previewTemplate">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="template_id" property="templateId" jdbcType="BIGINT"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="description" property="description" jdbcType="VARCHAR"/>
+        <result column="type" property="type" jdbcType="INTEGER"/>
+        <result column="platform_id" property="platformId" jdbcType="BIGINT"/>
+        <result column="contain_ps" property="containsPs" jdbcType="INTEGER"/>
+        <result column="epg_template_id" property="epgTemplateId" jdbcType="BIGINT"/>
+        <result column="district_code" property="districtCode" jdbcType="VARCHAR"/>
+        <result column="opr_userid" jdbcType="BIGINT" property="oprUserId"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    id,name,description,type,platform_id,contain_ps,epg_template_id,district_code
+    </sql>
+
+    <sql id="Base_Table_Name">
+  	 bss_preview_template
+    </sql>
+
+    <select id="getTargetById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Base_Table_Name"/>
+        where id = #{panelId,jdbcType=BIGINT}
+    </select>
+
+
+    <select id="findAllEpgList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from <include refid="Base_Table_Name"/>
+        where epg_template_id IS NOT NULL
+        order by id
+    </select>
+
+    <select id="findIdAndEpgIdList" resultMap="BaseResultMap">
+        select epg_template_id,id
+        from <include refid="Base_Table_Name"/>
+        where epg_template_id IS NOT NULL
+        order by id desc
+    </select>
+
+    <select id="findAllCustomedTargetList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from <include refid="Base_Table_Name"/>
+        where epg_template_id IS NULL
+        order by id desc
+    </select>
+
+    <select id="findAllOuterList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from <include refid="Base_Table_Name"/>
+        where epg_template_id IS NOT NULL
+        order by id desc
+    </select>
+
+    <select id="getTargetList" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Base_Table_Name"/>
+        <where>
+            <if test = "Id !=null">
+                id=#{Id,jdbcType=BIGINT}
+            </if>
+            <if test="name != null and name != ''">
+                and name like '%${name}%'
+            </if>
+        </where>
+        order by id desc
+        limit ${pageNo} , ${pageSize}
+    </select>
+
+    <select id="getTargetCount" resultType="java.lang.Integer" parameterType="map">
+        select
+        count(id)
+        from
+        <include refid="Base_Table_Name"/>
+        <where>
+            <if test = "Id !=null">
+                id=#{Id,jdbcType=BIGINT}
+           </if>
+            <if test="name != null and name != ''">
+             and name like '%${name}%'
+            </if>
+        </where>
+    </select>
+    <select id="getTemplateByEpgTempId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select   <include refid="Base_Column_List"/>
+        from  <include refid="Base_Table_Name"/>
+        where
+        epg_template_id=#{epgTemplateId,jdbcType=BIGINT}
+    </select>
+
+    <delete id="deleteByEpgIds" parameterType="java.util.List">
+        delete from
+        <include refid="Base_Table_Name"/>
+        where epg_template_id is  NOT NULL
+    </delete>
+
+    <delete id="deleteByIds" parameterType="java.util.List">
+        delete from
+        <include refid="Base_Table_Name"/>
+        where id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+    <delete id="deleteById" parameterType="java.lang.Long">
+        delete from
+        <include refid="Base_Table_Name"/>
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+     <insert id="batchSavePreviewTemplate" parameterType="java.util.List">
+    insert into
+    <include refid="Base_Table_Name"/>
+    (
+    template_id,
+    name,
+    description,
+    type,
+    platform_id,
+    contain_ps,
+    epg_template_id,
+    district_code,opr_userid,
+    create_time,
+     update_time
+    )
+    values
+         <foreach collection="list" item="item" index="index"
+                  separator=",">
+     (
+    #{item.templateId,jdbcType=BIGINT},
+    #{item.name,jdbcType=VARCHAR},
+    #{item.description,jdbcType=VARCHAR},
+    #{item.type,jdbcType=INTEGER},
+    #{item.platformId,jdbcType=BIGINT},
+    #{item.containsPs,jdbcType=INTEGER},
+    #{item.epgTemplateId,jdbcType=BIGINT},
+             #{item.districtCode,jdbcType=VARCHAR},#{item.oprUserId,jdbcType=BIGINT},#{item.createTime,jdbcType=TIMESTAMP},
+             #{item.updateTime,jdbcType=TIMESTAMP}
+    )
+         </foreach>
+</insert>
+
+
+    <insert id="insert" parameterType="previewTemplate" useGeneratedKeys="true" keyProperty="id">
+        insert into
+        <include refid="Base_Table_Name"/>
+        (
+        template_id,
+        name,
+        description,
+        type,
+        platform_id,
+        contain_ps,
+        epg_template_id,
+        district_code,
+        opr_userid,
+        create_time,
+        update_time
+        )
+        values (
+        #{templateId,jdbcType=BIGINT},
+        #{name,jdbcType=VARCHAR},
+        #{description,jdbcType=VARCHAR},
+        #{type,jdbcType=INTEGER},
+        #{platformId,jdbcType=BIGINT},
+        #{containsPs,jdbcType=INTEGER},
+        #{epgTemplateId,jdbcType=BIGINT},
+        #{districtCode,jdbcType=VARCHAR},#{oprUserId,jdbcType=BIGINT},#{createTime,jdbcType=TIMESTAMP},
+        #{updateTime,jdbcType=TIMESTAMP}
+        )
+    </insert>
+
+    <!--<update id="updateByEpgTempId" parameterType="previewTemplate">
+        update
+        <include refid="Base_Table_Name"/>
+        set
+        name = #{name,jdbcType=VARCHAR},
+        description = #{description,jdbcType=VARCHAR},
+        type = #{type,jdbcType=INTEGER},
+        platform_id = #{platformId,jdbcType=BIGINT},
+        contain_ps = #{containsPs,jdbcType=INTEGER}
+
+        where
+        epg_template_id = #{epgTemplateId,jdbcType=BIGINT}
+    </update>-->
+
+
+    <update id="batchUpdate" parameterType="java.util.List">
+        update
+        <include refid="Base_Table_Name"/>
+        set
+        name = #{item.name,jdbcType=VARCHAR},
+        description = #{item.description,jdbcType=VARCHAR},
+        type = #{item.type,jdbcType=INTEGER},
+        platform_id = #{item.platformId,jdbcType=BIGINT},
+        contain_ps = #{item.containsPs,jdbcType=INTEGER}
+        where
+        epg_template_id in
+        <foreach collection="list" item="item" index="index" open="(" separator="," close=")" >
+            #{item.epgTemplateId}
+        </foreach>
+    </update>
+
+    <update id="update" parameterType="previewTemplate">
+        update
+        <include refid="Base_Table_Name"/>
+        set
+        name = #{name,jdbcType=VARCHAR},
+        description = #{description,jdbcType=VARCHAR},
+        type = #{type,jdbcType=INTEGER},
+        platform_id = #{platformId,jdbcType=BIGINT},
+        contain_ps = #{containsPs,jdbcType=INTEGER},
+        epg_template_id = #{epgTemplateId,jdbcType=BIGINT},
+        opr_userid = #{oprUserId,jdbcType=BIGINT},
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+        update_time = #{updateTime,jdbcType=TIMESTAMP}
+        where
+        id = #{id,jdbcType=BIGINT}
+    </update>
+
+</mapper>

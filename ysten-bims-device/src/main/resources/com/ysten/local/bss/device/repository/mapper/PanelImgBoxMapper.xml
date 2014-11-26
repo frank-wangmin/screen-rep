@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.device.repository.mapper.PanelImgBoxMapper" >
+	<resultMap id="BaseResultMap" type="panelImgBox">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="img_box_id" property="imgBoxId" jdbcType="BIGINT" />
+		<result column="item_id" property="itemId" jdbcType="BIGINT" />
+		<result column="title" property="title" jdbcType="VARCHAR" />
+		<result column="img_url" property="imgUrl" jdbcType="VARCHAR" />
+		<result column="action_url" property="actionUrl" jdbcType="VARCHAR" />
+		<result column="progrom_id" property="progromId" jdbcType="BIGINT" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id,img_box_id,item_id,img_url,action_url,title,progrom_id
+	</sql>
+	
+	<sql id="Base_Table_Name">
+  	 bss_panel_img_box
+    </sql>
+	
+	<select id="findAll" resultMap="BaseResultMap">
+	select  <include refid="Base_Column_List" />
+	from <include refid="Base_Table_Name"/>
+	order by id 
+	</select>
+	
+	<select id="findAllByCondition" resultMap="BaseResultMap" parameterType="map">
+	select  <include refid="Base_Column_List" />
+	from <include refid="Base_Table_Name"/>
+	<where>
+		<if test="title!=null and title!=''">
+                title like '%${title}%'
+   		</if>
+   		<if test="progromId!=null and progromId!='' and progromId!=0">
+               and progrom_id like '%${progromId}%'
+   		</if>
+	</where>
+	order by id desc
+	<if test="pageNo != null and pageSize != null">
+    limit #{pageNo},#{pageSize}
+    </if>
+	</select>
+		
+	<select id="getByImgBoxId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+	select  <include refid="Base_Column_List" />
+	from <include refid="Base_Table_Name"/>
+	where img_box_id = #{imgBoxId}
+	order by id desc
+	</select>
+		
+	<select id="findCountByCondition" resultType="java.lang.Integer" parameterType="map">
+	select  count(*)
+	from <include refid="Base_Table_Name"/>
+	<where>
+		<if test="title!=null and title!=''">
+                title like '%${title}%'
+   		</if>
+   		<if test="progromId!=null and progromId!='' and progromId!=0">
+               and progrom_id like '%${progromId}%'
+   		</if>
+	</where>
+	order by id desc	
+	</select>
+	
+	<select id="getById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+	    select
+		<include refid="Base_Column_List" />
+		from <include refid="Base_Table_Name"/>
+		where id = #{id}
+	</select>
+	
+	<insert id="save" parameterType="panelImgBox" useGeneratedKeys="true" keyProperty="id">
+        insert into <include refid="Base_Table_Name"/>
+        (img_box_id,item_id,title,img_url,action_url,progrom_id) values
+           ( 
+    		#{imgBoxId,jdbcType=INTEGER},
+    		#{itemId,jdbcType=INTEGER},
+    		#{title,jdbcType=VARCHAR},
+    		#{imgUrl,jdbcType=VARCHAR},
+    		#{actionUrl,jdbcType=VARCHAR},
+    		#{progromId,jdbcType=INTEGER}
+    		)
+  	</insert>
+  
+   <update id="update" parameterType="panelImgBox">
+        update <include refid="Base_Table_Name"/>
+        set
+        img_box_id = #{imgBoxId,jdbcType=INTEGER},
+        item_id = #{itemId,jdbcType=INTEGER},
+        img_url = #{imgUrl,jdbcType=VARCHAR},
+        action_url = #{actionUrl,jdbcType=VARCHAR},
+        title = #{title,jdbcType=VARCHAR},
+        progrom_id = #{progromId,jdbcType=INTEGER}
+        where
+        id = #{id,jdbcType=BIGINT}
+  </update>
+  
+   <delete id="delete" parameterType="java.util.List">
+      delete from <include refid="Base_Table_Name"/>
+       where id in 
+      <foreach collection="ids" item="id"  open="(" separator="," close=")">  
+           #{id} 
+      </foreach>
+  </delete>
+</mapper>

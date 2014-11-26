@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.device.repository.mapper.BootAnimationMapper">
+    <resultMap id="BaseResultMap" type="bootAnimation">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="url" property="url" jdbcType="VARCHAR"/>
+        <result column="md5" property="md5" jdbcType="VARCHAR"/>
+        <result column="create_date" property="createDate" jdbcType="TIMESTAMP"/>
+        <result column="state" property="state" jdbcType="VARCHAR"/>
+        <result column="is_default" property="isDefault" jdbcType="INTEGER"/>
+        <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    </resultMap>
+
+    <resultMap id="RelResultMap" type="bootAnimation">
+        <id column="boot_id" property="id" jdbcType="BIGINT"/>
+        <result column="boot_name" property="name" jdbcType="VARCHAR"/>
+        <result column="boot_url" property="url" jdbcType="VARCHAR"/>
+        <result column="boot_md5" property="md5" jdbcType="VARCHAR"/>
+        <result column="boot_create_date" property="createDate" jdbcType="TIMESTAMP"/>
+        <result column="boot_state" property="state" jdbcType="VARCHAR"/>
+        <result column="boot_is_default" property="isDefault" jdbcType="INTEGER"/>
+        <result column="boot_update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    id, name, url, md5, create_date, state,is_default,update_date
+    </sql>
+
+    <sql id="Rel_Column_List">
+    boot.id as boot_id, boot.update_date as boot_update_date, boot.name as boot_name, boot.url as boot_url, boot.md5 as boot_md5, boot.create_date as boot_create_date, boot.state as boot_state,boot.is_default as boot_is_default
+    </sql>
+
+    <select id="findBootAnimationById" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        bss_boot_animation
+        where
+        id = #{id,jdbcType=BIGINT}
+        and state = #{state,jdbcType=VARCHAR}
+    </select>
+
+    <select id="findDefaultBootAnimation" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        bss_boot_animation
+        where
+        is_default = #{isDefault,jdbcType=INTEGER}
+        and state = #{state,jdbcType=VARCHAR}
+    </select>
+
+    <select id="findAllBootAnimation" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        bss_boot_animation
+        where
+        is_default = 0
+        and state = 'USEABLE'
+    </select>
+
+    <select id="findBootAnimationByDeviceCode" resultMap="RelResultMap" parameterType="map">
+        select
+        <include refid="Rel_Column_List"/>
+        from bss_boot_animation boot
+        join bss_animation_device_map map on map.boot_animation_id = boot.id
+        where
+        map.ysten_id = #{ystenId,jdbcType=VARCHAR}
+        and map.type = #{type,jdbcType=VARCHAR}
+    </select>
+    
+    <select id="getBootAnimationByYstenIdOrGroupId" resultMap="RelResultMap" parameterType="map">
+        select
+        <include refid="Rel_Column_List"/>
+        from bss_boot_animation boot
+        join bss_animation_device_map m
+        where m.boot_animation_id = boot.id
+        <if test="ystenId !=null ">
+            and m.ysten_id = #{ystenId, jdbcType=VARCHAR}
+        </if>
+        <if test="groupId !=null ">
+            and m.device_group_id = #{groupId, jdbcType=BIGINT}
+        </if>
+        and boot.state = 'USEABLE'
+        and boot.is_default = 0
+    </select>
+
+    <select id="getBootAnimationByCustomerCodeOrGroupId" resultMap="RelResultMap" parameterType="map">
+        select
+        <include refid="Rel_Column_List"/>
+        from bss_boot_animation boot
+        join bss_animation_user_map m
+        where m.boot_animation_id = boot.id
+        <if test="customerCode !=null ">
+            and m.code = #{customerCode, jdbcType=VARCHAR}
+        </if>
+        <if test="groupId !=null ">
+            and m.user_group_id = #{groupId, jdbcType=BIGINT}
+        </if>
+        and boot.state = 'USEABLE'
+        and boot.is_default = 0
+    </select>
+
+    <select id="findBootAnimationByDeviceGroupId" resultMap="RelResultMap" parameterType="map">
+        select
+        <include refid="Rel_Column_List"/>
+        from bss_boot_animation boot
+        join bss_animation_device_map map
+        on map.boot_animation_id = boot.id
+        where
+        map.device_group_id = #{deviceGroupId,jdbcType=VARCHAR}
+        and map.type = #{type,jdbcType=VARCHAR}
+    </select>
+    
+    <select id="getBootAnimationByDeviceGroupIdAndState" resultMap="RelResultMap" parameterType="map">
+        select
+        <include refid="Rel_Column_List"/>
+        from bss_boot_animation boot
+        join bss_animation_device_map map
+        on map.boot_animation_id = boot.id
+        where
+        map.device_group_id = #{deviceGroupId,jdbcType=VARCHAR}
+        and boot.state = #{state,jdbcType=VARCHAR}
+    </select>
+    
+	<select id="getById" resultMap="BaseResultMap" parameterType="map">
+		select
+		<include refid="Base_Column_List" />
+		from
+		bss_boot_animation
+		where
+		id = #{id,jdbcType=BIGINT}
+	</select>
+	
+	<select id="findBootAnimationByName" resultMap="BaseResultMap" parameterType="java.lang.String" >
+	    select  
+	    <include refid="Base_Column_List" />
+	    from 
+	    bss_boot_animation
+		where name = #{name,jdbcType=VARCHAR}
+	    order by id desc
+		limit 1
+  	</select>
+    <select id="getBootAnimationByDefault" resultMap="BaseResultMap">
+
+        select
+        <include refid="Base_Column_List" />
+        from
+        bss_boot_animation
+         where is_default=1 and state = 'USEABLE'
+    </select>
+
+	
+	<select id="findBootAnimation" resultMap="BaseResultMap" parameterType="map" >
+	    select  
+	    <include refid="Base_Column_List" />
+	    from 
+	    bss_boot_animation
+	    <where>
+	    	<if test="name != null and name !=''">
+    			name like '%${name}%'
+    		</if>
+	    </where>
+	    order by id desc
+	    limit ${pageNo},${pageSize}
+  	</select>
+  	
+  	<select id="getCountByCondition" resultType="java.lang.Integer" parameterType="map" >
+	    select 
+	    	count(*)
+	    from 
+	    	bss_boot_animation
+	    <where>
+	    	<if test="name != null and name !=''">
+    			name like '%${name}%'
+    		</if>
+	    </where>
+  	</select>
+  
+  	<insert id="save" parameterType="bootAnimation" useGeneratedKeys="true" keyProperty="id">
+		insert into bss_boot_animation
+		(name,url,md5,create_date,state,is_default,update_date)
+		values (#{name,jdbcType=VARCHAR},#{url,jdbcType=VARCHAR},#{md5,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP},
+		#{state,jdbcType=VARCHAR}, #{isDefault,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP})
+  	</insert>
+  
+     <update id="update" parameterType="bootAnimation">
+        update bss_boot_animation
+        set
+        name = #{name,jdbcType=VARCHAR},
+        url = #{url,jdbcType=VARCHAR},
+        md5 = #{md5,jdbcType=VARCHAR},
+        state = #{state,jdbcType=VARCHAR},
+        is_default = #{isDefault,jdbcType=VARCHAR},
+        update_date = #{updateDate,jdbcType=TIMESTAMP}
+        where
+        id = #{id,jdbcType=BIGINT}
+  </update>
+  
+    
+  <delete id="delete" parameterType="java.util.List">
+      delete from bss_boot_animation where id in 
+      <foreach collection="ids" item="id"  open="(" separator="," close=")">  
+           #{id} 
+      </foreach>
+  </delete>
+  <delete id="deleteById" parameterType="java.lang.Long">
+      delete from bss_boot_animation where id = #{id,jdbcType=BIGINT} 
+  </delete>
+</mapper>

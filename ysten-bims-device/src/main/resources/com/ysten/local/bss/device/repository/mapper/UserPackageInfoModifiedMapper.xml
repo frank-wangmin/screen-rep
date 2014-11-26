@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.ysten.local.bss.device.repository.mapper.UserPackageInfoModifiedMapper">
+	<resultMap id="BaseResultMap" type="userPackageInfoModified">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="customer_code" property="customerCode" jdbcType="VARCHAR" />
+		<result column="product_name" property="productName" jdbcType="VARCHAR" />
+		<result column="product_id" property="productId" jdbcType="VARCHAR" />
+		<result column="outter_code" property="outterCode" jdbcType="VARCHAR" />
+		<result column="product_type" property="productType" jdbcType="VARCHAR" />
+		<result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+		<result column="content_name" property="contentName" jdbcType="VARCHAR" />
+		<result column="buy_num" property="buyNum" jdbcType="INTEGER" />
+		<result column="start_date" property="startDate" jdbcType="TIMESTAMP" />
+		<result column="end_date" property="endDate" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<!-- 
+	<resultMap id="AllResultMap" type="userPackageInfoModified">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="customer_code" property="customerCode" jdbcType="VARCHAR" />
+		<result column="outter_code" property="outterCode" jdbcType="VARCHAR" />
+		<result column="product_type" property="productType" jdbcType="VARCHAR" />
+		<result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+		<result column="content_name" property="contentName" jdbcType="VARCHAR" />
+		<result column="buy_num" property="buyNum" jdbcType="INTEGER" />
+		<result column="start_date" property="startDate" jdbcType="TIMESTAMP" />
+		<result column="end_date" property="endDate" jdbcType="TIMESTAMP" />
+		<association property="ppInfo" javaType="ppInfo">
+			<id column="pp_product_id" property="id" />
+			<result column="pp_product_name" property="productName" jdbcType="VARCHAR" />
+		</association>
+	</resultMap>
+	-->
+	
+	<sql id="Base_Column_List">
+		id,customer_code, product_name, product_id, outter_code, product_type,
+		create_date, content_name, buy_num, start_date, end_date
+  </sql>
+
+
+	<select id="getById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		from bss_user_package_info
+		where id = #{id,jdbcType=BIGINT}
+	</select>
+
+	<select id="findByCustomerIdAndPsId" resultMap="BaseResultMap" parameterType="map">
+		select
+		<include refid="Base_Column_List" />
+		from bss_user_package_info
+		where customer_code = #{customerCode,jdbcType=VARCHAR}
+		and outter_code = #{psId,jdbcType=VARCHAR}
+		and product_type = #{productType,jdbcType=VARCHAR}
+	</select>
+
+	<select id="findValidUserPackageInfo" resultMap="BaseResultMap"	parameterType="map">
+		select
+		<include refid="Base_Column_List" />
+		from bss_user_package_info
+		where customer_code = #{customerCode,jdbcType=VARCHAR}
+		<if test="psId != null" >
+          and outter_code = #{psId,jdbcType=VARCHAR}
+        </if>
+		and product_type = #{productType,jdbcType=VARCHAR}
+		and now() &lt;= end_date
+	</select>
+
+	<select id="getUserPackageInfo" resultMap="BaseResultMap" parameterType="map">
+		select
+		<include refid="Base_Column_List" />
+		from bss_user_package_info
+		<where>
+			<if test="customerCode!=null and customerCode!=''"> 
+				customer_code = #{customerCode}
+			</if>
+			<if test="productId!=null and productId!=''"> 
+				and product_id = #{productId}
+			</if>
+			<if test="outterCode!=null and outterCode!=''"> 
+				and outter_code = #{outterCode}
+			</if>
+		</where>
+	</select>
+
+	<select id="findByCustomerId" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from bss_user_package_info 
+		where 
+		customer_code = #{customerCode,jdbcType=VARCHAR}  
+		order by create_date desc
+	</select>
+	
+	<select id="findByEnableCustomerId" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List" />
+        from bss_user_package_info 
+        where 
+        customer_code = #{customerCode,jdbcType=VARCHAR}  and now() between start_date and end_date 
+        order by create_date desc
+    </select>
+	
+	<select id="findCountByCustomerCode" resultType="java.lang.Integer" parameterType="java.lang.String">
+		select
+		count(*)
+		from bss_user_package_info 
+		<where>
+			<if test="customerCode!=null and customerCode!=''"> 
+				customer_code = #{customerCode, jdbType=VARCHAR}  
+			</if>
+		</where>
+		order by create_date desc
+	</select>
+	
+
+	<insert id="saveUserPackageInfo" parameterType="userPackageInfoModified" useGeneratedKeys="true" keyProperty="id">
+		insert into bss_user_package_info 
+		(customer_code,product_id,start_date,end_date,outter_code,content_name,product_type,create_date,buy_num)
+		values
+		(#{customerCode,jdbcType=VARCHAR}, #{productId,jdbcType=BIGINT},
+		#{startDate,jdbcType=TIMESTAMP}, #{endDate,jdbcType=TIMESTAMP},
+		#{outterCode,jdbcType=VARCHAR},#{contentName,jdbcType=VARCHAR},
+		#{productType,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, #{buyNum,jdbcType=INTEGER})
+  </insert>
+  
+  <update id="upadteUserPackageInfo" parameterType="userPackageInfoModified">
+		update bss_user_package_info set end_date=#{endDate,jdbcType=VARCHAR},buy_num=#{buyNum,jdbcType=INTEGER} 
+		where id= #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.device.repository.mapper.UserActivateSumMapper" >
+	<resultMap id="BaseResultMap" type="userActivateSum">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="date" property="date" jdbcType="VARCHAR" />
+		<result column="province_id" property="provinceId" jdbcType="VARCHAR" />
+		<result column="city_id" property="cityId" jdbcType="VARCHAR" />
+		<result column="telecom_id" property="telecomId" jdbcType="VARCHAR" />
+		<result column="vendor_id" property="vendorId" jdbcType="VARCHAR" />
+		<result column="terminal_id" property="terminalId" jdbcType="VARCHAR" />
+		<result column="activate_all" property="activateAll" jdbcType="BIGINT" />
+		<result column="activate_day" property="activateDay" jdbcType="BIGINT" />
+		<result column="sync" property="sync" jdbcType="VARCHAR" />
+		<result column="user_all" property="userAll" jdbcType="BIGINT" />
+		<result column="user_day" property="userDay" jdbcType="BIGINT" />
+		<result column="stb_return_day" property="stbReturnDay" jdbcType="BIGINT" />
+		<result column="stb_receive_day" property="stbReceiveDay" jdbcType="BIGINT" />
+		<result column="sync_date" property="syncDate" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id, date, province_id, city_id, telecom_id, vendor_id,
+		terminal_id, activate_all, activate_day, sync, user_all, user_day, stb_return_day, stb_receive_day, sync_date
+	</sql>
+
+	<insert id="save" parameterType="userActivateSum" useGeneratedKeys="true" keyProperty="id">
+		insert into bss_user_activate_day_sum
+		(date, province_id, city_id, telecom_id, vendor_id, terminal_id, activate_all, activate_day, sync, user_all, user_day, stb_return_day, stb_receive_day)
+		values
+		(#{date,jdbcType=VARCHAR},
+		 #{provinceId,jdbcType=VARCHAR},
+		 #{cityId,jdbcType=VARCHAR},
+		 #{telecomId,jdbcType=VARCHAR},
+		 #{vendorId,jdbcType=VARCHAR},
+		 #{terminalId,jdbcType=VARCHAR},
+		 #{activateAll,jdbcType=BIGINT},
+		 #{activateDay,jdbcType=BIGINT},
+		 #{sync,jdbcType=VARCHAR},
+		 #{userAll,jdbcType=BIGINT},
+		 #{userDay,jdbcType=BIGINT},
+		 #{stbReturnDay,jdbcType=BIGINT},
+		 #{stbReceiveDay,jdbcType=BIGINT})
+	</insert>
+	
+	<insert id="saveList" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+		<selectKey resultType="long" keyProperty="id" order="AFTER">  
+	        SELECT  
+	        LAST_INSERT_ID()  
+	    </selectKey> 
+	
+		insert into bss_user_activate_day_sum
+		(date, province_id, city_id, telecom_id, vendor_id, terminal_id, activate_all, activate_day, sync, user_all, user_day, stb_return_day, stb_receive_day)
+		values
+		<foreach collection="list" item="item" index="index" separator="," >  
+		(#{item.date,jdbcType=VARCHAR},
+		 #{item.provinceId,jdbcType=VARCHAR},
+		 #{item.cityId,jdbcType=VARCHAR},
+		 #{item.telecomId,jdbcType=VARCHAR},
+		 #{item.vendorId,jdbcType=VARCHAR},
+		 #{item.terminalId,jdbcType=VARCHAR},
+		 #{item.activateAll,jdbcType=BIGINT},
+		 #{item.activateDay,jdbcType=BIGINT},
+		 #{item.sync,jdbcType=VARCHAR},
+		 #{item.userAll,jdbcType=BIGINT},
+		 #{item.userDay,jdbcType=BIGINT},
+		 #{item.stbReturnDay,jdbcType=BIGINT},
+		 #{item.stbReceiveDay,jdbcType=BIGINT})
+		</foreach>
+	</insert>
+	
+	<select id="getBySync" parameterType="int" resultMap="BaseResultMap">
+		select <include refid="Base_Column_List"/> 
+		from bss_user_activate_day_sum
+		where sync = #{sync}
+	</select>
+	
+	<select id="getList" parameterType="map" resultMap="BaseResultMap">
+		select 
+		<include refid="Base_Column_List"/> 
+		from bss_user_activate_day_sum	
+		<where>
+    	<if test="date != null and date != ''">
+	    	date = #{date,jdbcType=VARCHAR}
+	    </if>
+	    <if test="province != null and province !=''">
+	    	and province_id = #{province,jdbcType=VARCHAR}
+	    </if>
+	    <if test="sync != null and sync !=''">
+	    	and sync = #{sync,jdbcType=VARCHAR}
+	    </if>
+    </where>
+		order by date desc
+		limit ${index} , ${size}	
+	</select>
+	
+	<select id="getAll" parameterType="map" resultMap="BaseResultMap">
+		select 
+		<include refid="Base_Column_List"/> 
+		from bss_user_activate_day_sum			
+		order by date desc
+		<if test="index != null and index !=''">
+			limit ${index} , ${size}	
+		</if>
+	</select>
+	
+	<select id="getCount" resultType="java.lang.Integer" parameterType="map">
+        select count(*) from
+        bss_user_activate_day_sum    
+        <where>
+    	<if test="date != null and date != ''">
+	    	date = #{date,jdbcType=VARCHAR}
+	    </if>
+	    <if test="province != null and province !=''">
+	    	and province_id = #{province,jdbcType=VARCHAR}
+	    </if>
+	    <if test="sync != null and sync !=''">
+	    	and sync = #{sync,jdbcType=VARCHAR}
+	    </if>
+    </where>   
+    </select>
+	<select id="getCounts" resultType="java.lang.Integer">
+        select count(*) from
+        bss_user_activate_day_sum            
+    </select>
+	<update id="updateSyncState">
+		update bss_user_activate_day_sum set sync_date = #{syncDate}, sync = #{sync} where id = #{id};
+	</update>
+	
+	<update id="updateSyncStateList" parameterType="map">
+		update bss_user_activate_day_sum set sync_date = #{syncDate}, sync = #{sync} where id in 
+		<foreach collection="idList" index="index" item="item" open="(" separator="," close=")"> 
+			#{item.id} 
+	    </foreach>
+	</update>
+</mapper>

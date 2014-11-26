@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.cms.repository.mapper.ProgramMapper" >
+
+  <resultMap id="BaseResultMap" type="program" >
+    <id column="program_id" property="programId" jdbcType="BIGINT" />
+    <result column="program_name" property="programName" jdbcType="VARCHAR" />
+    <result column="english_name" property="englishName" jdbcType="VARCHAR" />
+    <result column="alias" property="alias" jdbcType="VARCHAR" />
+    <result column="material_type_id" property="materialTypeId" jdbcType="INTEGER" />
+    <result column="material_class" property="materialClass" jdbcType="INTEGER" />
+    <result column="definition_code" property="definitionCode" jdbcType="VARCHAR" />
+    <result column="zone" property="zone" jdbcType="VARCHAR" />
+    <result column="director" property="director" jdbcType="VARCHAR" />
+    <result column="leading_role" property="leadingRole" jdbcType="VARCHAR" />
+    <result column="years" property="years" jdbcType="VARCHAR" />
+    <result column="language_id" property="languageId" jdbcType="INTEGER" />
+    <result column="set_number" property="setNumber" jdbcType="INTEGER" />
+    <result column="start_date" property="startDate" jdbcType="TIMESTAMP" />
+    <result column="end_date" property="endDate" jdbcType="TIMESTAMP" />
+    <result column="plan_time" property="planTime" jdbcType="TIMESTAMP" />
+    <result column="plan_user" property="planUser" jdbcType="VARCHAR" />
+    <result column="update_user" property="updateUser" jdbcType="VARCHAR" />
+    <result column="out_source_id" property="outSourceId" jdbcType="VARCHAR" />
+    <result column="bitrate_id" property="bitrateId" jdbcType="INTEGER" />
+    <result column="trial_dura" property="trialDura" jdbcType="INTEGER" />
+    <result column="off_line_time" property="offLineTime" jdbcType="TIMESTAMP" />
+    <result column="program_status_id" property="programStatusId" jdbcType="VARCHAR" />
+    <result column="product_id" property="productId" jdbcType="INTEGER" />
+    <result column="resolution_id" property="resolutionId" jdbcType="INTEGER" />
+    <result column="program_length" property="programLength" jdbcType="INTEGER" />
+    <result column="premiere_channel" property="premiereChannel" jdbcType="VARCHAR" />
+    <result column="premiere_date" property="premiereDate" jdbcType="TIMESTAMP" />
+    <result column="sound_channel" property="soundChannel" jdbcType="VARCHAR" />
+    <result column="status_date" property="statusDate" jdbcType="TIMESTAMP" />
+    <result column="last_modify_date" property="lastModifyDate" jdbcType="TIMESTAMP" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="poster" property="poster" jdbcType="VARCHAR" />
+    <result column="sort_num" property="sortNum" jdbcType="INTEGER" />
+    <result column="encrypted_type" property="encryptedType" jdbcType="VARCHAR" />
+    <result column="addr_type" property="addrType" jdbcType="VARCHAR" />
+    <result column="priority" property="priority" jdbcType="INTEGER" />
+    <result column="org_url" property="orgUrl" jdbcType="VARCHAR" />
+    <result column="is3d" property="is3d" jdbcType="INTEGER" />
+    <result column="ppv_code" property="ppvCode" jdbcType="VARCHAR" />
+    <result column="cp_code" property="cpCode" jdbcType="VARCHAR" />
+    <result column="start_time" property="startTime" jdbcType="INTEGER" />
+    <result column="end_time" property="endTime" jdbcType="INTEGER" />
+    <result column="program_desc" property="programDesc" jdbcType="VARCHAR" />
+    <result column="special_request" property="specialRequest" jdbcType="VARCHAR" />
+    <result column="off_reason" property="offReason" jdbcType="VARCHAR" />
+    <result column="re_on_reason" property="reOnReason" jdbcType="VARCHAR" />
+    <result column="del_reason" property="delReason" jdbcType="VARCHAR" />
+    <result column="is_re_convert" property="isReConvert" jdbcType="INTEGER" />
+    <result column="is_re_drm" property="isReDrm" jdbcType="INTEGER" />
+    <result column="is_re_cnd" property="isReCdn" jdbcType="INTEGER" />
+    <result column="back_reason" property="backReason" jdbcType="VARCHAR" />
+    <result column="publish_platform_ids" property="publishPlatformIds" jdbcType="VARCHAR" />
+    <result column="tag" property="tag" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    program_id, program_name, english_name, alias, material_type_id, material_class, 
+    definition_code, zone, director, leading_role, years, language_id, set_number, start_date, 
+    end_date, plan_time, plan_user, update_user, out_source_id, bitrate_id, trial_dura, 
+    off_line_time, program_status_id, product_id, resolution_id, program_length, premiere_channel, 
+    premiere_date, sound_channel, status_date, last_modify_date, create_date, poster, 
+    sort_num, encrypted_type, addr_type, priority, org_url, is3d, ppv_code, cp_code, 
+    start_time, end_time, program_desc,special_request, off_reason, re_on_reason, del_reason,
+    is_re_convert, is_re_drm, is_re_cnd, back_reason, publish_platform_ids, tag
+  </sql>
+  
+  <select id="findProgramsByIdsAndStatus" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List" />
+        from
+        cms_program
+        <where>
+        	<if test="programIds!=null and programIds.size>0">
+	            program_id in 
+	            <foreach collection="programIds" item="programId" open="(" separator="," close=")">
+	                #{programId}
+	            </foreach>
+            </if>
+	        <if test="statuses!=null and statuses.size>0">
+	            and program_status_id in 
+	            <foreach collection="statuses" item="status" open="(" separator="," close=")">
+	                #{status}
+	            </foreach>
+	        </if>
+         </where>
+    </select>
+    
+    <select id="getOfflineProgramCountByProgramIds" parameterType="map" resultType="java.lang.Integer">
+    	select count(1) from cms_program where program_id in
+    	<foreach collection="programIds" item="programId" open="(" separator="," close=")">
+    		#{programId, jdbcType=BIGINT}
+    	</foreach>
+    </select>
+    
+  <select id="getProgrambyId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List" />
+        from
+        cms_program
+		where
+		program_id = #{programId}
+    </select>
+        
+</mapper>

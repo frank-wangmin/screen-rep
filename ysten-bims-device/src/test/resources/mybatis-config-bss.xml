@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+    PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+    <settings>
+        <setting name="lazyLoadingEnabled" value="false" />
+        <setting name="cacheEnabled" value="true"/>
+    </settings>
+    <typeAliases>
+        <!-- define the device type alias -->
+        <package name="com.ysten.local.bss.device.domain"/>
+        <package name="com.ysten.area.domain"/>
+        <package name="com.ysten.boss.systemconfig.domain"/>
+        <package name="com.ysten.local.bss.consum.domain"/>
+        <package name="com.ysten.local.bss.inquiry.domain"/>
+        <package name="com.ysten.local.bss.order.domain"/>
+        <package name="com.ysten.local.bss.product.domain"/>
+    </typeAliases>
+
+</configuration>

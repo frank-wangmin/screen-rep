@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.device.repository.mapper.DeviceGroupMapper" >
+  <resultMap id="BaseResultMap" type="deviceGroup" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="p_device_group_id" property="pDeviceGroupId" jdbcType="BIGINT" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="dynamic_flag" property="dynamicFlag" jdbcType="BIGINT" />
+    <result column="sql_expression" property="sqlExpression" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="area_name" property="areaName" jdbcType="VARCHAR" />
+    <result column="area_id" property="areaId" jdbcType="BIGINT" />
+    <result column="ysten_id" property="ystenId" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, name,create_date,description,p_device_group_id,type,dynamic_flag,sql_expression,update_date,area_id
+  </sql>
+  
+  <sql id="Advanced_Column_List" >
+   bdg.id, bdg.name,bdg.create_date,bdg.description,bdg.p_device_group_id,bdg.type,bdg.dynamic_flag,bdg.sql_expression,bdg.update_date,bdg.area_id
+  </sql>
+  
+  <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select
+    	<include refid="Base_Column_List" />
+    from bss_device_group
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+
+   <select id="findListByDeviceGroupIdList" parameterType="map" resultMap="BaseResultMap">
+     select <include refid="Base_Column_List" />
+     from bss_device_group edg
+     where id in(${deviceGroupIds})
+
+    </select>
+
+    <select id="findDeviceGroupList" parameterType="java.lang.Long" resultMap="BaseResultMap">
+     select <include refid="Base_Column_List" />
+     from bss_device_group edg
+     <if test="pDeviceGroupId != null">
+     		where p_device_group_id = #{pDeviceGroupId,jdbcType=BIGINT}
+     </if>
+    </select>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+     select
+     <include refid="Base_Column_List" />
+     from bss_device_group
+     where id = #{id,jdbcType=BIGINT}
+   </select>
+
+    <select id="findListByDeviceGroupMapList" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List" />
+        from bss_device_group
+        <where>
+            <if test="list != null and list.size() > 0">
+                id in
+                <foreach collection="list" open="(" close=")" separator="," item="item">
+                    #{item.deviceGroupId}
+                </foreach>
+            </if>
+            <if test="type != null">
+                and type = #{type}
+            </if>
+        </where>
+    </select>
+
+    <select id="findGroupByDeviceCodeType" parameterType="map" resultMap="BaseResultMap">
+        select g.id, g.name,g.create_date,g.description,g.p_device_group_id,g.type,g.dynamic_flag,g.sql_expression,g.update_date
+        from bss_device_group_map m
+        left join bss_device_group g on m.device_group_id = g.id
+        left join bss_device d on m.ysten_id = d.code
+        where d.code = #{ystenId, jdbcType=VARCHAR} and g.type = #{type,jdbcType=VARCHAR}
+        order by m.create_date desc
+   </select>
+
+   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+     delete from bss_device_group
+     where id = #{id,jdbcType=BIGINT}
+   </delete>
+
+   <insert id="insert" parameterType="deviceGroup" useGeneratedKeys="true" keyProperty="deviceGroupId">
+     insert into bss_device_group (
+     	id,name,area_id, description,create_date,p_device_group_id,type,dynamic_flag,sql_expression,update_date
+       )
+     values ( #{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{areaId,jdbcType=INTEGER}
+     		, #{description,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP},#{pDeviceGroupId,jdbcType=BIGINT},
+     		#{type,jdbcType=VARCHAR},#{dynamicFlag,jdbcType=BIGINT},#{sqlExpression,jdbcType=VARCHAR},#{updateDate,jdbcType=TIMESTAMP}
+       )
+   </insert>
+
+   <update id="updateByPrimaryKey" parameterType="deviceGroup" >
+     update bss_device_group
+     set 
+     	name = #{name,jdbcType=VARCHAR},
+     	description = #{description,jdbcType=VARCHAR},
+     	p_device_group_id = #{pDeviceGroupId,jdbcType=BIGINT},
+     	type = #{type,jdbcType=VARCHAR},
+     	dynamic_flag = #{dynamicFlag,jdbcType=BIGINT},
+     	sql_expression = #{sqlExpression,jdbcType=VARCHAR},
+     	update_date = #{updateDate,jdbcType=TIMESTAMP}
+     where  
+        id = #{id,jdbcType=BIGINT}
+   </update>
+
+   <select id="findDeviceGroupByType" resultMap="BaseResultMap" parameterType="map">
+   	select
+   	<include refid="Base_Column_List" />
+     from bss_device_group
+     <where>
+        <if test="type!=null and type!=''">
+            type = #{type,jdbcType=VARCHAR}
+        </if>
+        <if test="name!=null and name!=''">
+            name like '%${name}%'
+        </if>
+   	</where>
+   	order by id desc
+   	limit ${pageNo} , ${pageSize}
+   </select>
+
+    <select id="findDeviceGroupByTypeName" resultMap="BaseResultMap" parameterType="map">
+        select
+       <include refid="Base_Column_List" />
+        from bss_device_group t
+        <where>
+            <if test="type!=null and type!=''">
+                type = #{type,jdbcType=VARCHAR}
+            </if>
+            <if test="name!=null and name!=''">
+                and  name like '%${name}%'
+            </if>
+            <if test="areaId!=null and areaId!=''">
+               and area_id = #{areaId}
+            </if>
+        </where>
+        order by id desc
+        limit ${pageNo} , ${pageSize}
+    </select>
+
+    <select id="findDeviceGroupByDistrictCode" resultMap="BaseResultMap" parameterType="map">
+        select a.*,(select c.name from bss_area c where c.id=a.area_id) as area_name
+        from(
+        select id,name,area_id
+        from bss_device_group
+        <where>
+            <if test="type!=null and type!=''">
+                type = #{type,jdbcType=VARCHAR}
+            </if>
+            <if test="areaId!=null and areaId!=''">
+                and area_id in
+                <foreach collection="areaId" item="areaId"  open="(" separator="," close=")">
+                    #{areaId}
+                </foreach>
+            </if>
+        </where>
+        UNION
+        select
+        b.id,b.name,b.area_id from bss_device_group b left JOIN ${tableName} m on b.id=m.device_group_id where m.${character}=#{id,jdbcType=BIGINT}
+        order by id desc
+        )a
+    </select>
+
+
+    <select id="findDeviceGroupByTypeNameDist" resultMap="BaseResultMap" parameterType="map">
+        select
+        t.id, t.name, t.area_id, t.type, t.create_date, t.update_date, t.description,t.p_device_group_id, t.dynamic_flag, t.sql_expression,
+        (select b.name from bss_area b where b.id = t.area_id) as area_name
+        from bss_device_group t
+        <where>
+            <if test="name!=null and name!=''">
+                t.name like '%${name}%'
+            </if>
+            <if test="type!=null and type!=''">
+                and t.type = #{type,jdbcType=VARCHAR}
+            </if>
+            <if test="areaId!=null and areaId!=''">
+                and t.area_id = #{areaId}
+            </if>
+        </where>
+        order by id desc
+        limit ${pageNo} , ${pageSize}
+    </select>
+   
+    <select id="findDeviceGroupListByType" resultMap="BaseResultMap" parameterType="map">
+   	select 
+   	<include refid="Base_Column_List" />
+     from bss_device_group
+     <where>
+        <if test="type!=null and type!=''">
+         type = #{type,jdbcType=VARCHAR}
+     </if>
+         <if test="isDynamic!=null and isDynamic!=''">
+             and dynamic_flag = '0'
+         </if>
+
+     </where>
+   	order by id desc
+   </select>
+   <select id="finDeviceGroupCountByType" resultType="java.lang.Integer" parameterType="java.lang.String">
+   	select count(*) from bss_device_group
+   	<where>
+        <if test="type!=null and type!=''">
+            type = #{type,jdbcType=VARCHAR}
+        </if>
+        <if test="name!=null and name!=''">
+            name like '%${name}%'
+        </if>
+   	</where>
+   </select>
+    <select id="finDeviceGroupCountByTypeNameDist" resultType="java.lang.Integer" parameterType="map">
+        select count(*) from bss_device_group t
+        <where>
+            <if test="name!=null and name!=''">
+                t.name like '%${name}%'
+            </if>
+            <if test="type!=null and type!=''">
+                and t.type = #{type,jdbcType=VARCHAR}
+            </if>
+            <if test="areaId!=null and areaId!=''">
+                and t.area_id = #{areaId}
+            </if>
+        </where>
+    </select>
+   <select id="findByNameAndType" resultMap="BaseResultMap" parameterType="map">
+   	select
+   	<include refid="Base_Column_List" />
+     from bss_device_group
+     <where>
+        <if test="name!=null and name!=''">
+            name = #{name,jdbcType=VARCHAR}
+        </if>
+        <if test="type!=null and type!=''">
+            and type = #{type,jdbcType=VARCHAR}
+        </if>
+   	</where>
+   </select>
+
+    <select id="finDeviceGroupNotBoundServiceCollect" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List" />
+        from bss_device_group d
+        where not EXISTS (select m.device_group_id from bss_service_collect_device_group_map m where d.id = m.device_group_id)
+        and d.type='BOOTSTRAP'
+        <if test="name != null and name != ''">
+        	and d.name like '%${name}%'
+        </if>
+        order by create_date desc
+        limit ${pageNo} , ${pageSize}
+    </select>
+    
+    <select id="finBootDeviceGroupNotBoundServiceCollect" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List" />
+        from bss_device_group d
+        where not EXISTS (select m.device_group_id from bss_service_collect_device_group_map m where d.id = m.device_group_id)
+        and d.type='BOOTSTRAP'
+        order by create_date desc
+    </select>
+
+
+    <select id="finDeviceGroupBoundServiceCollect" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from bss_device_group d
+        where EXISTS (select m.device_group_id from bss_service_collect_device_group_map m where d.id = m.device_group_id);
+
+    </select>
+    <select id="getDeviceGroupsById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List" />
+        from bss_device_group d
+        where EXISTS (select m.device_group_id from bss_service_collect_device_group_map m where d.id = m.device_group_id and m.service_collect_id=#{id});
+    </select>
+
+    <select id="getDeviceGroupByGroupId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List" />
+        from bss_device_group d
+        where d.id = #{id,jdbcType=BIGINT};
+    </select>
+
+    <select id="getDeviceGroupNotBoundServiceCollectCount" resultType="java.lang.Integer">
+        select
+        count(d.id)
+        from bss_device_group d
+        where not EXISTS (select m.device_group_id from bss_service_collect_device_group_map m where d.id = m.device_group_id)
+        and d.type='BOOTSTRAP'
+        <if test="name != null and name != ''">
+        	and d.name like '%${name}%'
+        </if>
+    </select>
+    <select id="findDeviceGroupById" resultType="java.lang.Long" parameterType="map">
+       select distinct d.area_id from bss_device_group d left JOIN ${tableName} m on m.device_group_id=d.id where m.${character}=#{Id,jdbcType=BIGINT}
+    </select>
+
+    <select id="findDeviceGroupByAppIdAndType" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List" />
+        from bss_device_group d
+        where EXISTS (select m.device_group_id from bss_app_upgrade_map m where m.type = #{type,jdbcType=VARCHAR});
+    </select>
+
+    <select id="findDeviceGroupByDeviceCode" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select d.*
+        from bss_device_group d LEFT JOIN bss_device_group_map m  on m.device_group_id=d.id
+        where m.ysten_id=#{ystenId,jdbcType=VARCHAR};
+       </select>
+       
+        <select id="findDeviceGroupMapByYstenIdAndType" resultMap="BaseResultMap" parameterType="map">
+        select d.*,m.ysten_id as ysten_id
+        from bss_device_group d LEFT JOIN bss_device_group_map m  on m.device_group_id=d.id
+        where m.ysten_id in 
+        <foreach collection="ystenIds" item="id"  open="(" separator="," close=")">  
+            #{id} 
+        </foreach>
+        <if test="type!=null and type!=''">
+            and d.type = #{type,jdbcType=VARCHAR}
+        </if>
+       </select>
+       
+       <select id="findDeviceGroupByYstenIdAndArea" resultMap="BaseResultMap" parameterType="map">
+        select d.*
+        from bss_device_group d LEFT JOIN bss_device_group_map m  on m.device_group_id=d.id
+        <where>
+       		 m.ysten_id=#{ystenId,jdbcType=VARCHAR} 
+	        <if test="areaId!=null and areaId!=''">
+	          and d.area_id = #{areaId}
+	        </if>
+   		</where>
+       </select>
+												  
+    <select id="findDynamicGroupList" resultMap="BaseResultMap" parameterType="map">
+       select <include refid="Advanced_Column_List" />
+       from bss_device_group bdg left join ${tableName} map 
+       on bdg.id=map.device_group_id 
+       <where>
+	        <if test="type!=null and type!=''">
+	          bdg.type = #{type,jdbcType=VARCHAR}
+	        </if>
+   		</where>
+   	   and bdg.dynamic_flag=1 and map.type='GROUP'
+    </select>
+
+</mapper>

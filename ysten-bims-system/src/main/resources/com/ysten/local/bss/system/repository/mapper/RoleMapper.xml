@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.system.repository.mapper.RoleMapper" >
+  <resultMap id="BaseResultMap" type="role" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, name,description,create_date
+  </sql>
+  
+  <select id="get" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from bss_role
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="findByOperatorId" resultMap="BaseResultMap" parameterType="map" >
+    select 
+        r.id as id , r.name as name
+    from 
+        bss_operator_role_map map
+        left outer join bss_role r on map.role_id = r.id
+    where 
+        map.operator_id = #{operatorId}
+  </select>
+  
+   <select id="findRoles" resultMap="BaseResultMap" parameterType="map" >
+    select 
+    <include refid="Base_Column_List" />
+    from bss_role
+    <where>
+    	<if test="roleName!=null and roleName!=''">
+    		name like '%${roleName}%'
+    	</if>
+    </where>
+    order by id desc
+    limit #{currentPage} , #{pageSize}
+  </select>
+    <select id="findAll" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from bss_role
+    order by id desc
+  </select>
+  
+  <delete id="delete" parameterType="java.lang.Long" >
+    delete from bss_role
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  
+  <insert id="save" parameterType="role" useGeneratedKeys="true" keyProperty="id">
+    insert into bss_role (id, name,description,create_date)
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR},#{description,jdbcType=VARCHAR},#{createDate,jdbcType=TIMESTAMP})
+  </insert>
+  
+  <select id="getCount" parameterType="role" resultType="java.lang.Integer" >
+    select count(*) from bss_role
+  </select>
+  
+  <select id="getCountByCondition" parameterType="role" resultType="java.lang.Integer" >
+    select count(1) from bss_role
+    <where>
+    	<if test="roleName!=null and roleName!=''">
+    		name like '%${roleName}%'
+    	</if>
+    </where>
+  </select>
+  
+  <update id="update" parameterType="role" >
+    update bss_role
+    set name = #{name,jdbcType=VARCHAR},
+    	description = #{description,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+   <select id="getRoleLastId"  resultType="java.lang.Integer" >
+    select max(id)+1 from bss_role for update
+  </select>
+  
+</mapper>

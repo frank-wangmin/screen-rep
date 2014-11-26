@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+    PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+    <settings>
+        <setting name="lazyLoadingEnabled" value="false" />
+        <setting name="aggressiveLazyLoading" value="false" />
+        <setting name="lazyLoadingEnabled" value="false" />
+        <setting name="aggressiveLazyLoading" value="true" />
+        <setting name="cacheEnabled" value="true" />
+    </settings>
+    <typeAliases>
+        <package name="com.ysten.area.domain" />
+        <package name="com.ysten.local.bss.system.domain" />
+        <package name="com.ysten.boss.systemconfig.domain" />
+        <package name="com.ysten.local.bss.device.domain" />
+        <package name="com.ysten.local.bss.device.remote.domain" />
+        <package name="com.ysten.local.bss.order.domain" />
+        <package name="com.ysten.local.bss.product.domain" />
+        <package name="com.ysten.local.bss.inquiry.domain" />
+        <package name="com.ysten.local.bss.consum.domain" />
+        <package name="com.ysten.local.bss.talk.domain" />
+        <package name="com.ysten.local.bss.logger.domain" />
+        <package name="com.ysten.local.bss.screen.domain" />
+        <package name="com.ysten.local.bss.system.domain" />
+        <package name="com.ysten.local.bss.cms.domain" />
+        <package name="com.ysten.local.bss.program.domain" />
+        <package name="com.ysten.local.bss.notice.domain" />
+        <package name="com.ysten.local.bss.interfaceUrl.domain" />
+        <package name="com.ysten.local.bss.panel.domain" />
+        <package name="com.ysten.local.bss.panel.vo" />
+    </typeAliases>
+</configuration>

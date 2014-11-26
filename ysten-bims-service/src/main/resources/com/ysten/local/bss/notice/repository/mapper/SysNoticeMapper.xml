@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.ysten.local.bss.notice.repository.mapper.SysNoticeMapper">
+	<resultMap id="BaseResultMap" type="sysNotice">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="title" property="title" jdbcType="VARCHAR" />
+		<result column="content" property="content" jdbcType="VARCHAR" />
+		<result column="start_date" property="startDate" jdbcType="TIMESTAMP" />
+		<result column="end_date" property="endDate" jdbcType="TIMESTAMP" />
+		<result column="is_default" property="isDefault" jdbcType="INTEGER" />
+		<result column="operate_user" property="operateUser" jdbcType="VARCHAR" />
+		<result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+		<result column="status" property="status" jdbcType="INTEGER" />
+		<result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+		<result column="type" property="type" jdbcType="VARCHAR" />
+		<result column="district_code" property="districtCode" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id,title,content,start_date,end_date,is_default,operate_user,create_date,status,update_date,type,district_code
+	</sql>
+  	
+	<select id="getById" resultMap="BaseResultMap" parameterType="map">
+		select
+		<include refid="Base_Column_List" />
+		from
+		bss_sys_notice
+		where
+		id = #{id,jdbcType=BIGINT}
+	</select>
+	
+	<select id="findSysNoticeByTitle" resultMap="BaseResultMap" parameterType="java.lang.String" >
+	    select  
+	    <include refid="Base_Column_List" />
+	    from 
+	    bss_sys_notice
+	    where title = #{title,jdbcType=VARCHAR}
+	    limit 1
+  	</select>
+	
+	<select id="findSysNoticeByType" resultMap="BaseResultMap" parameterType="java.lang.String" >
+	    select  
+	    <include refid="Base_Column_List" />
+	    from 
+	    bss_sys_notice
+	    where type = #{type,jdbcType=VARCHAR}
+	    limit 1
+  	</select>
+  	
+	<select id="findSysNotice" resultMap="BaseResultMap" parameterType="map" >
+	    select  
+	    <include refid="Base_Column_List" />
+	    from 
+	    bss_sys_notice
+	    <where>
+	    	<if test="title != null and title !=''">
+    			title like '%${title}%'
+    		</if>
+    		<if test="content != null and content !=''">
+    			and content like '%${content}%'
+    		</if>
+	    </where>
+	    order by id desc
+	    limit ${pageNo},${pageSize}
+  	</select>
+
+    <select id="findAllSysNoticeList" resultMap="BaseResultMap" parameterType="map" >
+        select
+        <include refid="Base_Column_List" />
+        from
+        bss_sys_notice
+        where is_default = 0
+        and status = 1
+    </select>
+  	
+  	<select id="getCountByCondition" resultType="java.lang.Integer" parameterType="map" >
+	    select 
+	    	count(*)
+	    from 
+	    	bss_sys_notice
+    	<where>
+	    	<if test="title != null and title !=''">
+	   			title like '%${title}%'
+	   		</if>
+	   		<if test="content != null and content !=''">
+	   			and content like '%${content}%'
+	   		</if>
+    	</where>
+  	</select>
+
+    <select id="getBelongToAllNotice" resultMap="BaseResultMap" parameterType="map" >
+        select
+        <include refid="Base_Column_List" />
+        from
+        bss_sys_notice
+        where is_default = 1 and status = 1 and NOW() BETWEEN start_date and end_date
+        order by  id desc
+    </select>
+
+
+
+    <select id="findSysNoticeByUser" resultMap="BaseResultMap" parameterType="map" >
+        select
+        <include refid="Base_Column_List" />
+        from
+        bss_sys_notice
+        where EXISTS (select m.notice_id from bss_user_notice_map m where m.user_group_id in
+        <foreach collection="groupIds" item="id"  open="(" separator="," close=")">
+            #{id}
+        </foreach>
+
+        or m.user_id
+        in
+        <foreach collection="codes" item="id"  open="(" separator="," close=")">
+            #{id}
+        </foreach>
+
+        )
+
+    </select>
+
+
+    <select id="findSysNoticeByDevice" resultMap="BaseResultMap" parameterType="map" >
+        select
+        <include refid="Base_Column_List" />
+        from
+        bss_sys_notice
+        where EXISTS (select m.notice_id from bss_device_notice_map m where m.device_group_id in
+        <foreach collection="groupIds" item="id"  open="(" separator="," close=")">
+            #{id}
+        </foreach>
+
+        or m.device_code
+        in
+        <foreach collection="codes" item="id"  open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        )
+    </select>
+
+    <select id="findSysNoticeByYstenIdOrGroupId" resultMap="BaseResultMap" parameterType="map" >
+        select
+        n.*
+        from bss_sys_notice n
+        join bss_device_notice_map m
+        where m.notice_id = n.id
+        and n.is_default = 0
+        <if test="ystenId !=null ">
+            and m.ysten_id = #{ystenId, jdbcType=VARCHAR}
+        </if>
+        <if test="groupId !=null ">
+            and m.device_group_id = #{groupId, jdbcType=BIGINT}
+        </if>
+    </select>
+
+    <select id="findSysNoticeByCustomerCodeOrGroupId" resultMap="BaseResultMap" parameterType="map" >
+        select
+        n.*
+        from bss_sys_notice n
+        join bss_user_notice_map m
+        where m.notice_id = n.id
+        and n.is_default = 0
+        <if test="customerCode !=null ">
+            and m.code = #{customerCode, jdbcType=VARCHAR}
+        </if>
+        <if test="groupId !=null ">
+            and m.user_group_id = #{groupId, jdbcType=BIGINT}
+        </if>
+    </select>
+
+    <select id="getNoticeListByIds" resultMap="BaseResultMap" parameterType="java.util.List">
+        select
+        <include refid="Base_Column_List" />
+        from
+        bss_sys_notice
+        where status = 1 and
+        id in
+        <foreach collection="noticeIds" item="id"  open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        and NOW() BETWEEN start_date and end_date
+        order by id desc
+    </select>
+  
+  	<insert id="save" parameterType="sysNotice" useGeneratedKeys="true" keyProperty="id">
+		insert into bss_sys_notice
+		(title,content,type,district_code,start_date,end_date,is_default,operate_user,create_date,update_date,status)
+		values (#{title,jdbcType=VARCHAR},#{content,jdbcType=VARCHAR},#{type,jdbcType=VARCHAR},#{districtCode,jdbcType=VARCHAR}, #{startDate,jdbcType=TIMESTAMP},#{endDate,jdbcType=TIMESTAMP},
+		#{isDefault,jdbcType=INTEGER},#{operateUser,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP},#{updateDate,jdbcType=TIMESTAMP},
+		#{status,jdbcType=INTEGER})
+  	</insert>
+  
+     <update id="update" parameterType="sysNotice">
+        update bss_sys_notice
+        set
+        title = #{title,jdbcType=VARCHAR},
+        type = #{type,jdbcType=VARCHAR},
+        district_code = #{districtCode,jdbcType=VARCHAR},
+        content = #{content,jdbcType=VARCHAR},
+        start_date = #{startDate,jdbcType=TIMESTAMP},
+        end_date = #{endDate,jdbcType=TIMESTAMP},
+        is_default = #{isDefault,jdbcType=INTEGER},
+        status = #{status,jdbcType=INTEGER},
+        update_date = #{updateDate,jdbcType=TIMESTAMP}
+        where
+        id = #{id,jdbcType=BIGINT}
+  </update>
+  
+    
+  <delete id="delete" parameterType="java.util.List">
+      delete from bss_sys_notice where id in 
+      <foreach collection="ids" item="id"  open="(" separator="," close=")">  
+           #{id} 
+      </foreach>
+  </delete>
+</mapper>

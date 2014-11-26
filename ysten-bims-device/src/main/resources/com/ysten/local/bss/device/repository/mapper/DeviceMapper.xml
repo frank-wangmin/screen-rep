@@ -1,0 +1,1667 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.device.repository.mapper.DeviceMapper">
+    <resultMap id="BaseResultMap" type="device">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="code" property="code" jdbcType="VARCHAR"/>
+        <result column="create_date" property="createDate" jdbcType="TIMESTAMP"/>
+        <result column="activate_date" property="activateDate" jdbcType="TIMESTAMP"/>
+        <result column="state_change_date" property="stateChangeDate" jdbcType="TIMESTAMP"/>
+        <result column="expire_date" property="expireDate" jdbcType="TIMESTAMP"/>
+        <result column="state" property="state" jdbcType="VARCHAR"/>
+        <result column="bind_type" property="bindType" jdbcType="VARCHAR"/>
+        <result column="distribute_state" property="distributeState" jdbcType="VARCHAR"/>
+        <result column="description" property="description" jdbcType="VARCHAR"/>
+        <result column="ip_address" property="ipAddress" jdbcType="VARCHAR"/>
+        <result column="mac" property="mac" jdbcType="VARCHAR"/>
+        <result column="sno" property="sno" jdbcType="VARCHAR"/>
+        <result column="is_lock" property="isLock" jdbcType="VARCHAR"/>
+        <result column="product_no" property="productNo" jdbcType="VARCHAR"/>
+        <result column="is_sync" property="isSync" jdbcType="VARCHAR"/>
+        <result column="version_seq" property="versionSeq" jdbcType="INTEGER"/>
+        <result column="ysten_id" property="ystenId" jdbcType="VARCHAR"/>
+        <result column="prepare_open" property="prepareOpen" jdbcType="VARCHAR"/>
+        <result column="soft_code" property="softCode" jdbcType="VARCHAR"/>
+        <result column="district_code" property="districtCode" jdbcType="VARCHAR"/>
+        <result column="customer_id" property="customerId" jdbcType="BIGINT"/>
+        <result column="loop_time" property="loopTime" jdbcType="BIGINT"/>
+        <result column="is_return_ystenId" property="isReturnYstenId" jdbcType="VARCHAR"/>
+        <association property="area" javaType="area">
+            <id column="area_id" property="id" jdbcType="BIGINT"/>
+        </association>
+        <association property="deviceType" javaType="deviceType">
+            <id column="device_type_id" property="id" jdbcType="BIGINT"/>
+        </association>
+        <association property="deviceVendor" javaType="deviceVendor">
+            <id column="device_vendor_id" property="id" jdbcType="BIGINT"/>
+        </association>
+        <association property="city" javaType="city">
+            <id column="city_id" property="id" jdbcType="BIGINT"/>
+        </association>
+        <association property="spDefine" javaType="spDefine">
+            <id column="sp_define_id" property="id" jdbcType="BIGINT"/>
+        </association>
+        <!--  association property="softCode" javaType="deviceSoftwareCode">
+             <id column="soft_code" property="code" jdbcType="VARCHAR" />
+        </association-->
+    </resultMap>
+
+    <resultMap id="customerRelationDeviceMap" type="customerRelationDeviceVo">
+        <result column="c_id" property="customerId" jdbcType="BIGINT"/>
+        <result column="c_code" property="customerCode" jdbcType="VARCHAR"/>
+        <result column="c_user_id" property="customerUserId" jdbcType="VARCHAR"/>
+        <result column="c_login_name" property="customerLoginName" jdbcType="VARCHAR"/>
+        <result column="c_real_name" property="customerRealName" jdbcType="VARCHAR"/>
+        <result column="c_nick_name" property="customerNickName" jdbcType="VARCHAR"/>
+        <result column="c_identity_type" property="customerIdentityType" jdbcType="VARCHAR"/>
+        <result column="c_state" property="customerState" jdbcType="VARCHAR"/>
+        <result column="c_type" property="customerType" jdbcType="VARCHAR"/>
+        <result column="c_identity_code" property="customerIdentityCode" jdbcType="VARCHAR"/>
+        <result column="c_phone" property="customerPhone" jdbcType="VARCHAR"/>
+        <result column="c_sex" property="customerSex" jdbcType="VARCHAR"/>
+        <result column="c_address" property="customerAddress" jdbcType="VARCHAR"/>
+        <result column="c_zip_code" property="customerZipCode" jdbcType="VARCHAR"/>
+        <result column="d_id" property="deviceId" jdbcType="VARCHAR"/>
+        <result column="d_code" property="deviceCode" jdbcType="VARCHAR"/>
+        <result column="d_sno" property="deviceSno" jdbcType="VARCHAR"/>
+        <result column="d_mac" property="deviceMac" jdbcType="VARCHAR"/>
+        <result column="d_create_date" property="deviceCreateDate" jdbcType="TIMESTAMP"/>
+        <result column="c_is_lock" property="deviceIsLock" jdbcType="VARCHAR"/>
+        <result column="d_ysten_id" property="ystenId" jdbcType="VARCHAR"/>
+        <result column="d_state" property="deviceState" jdbcType="VARCHAR"/>
+        <result column="d_activate_date" property="deviceActivateDate" jdbcType="TIMESTAMP"/>
+        <result column="d_expire_date" property="deviceExpireDate" jdbcType="TIMESTAMP"/>
+
+        <association property="customerArea" javaType="area">
+            <id column="c_area_id" property="id" jdbcType="BIGINT"/>
+            <result column="c_area_name" property="name" jdbcType="VARCHAR"/>
+        </association>
+        <association property="customerCity" javaType="city">
+            <id column="c_city_id" property="id" jdbcType="BIGINT"/>
+            <result column="c_city_name" property="name" jdbcType="VARCHAR"/>
+        </association>
+        <association property="deviceVendor" javaType="deviceVendor">
+            <id column="d_vendor_id" property="id" jdbcType="BIGINT"/>
+            <result column="d_vendor_name" property="name" jdbcType="VARCHAR"/>
+        </association>
+        <association property="deviceType" javaType="deviceType">
+            <id column="d_type_id" property="id" jdbcType="BIGINT"/>
+            <result column="d_type_name" property="name" jdbcType="VARCHAR"/>
+        </association>
+        <association property="deviceArea" javaType="area">
+            <id column="d_area_id" property="id" jdbcType="BIGINT"/>
+            <result column="d_area_name" property="name" jdbcType="VARCHAR"/>
+        </association>
+        <association property="deviceCity" javaType="city">
+            <id column="d_city_id" property="id" jdbcType="BIGINT"/>
+            <result column="c_city_name" property="name" jdbcType="VARCHAR"/>
+        </association>
+    </resultMap>
+
+    <resultMap id="AllResultMap" type="device">
+        <id column="d_id" property="id" jdbcType="BIGINT"/>
+        <result column="d_code" property="code" jdbcType="VARCHAR"/>
+        <result column="d_create_date" property="createDate" jdbcType="TIMESTAMP"/>
+        <result column="d_activate_date" property="activateDate" jdbcType="TIMESTAMP"/>
+        <result column="d_state_change_date" property="stateChangeDate" jdbcType="TIMESTAMP"/>
+        <result column="d_expire_date" property="expireDate" jdbcType="TIMESTAMP"/>
+        <result column="d_state" property="state" jdbcType="VARCHAR"/>
+        <result column="d_distribute_state" property="distributeState" jdbcType="VARCHAR"/>
+        <result column="d_bind_type" property="bindType" jdbcType="INTEGER"/>
+        <result column="d_description" property="description" jdbcType="VARCHAR"/>
+        <result column="d_mac" property="mac" jdbcType="VARCHAR"/>
+        <result column="d_sno" property="sno" jdbcType="VARCHAR"/>
+        <result column="d_ip_address" property="ipAddress" jdbcType="VARCHAR"/>
+        <result column="d_city" property="city" jdbcType="VARCHAR"/>
+        <result column="d_sp_code" property="spCode" jdbcType="VARCHAR"/>
+        <result column="d_is_lock" property="isLock" jdbcType="VARCHAR"/>
+        <result column="d_product_no" property="productNo" jdbcType="VARCHAR"/>
+        <result column="d_is_sync" property="isSync" jdbcType="VARCHAR"/>
+        <result column="d_version_seq" property="versionSeq" jdbcType="INTEGER"/>
+        <result column="d_ysten_id" property="ystenId" jdbcType="VARCHAR"/>
+        <result column="d_prepare_open" property="prepareOpen" jdbcType="VARCHAR"/>
+        <result column="d_soft_code" property="softCode" jdbcType="VARCHAR"/>
+        <result column="d_customer_id" property="customerId" jdbcType="VARCHAR"/>
+        <result column="d_customer_code" property="customerCode" jdbcType="VARCHAR"/>
+        <association property="area" javaType="area">
+            <id column="a_id" property="id" jdbcType="BIGINT"/>
+            <result column="a_code" property="code" jdbcType="VARCHAR"/>
+            <result column="a_name" property="name" jdbcType="VARCHAR"/>
+            <result column="a_state" property="state" jdbcType="VARCHAR"/>
+            <result column="a_parent_id" property="parentId" jdbcType="BIGINT"/>
+            <result column="a_parent_name" property="parentName" jdbcType="VARCHAR"/>
+            <result column="a_memo" property="memo" jdbcType="VARCHAR"/>
+        </association>
+        <association property="deviceType" javaType="deviceType">
+            <id column="t_id" property="id" jdbcType="BIGINT"/>
+            <result column="t_name" property="name" jdbcType="VARCHAR"/>
+            <result column="t_code" property="code" jdbcType="VARCHAR"/>
+        </association>
+        <association property="deviceVendor" javaType="deviceVendor">
+            <id column="v_id" property="id" jdbcType="BIGINT"/>
+            <result column="v_code" property="code" jdbcType="VARCHAR"/>
+            <result column="v_name" property="name" jdbcType="VARCHAR"/>
+        </association>
+        <association property="city" javaType="city">
+            <id column="c_id" property="id" jdbcType="BIGINT"/>
+            <result column="c_code" property="code" jdbcType="VARCHAR"/>
+            <result column="c_name" property="name" jdbcType="VARCHAR"/>
+        </association>
+        <association property="spDefine" javaType="spDefine">
+            <id column="s_id" property="id" jdbcType="BIGINT"/>
+            <result column="s_code" property="code" jdbcType="VARCHAR"/>
+            <result column="s_name" property="name" jdbcType="VARCHAR"/>
+        </association>
+        <!--
+        <association property="softCode" javaType="deviceSoftwareCode">
+             <id column="ds_id" property="id" jdbcType="BIGINT" />
+             <result column="ds_name" property="name" jdbcType="VARCHAR" />
+             <result column="ds_code" property="code" jdbcType="VARCHAR" />
+        </association> -->
+    </resultMap>
+
+    <resultMap id="PartialResultMap" type="device">
+        <id column="d_id" property="id" jdbcType="BIGINT"/>
+        <result column="d_code" property="code" jdbcType="VARCHAR"/>
+        <result column="d_create_date" property="createDate" jdbcType="TIMESTAMP"/>
+        <result column="d_activate_date" property="activateDate" jdbcType="TIMESTAMP"/>
+        <!--<result column="d_state_change_date" property="stateChangeDate" jdbcType="TIMESTAMP" />-->
+        <result column="d_expire_date" property="expireDate" jdbcType="TIMESTAMP"/>
+        <result column="d_state" property="state" jdbcType="VARCHAR"/>
+        <result column="d_distribute_state" property="distributeState" jdbcType="VARCHAR"/>
+        <result column="d_bind_type" property="bindType" jdbcType="INTEGER"/>
+        <result column="d_description" property="description" jdbcType="VARCHAR"/>
+        <result column="d_mac" property="mac" jdbcType="VARCHAR"/>
+        <result column="d_sno" property="sno" jdbcType="VARCHAR"/>
+        <result column="d_ip_address" property="ipAddress" jdbcType="VARCHAR"/>
+        <!--<result column="d_city" property="city" jdbcType="VARCHAR"/>-->
+        <!--<result column="d_sp_code" property="spCode" jdbcType="VARCHAR"/>-->
+        <result column="d_is_lock" property="isLock" jdbcType="VARCHAR"/>
+        <result column="d_product_no" property="productNo" jdbcType="VARCHAR"/>
+        <result column="d_is_sync" property="isSync" jdbcType="VARCHAR"/>
+        <association property="area" javaType="area">
+            <id column="d_area_id" property="id" jdbcType="BIGINT"/>
+            <result column="a_name" property="name" jdbcType="VARCHAR"/>
+        </association>
+        <association property="deviceType" javaType="deviceType">
+            <id column="d_device_type_id" property="id" jdbcType="BIGINT"/>
+        </association>
+        <association property="deviceVendor" javaType="deviceVendor">
+            <id column="d_device_vendor_id" property="id" jdbcType="BIGINT"/>
+        </association>
+        <association property="city" javaType="city">
+            <id column="d_city_id" property="id" jdbcType="BIGINT"/>
+        </association>
+        <association property="spDefine" javaType="spDefine">
+            <id column="d_sp_define_id" property="id" jdbcType="BIGINT"/>
+        </association>
+        <association property="softCode" javaType="deviceSoftwareCode">
+            <id column="d_soft_code" property="code" jdbcType="VARCHAR"/>
+        </association>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    id, code, create_date, activate_date,state_change_date,state,bind_type,distribute_state,description,area_id,
+    device_vendor_id,device_type_id,mac,ip_address,sno,city_id,sp_define_id,expire_date,is_lock,product_no,soft_code,district_code,
+    is_sync,version_seq,ysten_id,prepare_open,customer_id
+  </sql>
+
+
+    <sql id="Map_Column_List">
+    a.id, a.code, a.state,a.bind_type,a.distribute_state,a.description,a.area_id,
+    a.device_vendor_id,a.device_type_id,a.mac,a.ip_address,a.sno,a.city_id,a.sp_define_id,
+    a.expire_date,a.is_lock,a.product_no,a.soft_code,a.customer_id,
+    a.is_sync,a.version_seq,a.ysten_id,a.prepare_open
+  </sql>
+
+    <sql id="Advanced_Column_List">
+        d.id as d_id, d.code as d_code, d.ysten_id as d_ysten_id,d.create_date as d_create_date,d.activate_date as d_activate_date,d.city_id as d_city_id,
+        d.state_change_date as d_state_change_date,d.state as d_state,d.bind_type as d_bind_type,d.distribute_state as d_distribute_state,
+        d.is_lock as d_is_lock,d.description as d_description,d.device_vendor_id as d_device_vendor_id,d.device_type_id as d_device_type_id,
+        d.area_id as d_area_id,d.mac as d_mac,d.ip_address as d_ip_address,d.sno as d_sno,d.expire_date as d_expire_date,
+        d.sp_define_id as d_sp_define_id,d.product_no as d_product_no, d.is_sync as d_is_sync, d.soft_code as d_soft_code,
+        d.version_seq as d_version_seq,a.id as a_id, a.code as a_code,a.name as a_name, a.state as a_state,a.parent_id as a_parent_id,
+        a.memo as a_memo, a.parent_name as a_parent_name,v.id as v_id,v.name as v_name,v.code as v_code,v.state as v_state,
+        t.id as t_id, t.name as t_name, t.device_vendor_id as t_device_vendor_id,t.state as t_state,t.description as t_description,
+        c.id as c_id,c.name as c_name,c.code as c_code,
+        s.id as s_id,s.name as s_name,s.code as s_code,
+        ds.id as ds_id,ds.name as ds_name,ds.code as ds_code,u.code as d_customer_code
+  </sql>
+
+    <sql id="Partial_Column_List">
+        d.id as d_id, d.code as d_code, d.create_date as d_create_date,d.activate_date as d_activate_date,d.city_id as d_city_id,
+        d.state as d_state,d.bind_type as d_bind_type,d.distribute_state as d_distribute_state,d.soft_code as d_soft_code,
+        d.description as d_description,d.device_vendor_id as d_device_vendor_id,d.device_type_id as d_device_type_id,
+        d.area_id as d_area_id,d.mac as d_mac,d.ip_address as d_ip_address,d.sno as d_sno,d.expire_date as d_expire_date,
+        d.sp_define_id as d_sp_define_id,d.product_no as d_product_no, d.is_sync as d_is_sync,d.is_lock as d_is_lock,
+        a.name as a_name
+  </sql>
+    <sql id="Advanced_Table_List">
+        bss_device d 
+        left outer join bss_area a on d.area_id = a.id
+        left outer join bss_device_vendor v on d.device_vendor_id = v.id
+        left outer join bss_device_type t on d.device_type_id = t.id
+        left outer join bss_city c on d.city_id = c.id
+        left outer join bss_sp_define s on d.sp_define_id = s.id
+        left outer join bss_device_software_code ds on d.soft_code = ds.code
+        left outer join bss_customer u on d.customer_id = u.id
+  </sql>
+    <sql id="Export_Column_List">
+        d.id as d_id, d.code as d_code, d.ysten_id as d_ysten_id,d.create_date as d_create_date,d.activate_date as d_activate_date,d.city_id as d_city_id,
+        d.state_change_date as d_state_change_date,d.state as d_state,d.bind_type as d_bind_type,d.distribute_state as d_distribute_state,
+        d.is_lock as d_is_lock,d.description as d_description,d.device_vendor_id as d_device_vendor_id,d.device_type_id as d_device_type_id,
+        d.area_id as d_area_id,d.mac as d_mac,d.ip_address as d_ip_address,d.sno as d_sno,d.expire_date as d_expire_date,
+        d.sp_define_id as d_sp_define_id,d.product_no as d_product_no, d.is_sync as d_is_sync, d.soft_code as d_soft_code,
+        d.version_seq as d_version_seq,a.id as a_id, a.code as a_code,a.name as a_name, a.state as a_state,a.parent_id as a_parent_id,
+        a.memo as a_memo, a.parent_name as a_parent_name,v.id as v_id,v.name as v_name,v.code as v_code,v.state as v_state,
+        t.id as t_id, t.name as t_name, t.device_vendor_id as t_device_vendor_id,t.state as t_state,t.description as t_description,
+        c.id as c_id,c.name as c_name,c.code as c_code,
+        s.id as s_id,s.name as s_name,s.code as s_code,
+        ds.id as ds_id,ds.name as ds_name,ds.code as ds_code
+  </sql>
+    <sql id="Export_Table_List">
+        bss_device d 
+        left outer join bss_area a on d.area_id = a.id
+        left outer join bss_device_vendor v on d.device_vendor_id = v.id
+        left outer join bss_device_type t on d.device_type_id = t.id
+        left outer join bss_city c on d.city_id = c.id
+        left outer join bss_sp_define s on d.sp_define_id = s.id
+        left outer join bss_device_software_code ds on d.soft_code = ds.code
+  </sql>
+    <insert id="save" parameterType="device" useGeneratedKeys="true" keyProperty="id">
+  	insert into bss_device
+  	(code,ysten_id, customer_id,create_date, activate_date,state_change_date,state,bind_type,distribute_state,description,area_id,
+    device_vendor_id,device_type_id,mac,ip_address,sno,city_id,sp_define_id,expire_date,is_lock,product_no,district_code,
+    soft_code, is_sync, version_seq, prepare_open, is_return_ystenId)
+    values(
+    		#{code,jdbcType=VARCHAR},
+    		#{ystenId,jdbcType=VARCHAR},
+    		#{customerId,jdbcType=BIGINT},
+    		#{createDate,jdbcType=TIMESTAMP},
+    		#{activateDate,jdbcType=TIMESTAMP},
+    		#{stateChangeDate,jdbcType=TIMESTAMP},
+    		#{state,jdbcType=VARCHAR},
+    		#{bindType,jdbcType=VARCHAR},
+    		#{distributeState,jdbcType=VARCHAR},
+    		#{description,jdbcType=VARCHAR},
+    		#{area.id,jdbcType=INTEGER},
+    		#{deviceVendor.id,jdbcType=INTEGER},
+    		#{deviceType.id,jdbcType=INTEGER},
+    		#{mac,jdbcType=VARCHAR},
+    		#{ipAddress,jdbcType=VARCHAR},
+    		#{sno,jdbcType=VARCHAR},
+    		#{city.id,jdbcType=INTEGER},
+    		#{spDefine.id,jdbcType=VARCHAR},
+    		#{expireDate,jdbcType=TIMESTAMP},
+    		#{isLock,jdbcType=VARCHAR},
+    		#{productNo,jdbcType=VARCHAR},
+    		#{districtCode,jdbcType=VARCHAR},
+    		#{softCode,jdbcType=VARCHAR},
+    		#{isSync,jdbcType=VARCHAR},
+    		#{versionSeq,jdbcType=VARCHAR},
+    		#{prepareOpen,jdbcType=VARCHAR},
+            #{isReturnYstenId,jdbcType=VARCHAR}
+    		)
+  </insert>
+
+    <delete id="deleteDeviceByBusiness" parameterType="map">
+        delete from ${tableName} where ${character}=#{Id,jdbcType=BIGINT} and type=#{type,jdbcType=VARCHAR}
+        <if test="ystenList!=null and ystenList!=''">
+            and ${device} in
+            <foreach collection="ystenList" item="id" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
+    </delete>
+
+    <select id="findAreaByBusiness" resultType="java.lang.Long" parameterType="map">
+       select distinct d.area_id from bss_device d left JOIN ${tableName} m on m.ysten_id=d.ysten_id where m.${character}=#{Id,jdbcType=BIGINT}
+    </select>
+    <select id="getDeviceById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from bss_device
+        where
+        id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <select id="getDeviceByIds" resultMap="AllResultMap" parameterType="java.util.List">
+        select
+        <include refid="Advanced_Column_List"/>
+        from
+        <include refid="Advanced_Table_List"/>
+        where d.id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="findDeviceListByYstenIds" resultMap="BaseResultMap" parameterType="java.util.List">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        bss_device
+        where ysten_id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="findDeviceListBySnos" resultMap="BaseResultMap" parameterType="java.util.List">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        bss_device
+        where sno in
+        <foreach collection="snos" item="sno" open="(" separator="," close=")">
+            #{sno}
+        </foreach>
+    </select>
+
+    <select id="findDeviceListByMacs" resultMap="BaseResultMap" parameterType="java.util.List">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        bss_device
+        where mac in
+        <foreach collection="macs" item="mac" open="(" separator="," close=")">
+            #{mac}
+        </foreach>
+    </select>
+
+    <select id="getDeviceByCode" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from bss_device
+        where
+        code = #{code}
+    </select>
+
+    <select id="getDeviceByYstenId" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from bss_device
+        where
+        ysten_id = #{ystenId}
+    </select>
+
+    <select id="getDeviceByMac" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        bss_device
+        where
+        mac = #{mac}
+    </select>
+
+    <select id="getDeviceBySno" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        bss_device
+        where
+        sno = #{sno}
+    </select>
+    <select id="getDeviceBySnoandExpiredate" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        bss_device
+        where
+        sno = #{sno} and expire_date>=now()
+    </select>
+
+    <update id="update" parameterType="device">
+     update bss_device
+      set code = #{code,jdbcType=VARCHAR},
+      ysten_id = #{ystenId,jdbcType=VARCHAR},
+      state_change_date = #{stateChangeDate,jdbcType=TIMESTAMP},
+      activate_date = #{activateDate,jdbcType=TIMESTAMP},
+      expire_date = #{expireDate,jdbcType=TIMESTAMP},
+      state = #{state,jdbcType=VARCHAR},
+      bind_type = #{bindType,jdbcType=VARCHAR},
+      distribute_state = #{distributeState,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      area_id = #{area.id,jdbcType=INTEGER},
+      device_vendor_id = #{deviceVendor.id,jdbcType=INTEGER},
+      device_type_id = #{deviceType.id,jdbcType=INTEGER},
+      mac = #{mac,jdbcType=VARCHAR},
+      sno = #{sno,jdbcType=VARCHAR},
+      sp_define_id = #{spDefine.id,jdbcType=VARCHAR},
+      ip_address = #{ipAddress,jdbcType=VARCHAR},
+      is_lock = #{isLock,jdbcType=VARCHAR},
+      city_id = #{city.id,jdbcType=INTEGER},
+      product_no = #{productNo,jdbcType=VARCHAR},
+      soft_code = #{softCode,jdbcType=VARCHAR},
+      is_sync = #{isSync,jdbcType=VARCHAR},
+      version_seq = #{versionSeq,jdbcType=VARCHAR},
+      prepare_open = #{prepareOpen,jdbcType=VARCHAR},
+      customer_Id = #{customerId,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+    <update id="updateByYstenId" parameterType="device">
+     update bss_device
+      set code = #{code,jdbcType=VARCHAR},
+      state_change_date = #{stateChangeDate,jdbcType=TIMESTAMP},
+      activate_date = #{activateDate,jdbcType=TIMESTAMP},
+      expire_date = #{expireDate,jdbcType=TIMESTAMP},
+      state = #{state,jdbcType=VARCHAR},
+      bind_type = #{bindType,jdbcType=VARCHAR},
+      distribute_state = #{distributeState,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      area_id = #{area.id,jdbcType=INTEGER},
+      device_vendor_id = #{deviceVendor.id,jdbcType=INTEGER},
+      device_type_id = #{deviceType.id,jdbcType=INTEGER},
+      mac = #{mac,jdbcType=VARCHAR},
+      sno = #{sno,jdbcType=VARCHAR},
+      sp_define_id = #{spDefine.id,jdbcType=VARCHAR},
+      ip_address = #{ipAddress,jdbcType=VARCHAR},
+      is_lock = #{isLock,jdbcType=VARCHAR},
+      city_id = #{city.id,jdbcType=INTEGER},
+      product_no = #{productNo,jdbcType=VARCHAR},
+      soft_code = #{softCode,jdbcType=VARCHAR},
+      is_sync = #{isSync,jdbcType=VARCHAR},
+      version_seq = #{versionSeq,jdbcType=VARCHAR},
+      prepare_open = #{prepareOpen}
+    where ysten_id = #{ystenId,jdbcType=VARCHAR}
+  </update>
+
+    <update id="updateSyncById" parameterType="map">
+     update bss_device
+      set is_sync = #{isSync,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+    <update id="updateSoftCodeVersion" parameterType="map">
+     update bss_device
+      set soft_code = #{softCode,jdbcType=VARCHAR},
+      version_seq = #{versionSeq,jdbcType=INTEGER}
+    where ysten_id = #{ystenId,jdbcType=VARCHAR}
+  </update>
+
+    <update id="updateDeviceCode" parameterType="map">
+        update bss_device
+        <set>
+            <if test="deviceCode!=null and deviceCode!=''">
+                code = #{deviceCode,jdbcType=VARCHAR},
+            </if>
+            description = #{description,jdbcType=VARCHAR}
+        </set>
+        where mac = #{mac,jdbcType=VARCHAR}
+    </update>
+
+    <select id="getNoAuthDevice" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        bss_device
+        where
+        sno is null and mac is null
+        order by
+        create_date
+        limit 1
+    </select>
+
+    <select id="getAllDeviceCreatedLastDay" parameterType="map" resultType="long">
+  	select
+	count(id)
+	from bss_device dev
+	where dev.create_date between #{start} and #{end} 
+	and dev.state = #{state}
+	and dev.city_id = #{city}
+  </select>
+
+    <select id="findDevicesOfBlankYsteId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        bss_device
+        where ysten_id is null or ysten_id = '' and (mac is not null and mac !='')
+        order by id desc
+        limit 10000
+    </select>
+    <select id="findAllByState" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        bss_device
+        <where>
+            <if test="bindType!=null and bindType!=''">
+                bind_type like '%${bindType}%'
+            </if>
+            <if test="isLock!=null and isLock!=''">
+                and is_lock = #{isLock}
+            </if>
+            <if test="ystenId!=null and ystenId!=''">
+                and ysten_id like '%${ystenId}%'
+            </if>
+            <if test="code!=null and code!=''">
+                and code like '%${code}%'
+            </if>
+            <if test="mac!=null and mac!=''">
+                and mac like '%${mac}%'
+            </if>
+            <if test="sno!=null and sno!=''">
+                and sno like '%${sno}%'
+            </if>
+            <if test="deviceVendorId != null and deviceVendorId!=''">
+                and device_vendor_id = #{deviceVendorId}
+            </if>
+            <if test="deviceTypeId!=null and deviceTypeId!=''">
+                and device_type_id = #{deviceTypeId}
+            </if>
+            <if test="areaId!=null and areaId!=''">
+                and AREA_ID = #{areaId}
+            </if>
+            <if test="state!=null and state!=''">
+                and state = #{state}
+            </if>
+            <if test="bindState!=null and bindState!=''">
+                and bind_type = #{bindState}
+            </if>
+            <if test="spDefineId!=null and spDefineId!=''">
+                and sp_define_id = #{spDefineId}
+            </if>
+            <if test="productNo!=null and productNo!=''">
+                and product_no = #{productNo}
+            </if>
+            <if test="distributeState!=null and distributeState!=''">
+                and distribute_state = #{distributeState}
+            </if>
+        </where>
+        order by id desc
+        limit ${index} , ${size}
+    </select>
+
+    <select id="findByState" resultMap="AllResultMap" parameterType="map">
+        select
+        <include refid="Advanced_Column_List"/>
+        from
+        <include refid="Advanced_Table_List"/>
+        <where>
+            <if test="bindType!=null and bindType!=''">
+                d.bind_type like '%${bindType}%'
+            </if>
+            <if test="isLock!=null and isLock!=''">
+                and d.is_lock = #{isLock}
+            </if>
+            <if test="code!=null and code!=''">
+                and d.code like '%${code}%'
+            </if>
+            <if test="mac!=null and mac!=''">
+                and d.mac like '%${mac}%'
+            </if>
+            <if test="sno!=null and sno!=''">
+                and d.sno like '%${sno}%'
+            </if>
+            <if test="deviceVendorId != null and deviceVendorId!=''">
+                and d.device_vendor_id = #{deviceVendorId}
+            </if>
+            <if test="deviceTypeId!=null and deviceTypeId!=''">
+                and d.device_type_id = #{deviceTypeId}
+            </if>
+            <if test="areaId!=null and areaId!=''">
+                and d.AREA_ID = #{areaId}
+            </if>
+            <if test="state!=null and state!=''">
+                and d.state = #{state}
+            </if>
+            <if test="bindState!=null and bindState!=''">
+                and d.bind_type = #{bindState}
+            </if>
+            <if test="spDefineId!=null and spDefineId!=''">
+                and d.sp_define_id = #{spDefineId}
+            </if>
+            <if test="productNo!=null and productNo!=''">
+                and d.product_no = #{productNo}
+            </if>
+            <if test="distributeState!=null and distributeState!=''">
+                and d.distribute_state = #{distributeState}
+            </if>
+        </where>
+        order by d.Id desc
+        limit ${index} , ${size}
+    </select>
+
+    <select id="findDevicesByState" resultMap="AllResultMap" parameterType="map">
+        select
+        <include refid="Advanced_Column_List"/>
+        from
+        <include refid="Advanced_Table_List"/>
+        <where>
+            <if test="deviceCode!=null and deviceCode!=''">
+                d.code like '%${deviceCode}%'
+            </if>
+            <if test="mac!=null and mac!=''">
+                and d.mac like '%${mac}%'
+            </if>
+            <if test="sno!=null and sno!=''">
+                and d.sno like '%${sno}%'
+            </if>
+            <if test="deviceVendorId!=null and deviceVendorId!='' and deviceVendorId != 0">
+                and d.device_vendor_id = #{deviceVendorId}
+            </if>
+            <if test="deviceTypeId!=null and deviceTypeId!='' and deviceTypeId != 0">
+                and d.device_type_id = #{deviceTypeId}
+            </if>
+            <if test="areaId!=null and areaId!='' and areaId != 0">
+                and d.AREA_ID = #{areaId}
+            </if>
+            <if test="state!=null and state!=''">
+                and d.state = #{state}
+            </if>
+            <if test="bindState!=null and bindState!=''">
+                and d.bind_type = #{bindState}
+            </if>
+        </where>
+        order by d.Id desc
+    </select>
+
+    <select id="findDevicesToExport" resultMap="AllResultMap" parameterType="map">
+        select
+        <include refid="Advanced_Column_List"/>
+        from
+        <include refid="Advanced_Table_List"/>
+        <where>
+
+            <if test="deviceCode!=null and deviceCode!=''">
+                d.code like '%${deviceCode}%'
+            </if>
+            <if test="mac!=null and mac!=''">
+                and d.mac like '%${mac}%'
+            </if>
+            <if test="sno!=null and sno!=''">
+                and d.sno like '%${sno}%'
+            </if>
+            <if test="deviceVendorId != null and deviceVendorId!='' and deviceVendorId != 0">
+                and d.device_vendor_id = #{deviceVendorId}
+            </if>
+            <if test="deviceTypeId!=null and deviceTypeId!='' and deviceTypeId != 0">
+                and d.device_type_id = #{deviceTypeId}
+            </if>
+            <if test="areaId!=null and areaId!='' and areaId != 0">
+                and d.AREA_ID = #{areaId}
+            </if>
+            <if test="state!=null and state!=''">
+                and d.state = #{state}
+            </if>
+            <if test="bindState!=null and bindState!=''">
+                and d.bind_type = #{bindState}
+            </if>
+            <if test="startDate!=null and startDate!='' and endDate !=null and endDate !=''">
+                and d.create_date between #{startDate} and #{endDate}
+            </if>
+            <if test="startDateAvtive !=null and startDateAvtive !='' and endDateAvtive !=null and endDateAvtive !=''">
+                and d.activate_date between #{startDateAvtive} and #{endDateAvtive}
+            </if>
+        </where>
+        order by d.id desc
+    </select>
+
+    <select id="QueryDevicesToExport" resultMap="AllResultMap" parameterType="map">
+        select
+        <include refid="Export_Column_List"/>
+        from
+        <include refid="Export_Table_List"/>
+        <where>
+            <if test="ystenId !=null and ystenId !=''">
+                d.ysten_id like '%${ystenId}%'
+            </if>
+            <if test="deviceCode !=null and deviceCode !=''">
+                d.code like '%${deviceCode}%'
+            </if>
+            <if test="macId !=null and macId !=''">
+                and d.mac like '%${macId}%'
+            </if>
+            <if test="sno!=null and sno!=''">
+                and d.sno like '%${sno}%'
+            </if>
+            <if test="area !=null and area !='' and area != 0">
+                and d.area_id = #{area}
+            </if>
+            <if test="ystenIds != null and ystenIds != ''">
+                and d.ysten_id in
+                <foreach collection="ystenIds" item="yId" open="(" separator="," close=")">
+                    #{yId}
+                </foreach>
+            </if>
+            <if test="deviceCodes !=null and deviceCodes !=''">
+                and d.code in
+                <foreach collection="deviceCodes" item="code" open="(" separator="," close=")">
+                    #{code}
+                </foreach>
+            </if>
+            <if test="snos !=null and snos !=''">
+                and d.sno in
+                <foreach collection="snos" item="sno" open="(" separator="," close=")">
+                    #{sno}
+                </foreach>
+            </if>
+            <if test="mac!=null and mac!=''">
+                and d.mac like '%${mac}%'
+            </if>
+            <if test="deviceVendorId != null and deviceVendorId !='' and deviceVendorId != 0">
+                and d.device_vendor_id = #{deviceVendorId}
+            </if>
+            <if test="deviceTypeId !=null and deviceTypeId !='' and deviceTypeId != 0">
+                and d.device_type_id = #{deviceTypeId}
+            </if>
+            <if test="areaId!=null and areaId!='' and areaId != 0">
+                and d.area_id = #{areaId}
+            </if>
+            <if test="state!=null and state!=''">
+                and d.state = #{state}
+            </if>
+            <if test="spId !=null and spId !=''">
+                and d.sp_define_id = #{spId}
+            </if>
+            <if test="productNo!=null and productNo!=''">
+                and d.product_no = #{productNo}
+            </if>
+            <if test="softCode !=null and softCode !=''">
+                and d.soft_code like '%${softCode}%'
+            </if>
+            <if test="versionSeq !=null and versionSeq !=''">
+                and d.version_seq like '%${versionSeq}%'
+            </if>
+            <if test="startDate!=null and startDate!='' and endDate !=null and endDate !=''">
+                and d.create_date between #{startDate} and #{endDate}
+            </if>
+            <if test="startDateAvtive !=null and startDateAvtive !='' and endDateAvtive !=null and endDateAvtive !=''">
+                and d.activate_date between #{startDateAvtive} and #{endDateAvtive}
+            </if>
+        </where>
+        order by d.id desc
+    </select>
+
+    <select id="findCountByState" resultType="java.lang.Integer" parameterType="map">
+        select
+        count(*)
+        from
+        <include refid="Advanced_Table_List"/>
+        <where>
+            <if test="bindType!=null and bindType!=''">
+                d.bind_type like '%${bindType}%'
+            </if>
+            <if test="isLock!=null and isLock!=''">
+                and d.is_lock = #{isLock}
+            </if>
+            <if test="code!=null and code!=''">
+                and d.code like '%${code}%'
+            </if>
+            <if test="ystenId!=null and ystenId!=''">
+                and d.ysten_id like '%${ystenId}%'
+            </if>
+            <if test="mac!=null and mac!=''">
+                and d.mac like '%${mac}%'
+            </if>
+            <if test="sno!=null and sno!=''">
+                and d.sno like '%${sno}%'
+            </if>
+            <if test="deviceVendorId != null and deviceVendorId!=''">
+                and d.device_vendor_id = #{deviceVendorId}
+            </if>
+            <if test="deviceTypeId!=null and deviceTypeId!=''">
+                and d.device_type_id = #{deviceTypeId}
+            </if>
+            <if test="areaId!=null and areaId!=''">
+                and d.area_id = #{areaId}
+            </if>
+            <if test="state!=null and state!=''">
+                and d.state = #{state}
+            </if>
+            <if test="bindState!=null and bindState!=''">
+                and d.bind_type = #{bindState}
+            </if>
+            <if test="spDefineId!=null and spDefineId!=''">
+                and d.sp_define_id = #{spDefineId}
+            </if>
+            <if test="productNo!=null and productNo!=''">
+                and d.product_no = #{productNo}
+            </if>
+            <if test="distributeState!=null and distributeState!=''">
+                and d.distribute_state = #{distributeState}
+            </if>
+        </where>
+    </select>
+
+    <select id="getByAreaAndType" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        bss_device
+        <where>
+            area_id = #{province} and state ='ACTIVATED' and device_type_id in (#{E3},#{E4})
+        </where>
+    </select>
+
+    <select id="findCustomerCanBindDeviceList" resultType="device" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from bss_device d where not exists (
+        select 1 from bss_device_customer_account_map r where d.id = r.device_id
+        )
+        <if test="deviceCode != null and deviceCode != ''">
+            and code like '%${deviceCode}%'
+        </if>
+        <if test="mac != null and mac != ''">
+            and mac like '%${mac}%'
+        </if>
+        <if test="sno != null and sno != ''">
+            and sno like '%${sno}%'
+        </if>
+        <if test="deviceVendorId != null and deviceVendorId != ''">
+            and deviceVendorId like '%${deviceVendorId}%'
+        </if>
+        <if test="deviceType != null and deviceType != ''">
+            and deviceType like '%${deviceType}%'
+        </if>
+        order by id desc
+        limit #{index}, #{size}
+    </select>
+
+    <select id="getCountCustomerCanBindDeviceList" resultType="java.lang.Integer" parameterType="map">
+        select count(id)
+        from bss_device d where not exists (
+        select 1 from bss_device_customer_account_map r where d.id = r.device_id
+        )
+        <if test="deviceCode != null and deviceCode != ''">
+            and code like '%${deviceCode}%'
+        </if>
+        <if test="mac != null and mac != ''">
+            and mac like '%${mac}%'
+        </if>
+        <if test="sno != null and sno != ''">
+            and sno like '%${sno}%'
+        </if>
+        <if test="deviceVendorId != null and deviceVendorId != ''">
+            and deviceVendorId like '%${deviceVendorId}%'
+        </if>
+        <if test="deviceType != null and deviceType != ''">
+            and deviceType like '%${deviceType}%'
+        </if>
+    </select>
+
+    <select id="getDeviceNotActivated" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from bss_device where state != 'ACTIVATED'
+    </select>
+
+    <select id="findEpgDeviceByDeviceGroupIds" parameterType="map" resultMap="BaseResultMap">
+        select ed.*
+        from bss_device ed
+        where ed.device_group_id in
+        <foreach collection="deviceGroupIdList" item="deviceGroupId" open="(" separator="," close=")">
+            #{deviceGroupId,jdbcType=BIGINT}
+        </foreach>
+    </select>
+
+    <select id="getAllProductNoByArea" parameterType="map" resultType="java.lang.String">
+        select distinct product_no
+        from bss_device
+        where (product_no is not null
+        or product_no != '')
+        and area_id = #{areaId,jdbcType=BIGINT}
+        <if test="state != null and state != ''">
+            and distribute_state = #{state,jdbcType=VARCHAR}
+        </if>
+    </select>
+    <select id="getByProductNo" parameterType="map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bss_device
+        where product_no = #{productNo,jdbcType=VARCHAR}
+        and distribute_state = #{state,jdbcType=VARCHAR}
+    </select>
+    <select id="getAllDeviceByStateChange" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bss_device
+        where is_sync = 'WAITSYNC'
+        <if test="num != null">
+            limit #{num}
+        </if>
+    </select>
+    <select id="getCountByIsSync" resultType="int">
+   	select 
+   	count(id)
+    from bss_device
+    where is_sync = 'WAITSYNC'
+   </select>
+    <select id="getTotalSyncingDevice" resultType="java.lang.Integer">
+   	select count(*) from bss_device
+   	where is_sync = 'SYNCING'
+   </select>
+    <select id="getDeviceByCodeSnoAndMac" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from bss_device
+        <where>
+            <if test="device != null and device != ''">
+                code = #{device}
+                or sno = #{device}
+                or mac = #{device}
+            </if>
+        </where>
+    </select>
+    <select id="getActiveDeviceChart" resultType="deviceActiveStatistics">
+        select cityId, deviceTypeId, rowTotal, flag from
+        (
+        select d.city_id as cityId,
+        d.device_type_id as deviceTypeId,
+        count(device_type_id) as rowTotal,
+        'one' as flag
+        from bss_device d where
+        d.state='ACTIVATED' and
+        d.bind_type='BIND' and
+        d.area_id = #{province} and
+        date_format(d.activate_date, '%Y%-%m-%d') = #{activeTime}
+        <if test="customerList != null and customerList.size() > 0">
+            and d.customer_id not in
+            <foreach collection="customerList" open="(" close=")" item="customer" separator=",">
+                #{customer.id}
+            </foreach>
+        </if>
+        group by d.city_id
+        union
+        select d.city_id as cityId,
+        d.device_type_id as deviceTypeId,
+        count(device_type_id) as rowTotal,
+        'all' as flag
+        from bss_device d where
+        d.state='ACTIVATED' and
+        d.bind_type='BIND' and
+        d.area_id = #{province} and
+        date_format(d.activate_date, '%Y%-%m-%d') &lt;= #{activeTime}
+        <if test="customerList != null and customerList.size() > 0">
+            and d.customer_id not in
+            <foreach collection="customerList" open="(" close=")" item="customer" separator=",">
+                #{customer.id}
+            </foreach>
+        </if>
+        group by d.city_id
+        ) a order by a.cityId
+    </select>
+
+    <select id="getActiveDeviceReport" resultType="deviceActiveStatistics">
+        select cityId, deviceTypeId, rowTotal, flag from
+        (
+        select d.city_id as cityId,
+        d.device_type_id as deviceTypeId,
+        count(device_type_id) as rowTotal,
+        'one' as flag
+        from bss_device d where
+        d.state='ACTIVATED' and
+        d.bind_type='BIND' and
+        d.area_id = #{province} and
+        date_format(d.activate_date, '%Y%-%m-%d') = #{activeTime}
+        <if test="customerList != null and customerList.size() > 0">
+            and d.customer_id not in
+            <foreach collection="customerList" open="(" close=")" item="customer" separator=",">
+                #{customer.id}
+            </foreach>
+        </if>
+        group by d.city_id, d.device_type_id
+        union
+        select d.city_id as cityId,
+        d.device_type_id as deviceTypeId,
+        count(device_type_id) as rowTotal,
+        'all' as flag
+        from bss_device d where
+        d.state='ACTIVATED' and
+        d.bind_type='BIND' and
+        d.area_id = #{province} and
+        date_format(d.activate_date, '%Y%-%m-%d') &lt;= #{activeTime}
+        <if test="customerList != null and customerList.size() > 0">
+            and d.customer_id not in
+            <foreach collection="customerList" open="(" close=")" item="customer" separator=",">
+                #{customer.id}
+            </foreach>
+        </if>
+        group by d.city_id, d.device_type_id
+        ) a order by a.cityId, a.deviceTypeId
+    </select>
+
+    <select id="getActiveUserReport" resultType="userActiveStatistics">
+    select cityId, activeUser, activeUsers from 
+    (
+	  select c.region as cityId, count(c.region) as activeUser, 0 as activeUsers from bss_customer c, bss_device_customer_account_map map
+	  where date_format(map.create_date, '%Y-%m-%d') = #{activeDate} and
+	    c.source != 'OTHERS' and
+	    c.area_id = #{province} and
+	    c.state = 'NORMAL' and
+	    c.id = map.customer_id
+	  group by c.region
+	  union
+	  select c.region as cityId, 0 as activeUser, count(c.region) as activeUsers from bss_customer c, bss_device_customer_account_map map
+	  where date_format(map.create_date, '%Y-%m-%d') &lt;= #{activeDate} and 
+	  	c.source != 'OTHERS' and
+	    c.area_id = #{province} and
+	    c.state = 'NORMAL' and
+	    c.id = map.customer_id
+	  group by c.region  
+    )a order by a.cityId
+  </select>
+
+    <select id="checkInputSql" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        d.*
+        from (${sql})d
+   </select>
+
+    <select id="findDuoToDeviceByPreOpening" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bss_device where prepare_open = '1' and expire_date &lt; now()
+    </select>
+
+    <delete id="deleteDevice">
+  	delete from bss_device where id = #{id,jdbcType=BIGINT}
+  </delete>
+
+    <select id="ExportDevicesOfGroupId" resultMap="AllResultMap" parameterType="map">
+        select
+        <include refid="Export_Column_List"/>
+        from
+        bss_device d left JOIN ${tableName} b on d.ysten_id=b.ysten_id
+        left outer join bss_area a on d.area_id = a.id
+        left outer join bss_device_vendor v on d.device_vendor_id = v.id
+        left outer join bss_device_type t on d.device_type_id = t.id
+        left outer join bss_city c on d.city_id = c.id
+        left outer join bss_sp_define s on d.sp_define_id = s.id
+        left outer join bss_device_software_code ds on d.soft_code = ds.code
+        <where>
+            <if test="deviceGroupId!=null and deviceGroupId!=''">
+                b.${character}=#{deviceGroupId}
+            </if>
+            <if test="code!=null and code!=''">
+                and d.code like '%${code}%'
+            </if>
+            <if test="ystenId!=null and ystenId!=''">
+                and d.ysten_id like '%${ystenId}%'
+            </if>
+            <if test="mac!=null and mac!=''">
+                and d.mac like '%${mac}%'
+            </if>
+            <if test="sno!=null and sno!=''">
+                and d.sno like '%${sno}%'
+            </if>
+            <if test="softCode !=null and softCode !=''">
+                and d.soft_code like '%${softCode}%'
+            </if>
+            <if test="versionSeq !=null and versionSeq !=''">
+                and d.version_seq like '%${versionSeq}%'
+            </if>
+        </where>
+        order by d.id desc
+    </select>
+
+    <select id="findDevicesByGroupId" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Map_Column_List"/>
+        from
+        bss_device a left JOIN ${tableName} b on a.sno=b.ysten_id
+        <where>
+            <if test="deviceGroupId!=null and deviceGroupId!=''">
+                b.${character}=#{deviceGroupId}
+            </if>
+            <if test="code!=null and code!=''">
+                and a.code like '%${code}%'
+            </if>
+            <if test="mac!=null and mac!=''">
+                and a.mac like '%${mac}%'
+            </if>
+            <if test="sno!=null and sno!=''">
+                and a.sno like '%${sno}%'
+            </if>
+            <if test="softCode !=null and softCode !=''">
+                and a.soft_code like '%${softCode}%'
+            </if>
+            <if test="versionSeq !=null and versionSeq !=''">
+                and a.version_seq like '%${versionSeq}%'
+            </if>
+        </where>
+        order by a.id desc
+        limit ${index} , ${size}
+    </select>
+
+    <select id="findDevicesByBackImageId" resultMap="BaseResultMap" parameterType="map">
+        select
+        a.id, a.code, a.state,a.bind_type,a.distribute_state,a.description,a.area_id,
+        a.device_vendor_id,a.device_type_id,a.mac,a.ip_address,a.sno,a.city_id,a.sp_define_id,
+        a.expire_date,a.is_lock,a.product_no,a.soft_code,a.customer_id,
+        a.is_sync,a.version_seq,a.ysten_id,a.prepare_open ,b.loop_time as loop_time
+        from
+        bss_device a,${tableName} b
+        <where>
+            a.sno=b.ysten_id
+            <if test="deviceGroupId!=null and deviceGroupId!=''">
+                and b.${character}=#{deviceGroupId}
+            </if>
+            <if test="code!=null and code!=''">
+                and a.code like '%${code}%'
+            </if>
+            <if test="mac!=null and mac!=''">
+                and a.mac like '%${mac}%'
+            </if>
+            <if test="sno!=null and sno!=''">
+                and a.sno like '%${sno}%'
+            </if>
+        </where>
+        order by a.id desc
+        limit ${index} , ${size}
+    </select>
+
+    <select id="findCountDevicesByGroupId" resultType="java.lang.Integer" parameterType="map">
+        select
+        count(d.id)
+        from
+        bss_device d left JOIN ${tableName} b on d.ysten_id=b.ysten_id
+        <where>
+            <if test="deviceGroupId!=null and deviceGroupId!=''">
+                b.${character}=#{deviceGroupId}
+            </if>
+            <if test="code!=null and code!=''">
+                and d.code like '%${code}%'
+            </if>
+            <if test="ystenId!=null and ystenId!=''">
+                and d.ysten_id like '%${ystenId}%'
+            </if>
+            <if test="mac!=null and mac!=''">
+                and d.mac like '%${mac}%'
+            </if>
+            <if test="sno!=null and sno!=''">
+                and d.sno like '%${sno}%'
+            </if>
+            <if test="softCode !=null and softCode !=''">
+                and d.soft_code like '%${softCode}%'
+            </if>
+            <if test="versionSeq !=null and versionSeq !=''">
+                and d.version_seq like '%${versionSeq}%'
+            </if>
+        </where>
+    </select>
+
+    <select id="findDevicesBySnos" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        bss_device where sno in(${snos})
+        <!-- 
+        <where>
+        <if test="snos!=null and snos!=''">
+            sno in(${snos})
+        </if>
+        </where>
+         -->
+        order by id desc
+        <if test="size!= 0">
+            limit ${index} , ${size}
+        </if>
+    </select>
+
+    <select id="findDeviceYstenIdListByDeviceCodes" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        bss_device where code in (${codes})
+        order by id desc
+    </select>
+
+    <select id="findCountDevicesBySnos" resultType="java.lang.Integer" parameterType="map">
+        select
+        count(*)
+        from
+        bss_device
+        <where>
+            <if test="snos!=null and snos!=''">
+                sno in(${snos})
+            </if>
+        </where>
+    </select>
+
+
+    <select id="getAllDeviceByIsSync" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bss_device
+        where is_sync = 'WAITSYNC'
+        <if test="num != null">
+            limit #{num}
+        </if>
+    </select>
+
+    <select id="findExpirePrepareOpenDevice" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bss_device
+        where state='ACTIVATED' and prepare_open='PREPARE_OPEN' and expire_date &lt; now()
+    </select>
+
+    <select id="getDeviceByCustomerId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bss_device
+        where customer_id = #{customerId}
+        limit 1
+    </select>
+
+    <select id="findCustomerDeviceRelationByCondition" parameterType="map" resultMap="customerRelationDeviceMap">
+        select
+        c.id as c_id, c.login_name as c_login_name, c.real_name as c_real_name, c.nick_name as c_nick_name,
+        c.identity_type as c_identity_type, c.state as c_state,
+        c.identity_code as c_identity_code, c.phone as c_phone, c.sex as c_sex, c.address as c_address, c.zip_code as
+        c_zip_code, c.user_id as c_user_id,
+        c.code as c_code, c.area_id as c_area_id, c.region as c_city_id, c.customer_type as c_type,
+
+        d.id as d_id, d.code as d_code, d.sno as d_sno, d.mac as d_mac, d.create_date as d_create_date, d.is_lock as
+        d_is_lock,
+        d.activate_date as d_activate_date, d.expire_date as d_expire_date, d.device_type_id as d_type_id,d.state as
+        d_state,
+        d.area_id as d_area_id, d.city_id as d_city_id, d.ysten_id as d_ysten_id,d.device_vendor_id as d_vendor_id
+        from bss_device d
+        left outer join bss_customer c on c.id = d.customer_id
+        <where>
+            <if test="ystenIds != null and ystenIds != ''">
+                d.ysten_id in
+                <foreach collection="ystenIds" item="yId" open="(" separator="," close=")">
+                    #{yId}
+                </foreach>
+            </if>
+            <if test="deviceCodes !=null and deviceCodes !=''">
+                and d.code in
+                <foreach collection="deviceCodes" item="code" open="(" separator="," close=")">
+                    #{code}
+                </foreach>
+            </if>
+            <if test="deviceSnos !=null and deviceSnos !=''">
+                and d.sno in
+                <foreach collection="deviceSnos" item="sno" open="(" separator="," close=")">
+                    #{sno}
+                </foreach>
+            </if>
+            <if test="ystenId != null and ystenId != ''">
+                and d.ysten_id like '%${ystenId}%'
+            </if>
+            <if test="customerUserId != null and customerUserId != ''">
+                and c.user_id like '%${customerUserId}%'
+            </if>
+            <if test="customerCode != null and customerCode != ''">
+                and c.code like '%${customerCode}%'
+            </if>
+            <if test="customerPhone != null and customerPhone != ''">
+                and c.phone like '%${customerPhone}%'
+            </if>
+            <if test="deviceCode != null and deviceCode != ''">
+                and d.code like '%${deviceCode}%'
+            </if>
+            <if test="deviceSno != null and deviceSno != ''">
+                and d.sno like '%${deviceSno}%'
+            </if>
+            <if test="deviceVendor != null and deviceVendor !='' and deviceVendor != 0">
+                and d.device_vendor_id = #{deviceVendor}
+            </if>
+            <if test="deviceType !=null and deviceType !='' and deviceType != 0">
+                and d.device_type_id = #{deviceType}
+            </if>
+            <if test="areaId !=null and areaId !='' and areaId != 0">
+                and d.area_id = #{areaId}
+            </if>
+            <if test="cityId !=null and cityId !='' and cityId != 0">
+                and d.city_id = #{cityId}
+            </if>
+            <if test="mac!=null and mac!=''">
+                and d.mac like '%${mac}%'
+            </if>
+            <if test="customerLoginName != null and customerLoginName != ''">
+                and c.login_name like '%${customerLoginName}%'
+            </if>
+            <if test="customerNickName != null and customerNickName != ''">
+                and c.nick_name like '%${customerNickName}%'
+            </if>
+            <if test="dState !=null and dState !=''">
+                and d.state = #{dState}
+            </if>
+            <if test="cState !=null and cState !=''">
+                and c.state = #{cState}
+            </if>
+            <if test="startDate!=null and startDate!='' and endDate !=null and endDate !=''">
+                and d.create_date between #{startDate} and #{endDate}
+            </if>
+            <if test="startDateAvtive !=null and startDateAvtive !='' and endDateAvtive !=null and endDateAvtive !=''">
+                and d.activate_date between #{startDateAvtive} and #{endDateAvtive}
+            </if>
+        </where>
+        order by d.id desc
+        <if test="pageSize != null">
+            limit #{pageNo}, #{pageSize}
+        </if>
+    </select>
+    <select id="getCountCustomerDeviceRelationByCondition" parameterType="map" resultType="int">
+        select count(1)
+        from bss_customer c, bss_device d
+        where d.customer_id = c.id
+        <if test="ystenIds != null and ystenIds != ''">
+            and d.ysten_id in
+            <foreach collection="ystenIds" item="yId" open="(" separator="," close=")">
+                #{yId}
+            </foreach>
+        </if>
+        <if test="deviceCodes !=null and deviceCodes !=''">
+            and d.code in
+            <foreach collection="deviceCodes" item="code" open="(" separator="," close=")">
+                #{code}
+            </foreach>
+        </if>
+        <if test="deviceSnos !=null and deviceSnos !=''">
+            and d.sno in
+            <foreach collection="deviceSnos" item="sno" open="(" separator="," close=")">
+                #{sno}
+            </foreach>
+        </if>
+        <if test="ystenId != null and ystenId != ''">
+            and d.ysten_id like '%${ystenId}%'
+        </if>
+        <if test="customerUserId != null and customerUserId != ''">
+            and c.user_id like '%${customerUserId}%'
+        </if>
+        <if test="customerCode != null and customerCode != ''">
+            and c.code like '%${customerCode}%'
+        </if>
+        <if test="customerPhone != null and customerPhone != ''">
+            and c.phone like '%${customerPhone}%'
+        </if>
+        <if test="deviceCode != null and deviceCode != ''">
+            and d.code like '%${deviceCode}%'
+        </if>
+        <if test="deviceSno != null and deviceSno != ''">
+            and d.sno like '%${deviceSno}%'
+        </if>
+        <if test="deviceVendor != null and deviceVendor !='' and deviceVendor != 0">
+            and d.device_vendor_id = #{deviceVendor}
+        </if>
+        <if test="deviceType !=null and deviceType !='' and deviceType != 0">
+            and d.device_type_id = #{deviceType}
+        </if>
+        <if test="areaId !=null and areaId !='' and areaId != 0">
+            and d.area_id = #{areaId}
+        </if>
+        <if test="cityId !=null and cityId !='' and cityId != 0">
+            and d.city_id = #{cityId}
+        </if>
+        <if test="mac!=null and mac!=''">
+            and d.mac like '%${mac}%'
+        </if>
+        <if test="customerLoginName != null and customerLoginName != ''">
+            and c.login_name like '%${customerLoginName}%'
+        </if>
+        <if test="customerNickName != null and customerNickName != ''">
+            and c.nick_name like '%${customerNickName}%'
+        </if>
+        <if test="dState !=null and dState !=''">
+            and d.state = #{dState}
+        </if>
+        <if test="cState !=null and cState !=''">
+            and c.state = #{cState}
+        </if>
+        <if test="startDate!=null and startDate!='' and endDate !=null and endDate !=''">
+            and d.create_date between #{startDate} and #{endDate}
+        </if>
+        <if test="startDateAvtive !=null and startDateAvtive !='' and endDateAvtive !=null and endDateAvtive !=''">
+            and d.activate_date between #{startDateAvtive} and #{endDateAvtive}
+        </if>
+    </select>
+    <select id="findDeviceListByConditions" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        bss_device d
+        <where>
+            <if test="ystenIds != null and ystenIds != ''">
+                d.ysten_id in
+                <foreach collection="ystenIds" item="ystenId" open="(" separator="," close=")">
+                    #{ystenId}
+                </foreach>
+            </if>
+            <if test="deviceCodes !=null and deviceCodes !=''">
+                and d.code in
+                <foreach collection="deviceCodes" item="code" open="(" separator="," close=")">
+                    #{code}
+                </foreach>
+            </if>
+            <if test="snos !=null and snos !=''">
+                and d.sno in
+                <foreach collection="snos" item="sno" open="(" separator="," close=")">
+                    #{sno}
+                </foreach>
+            </if>
+            <if test="mac!=null and mac!=''">
+                and d.mac like '%${mac}%'
+            </if>
+            <if test="deviceVendorId != null and deviceVendorId !='' and deviceVendorId != 0">
+                and d.device_vendor_id = #{deviceVendorId}
+            </if>
+            <if test="deviceTypeId !=null and deviceTypeId !='' and deviceTypeId != 0">
+                and d.device_type_id = #{deviceTypeId}
+            </if>
+            <if test="areaId!=null and areaId!='' and areaId != 0">
+                and d.area_id = #{areaId}
+            </if>
+            <if test="state!=null and state!=''">
+                and d.state = #{state}
+            </if>
+            <if test="spId !=null and spId !=''">
+                and d.sp_define_id = #{spId}
+            </if>
+            <if test="productNo!=null and productNo!=''">
+                and d.product_no = #{productNo}
+            </if>
+            <if test="softCode !=null and softCode !=''">
+                and d.soft_code like '%${softCode}%'
+            </if>
+            <if test="versionSeq !=null and versionSeq !=''">
+                and d.version_seq like '%${versionSeq}%'
+            </if>
+            <if test="startDate!=null and startDate!='' and endDate !=null and endDate !=''">
+                and d.create_date between #{startDate} and #{endDate}
+            </if>
+            <if test="startDateAvtive !=null and startDateAvtive !='' and endDateAvtive !=null and endDateAvtive !=''">
+                and d.activate_date between #{startDateAvtive} and #{endDateAvtive}
+            </if>
+        </where>
+        order by d.id desc
+        <if test="pageSize != null">
+            limit ${pageNo} , ${pageSize}
+        </if>
+    </select>
+    <select id="getCountByConditions" resultType="java.lang.Integer" parameterType="map">
+        select
+        count(d.id)
+        from
+        bss_device d
+        <where>
+            <if test="ystenIds != null and ystenIds != ''">
+                d.ysten_id in
+                <foreach collection="ystenIds" item="ystenId" open="(" separator="," close=")">
+                    #{ystenId}
+                </foreach>
+            </if>
+            <if test="deviceCodes !=null and deviceCodes !=''">
+                and d.code in
+                <foreach collection="deviceCodes" item="code" open="(" separator="," close=")">
+                    #{code}
+                </foreach>
+            </if>
+            <if test="snos !=null and snos !=''">
+                and d.sno in
+                <foreach collection="snos" item="sno" open="(" separator="," close=")">
+                    #{sno}
+                </foreach>
+            </if>
+            <if test="mac!=null and mac!=''">
+                and d.mac like '%${mac}%'
+            </if>
+            <if test="deviceVendorId != null and deviceVendorId !='' and deviceVendorId != 0">
+                and d.device_vendor_id = #{deviceVendorId}
+            </if>
+            <if test="deviceTypeId !=null and deviceTypeId !='' and deviceTypeId != 0">
+                and d.device_type_id = #{deviceTypeId}
+            </if>
+            <if test="areaId!=null and areaId!='' and areaId != 0">
+                and d.area_id = #{areaId}
+            </if>
+            <if test="state!=null and state!=''">
+                and d.state = #{state}
+            </if>
+            <if test="spId !=null and spId !=''">
+                and d.sp_define_id = #{spId}
+            </if>
+            <if test="productNo!=null and productNo!=''">
+                and d.product_no = #{productNo}
+            </if>
+            <if test="softCode !=null and softCode !=''">
+                and d.soft_code like '%${softCode}%'
+            </if>
+            <if test="versionSeq !=null and versionSeq !=''">
+                and d.version_seq like '%${versionSeq}%'
+            </if>
+            <if test="startDate!=null and startDate!='' and endDate !=null and endDate !=''">
+                and d.create_date between #{startDate} and #{endDate}
+            </if>
+            <if test="startDateAvtive !=null and startDateAvtive !='' and endDateAvtive !=null and endDateAvtive !=''">
+                and d.activate_date between #{startDateAvtive} and #{endDateAvtive}
+            </if>
+        </where>
+    </select>
+
+    <select id="findRelationCustomerByDeviceIds" resultMap="customerRelationDeviceMap" parameterType="java.util.List">
+        select
+        c.id as c_id, c.login_name as c_login_name, c.real_name as c_real_name, c.nick_name as c_nick_name,
+        c.identity_type as c_identity_type, c.state as c_state,
+        c.identity_code as c_identity_code, c.phone as c_phone, c.sex as c_sex, c.address as c_address, c.zip_code as
+        c_zip_code, c.user_id as c_user_id,
+        c.code as c_code, c.area_id as c_area_id, c.region as c_city_id, c.customer_type as c_type,
+
+        d.id as d_id, d.code as d_code, d.sno as d_sno, d.mac as d_mac, d.create_date as d_create_date, d.is_lock as
+        d_is_lock,
+        d.activate_date as d_activate_date, d.expire_date as d_expire_date, d.device_type_id as d_type_id,d.state as
+        d_state,
+        d.area_id as d_area_id, d.city_id as d_city_id, d.ysten_id as d_ysten_id,d.device_vendor_id as d_vendor_id
+        from bss_device d
+        left outer join bss_customer c on c.id = d.customer_id
+        where d.id in
+        <foreach collection="deviceIds" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+    <select id="exportRelationListByConditions" parameterType="map" resultMap="customerRelationDeviceMap">
+        select
+        c.id as c_id, c.login_name as c_login_name, c.real_name as c_real_name, c.nick_name as c_nick_name,
+        c.identity_type as c_identity_type, c.state as c_state,
+        c.identity_code as c_identity_code, c.phone as c_phone, c.sex as c_sex, c.address as c_address, c.zip_code as
+        c_zip_code, c.user_id as c_user_id,
+        c.code as c_code, c.area_id as c_area_id, c.region as c_city_id, c.customer_type as c_type,
+
+        d.id as d_id, d.code as d_code, d.sno as d_sno, d.mac as d_mac, d.create_date as d_create_date, d.is_lock as
+        d_is_lock,
+        d.activate_date as d_activate_date, d.expire_date as d_expire_date, d.device_type_id as d_type_id,d.state as
+        d_state,
+        d.area_id as d_area_id, d.city_id as d_city_id, d.ysten_id as d_ysten_id,d.device_vendor_id as d_vendor_id
+        from bss_device d
+        left outer join bss_customer c on c.id = d.customer_id
+        <where>
+            <if test="ystenIds != null and ystenIds != ''">
+                d.ysten_id in
+                <foreach collection="ystenIds" item="yId" open="(" separator="," close=")">
+                    #{yId}
+                </foreach>
+            </if>
+            <if test="deviceCodes !=null and deviceCodes !=''">
+                and d.code in
+                <foreach collection="deviceCodes" item="code" open="(" separator="," close=")">
+                    #{code}
+                </foreach>
+            </if>
+            <if test="deviceSnos !=null and deviceSnos !=''">
+                and d.sno in
+                <foreach collection="deviceSnos" item="sno" open="(" separator="," close=")">
+                    #{sno}
+                </foreach>
+            </if>
+            <if test="ystenId != null and ystenId != ''">
+                and d.ysten_id like '%${ystenId}%'
+            </if>
+            <if test="customerUserId != null and customerUserId != ''">
+                and c.user_id like '%${customerUserId}%'
+            </if>
+            <if test="customerCode != null and customerCode != ''">
+                and c.code like '%${customerCode}%'
+            </if>
+            <if test="customerPhone != null and customerPhone != ''">
+                and c.phone like '%${customerPhone}%'
+            </if>
+
+            <if test="customerHUserId != null and customerHUserId != ''">
+                and c.user_id like '%${customerHUserId}%'
+            </if>
+            <if test="customerHCode != null and customerHCode != ''">
+                and c.code like '%${customerHCode}%'
+            </if>
+            <if test="customerHPhone != null and customerHPhone != ''">
+                and c.phone like '%${customerPhone}%'
+            </if>
+
+            <if test="deviceCode != null and deviceCode != ''">
+                and d.code like '%${deviceCode}%'
+            </if>
+            <if test="deviceSno != null and deviceSno != ''">
+                and d.sno like '%${deviceSno}%'
+            </if>
+            <if test="deviceVendor != null and deviceVendor !='' and deviceVendor != 0">
+                and d.device_vendor_id = #{deviceVendor}
+            </if>
+            <if test="deviceType !=null and deviceType !='' and deviceType != 0">
+                and d.device_type_id = #{deviceType}
+            </if>
+            <if test="areaId !=null and areaId !='' and areaId != 0">
+                and d.area_id = #{areaId}
+            </if>
+            <if test="cityId !=null and cityId !='' and cityId != 0">
+                and d.city_id = #{cityId}
+            </if>
+            <if test="mac!=null and mac!=''">
+                and d.mac like '%${mac}%'
+            </if>
+            <if test="customerLoginName != null and customerLoginName != ''">
+                and c.login_name like '%${customerLoginName}%'
+            </if>
+            <if test="customerNickName != null and customerNickName != ''">
+                and c.nick_name like '%${customerNickName}%'
+            </if>
+            <if test="dState !=null and dState !=''">
+                and d.state = #{dState}
+            </if>
+            <if test="cState !=null and cState !=''">
+                and c.state = #{cState}
+            </if>
+            <if test="startDate!=null and startDate!='' and endDate !=null and endDate !=''">
+                and d.create_date between #{startDate} and #{endDate}
+            </if>
+            <if test="startDateAvtive !=null and startDateAvtive !='' and endDateAvtive !=null and endDateAvtive !=''">
+                and d.activate_date between #{startDateAvtive} and #{endDateAvtive}
+            </if>
+        </where>
+        order by d.id desc
+    </select>
+    <select id="findExpiringDevices" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bss_device d
+        <where>
+            state = 'ACTIVATED'
+            and d.expire_date between #{startDate} and #{endDate}
+        </where>
+    </select>
+</mapper>

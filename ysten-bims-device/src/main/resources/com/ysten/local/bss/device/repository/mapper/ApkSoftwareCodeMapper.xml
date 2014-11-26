@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.device.repository.mapper.ApkSoftwareCodeMapper" >
+  <resultMap id="BaseResultMap" type="com.ysten.local.bss.device.domain.ApkSoftwareCode" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="oper_user" property="operUser" jdbcType="VARCHAR" />
+    <result column="last_modify_time" property="lastModifyTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, name, code, status, create_date, description, oper_user, last_modify_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from bss_apk_software_code
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+   <select id="selectByCode" resultMap="BaseResultMap" parameterType="java.lang.String" >
+        select
+        <include refid="Base_Column_List" />
+        from bss_apk_software_code
+        where code = #{code,jdbcType=VARCHAR}
+   </select>
+   <select id="findListByNameAndCode" resultMap="BaseResultMap" parameterType="map" >
+    select 
+    <include refid="Base_Column_List" />
+    from bss_apk_software_code
+    <where>
+    	<if test="name != null and name != ''">
+    		name like '%${name}%'
+    	</if>
+    	<if test="code != null and code != ''">
+    		and code like '%${code}%'
+    	</if>
+    </where>
+    order by id desc
+    <if test="pageSize != null">
+    	limit ${pageNo},${pageSize}
+    </if>
+  </select>
+  <select id="getSoftwareCodesByCodeAndName" resultMap="BaseResultMap" parameterType="map" >
+    select 
+    <include refid="Base_Column_List" />
+    from bss_apk_software_code
+    <where>
+    	<if test="name != null and name != ''">
+    		name = #{name}
+    	</if>
+    	<if test="code != null and code != ''">
+    		and code =#{code}
+    	</if>
+    </where>
+    order by id desc
+    limit 1
+  </select>
+  <select id="getCountByNameAndCode" resultType="java.lang.Integer" parameterType="map" >
+    select 
+    count(id)
+    from bss_apk_software_code
+    <where>
+    	<if test="name != null and name != ''">
+    		name like '%${name}%'
+    	</if>
+    	<if test="code != null and code != ''">
+    		and code like '%${code}%'
+    	</if>
+    </where>
+  </select>
+  <select id="findAllOfUseble" resultMap="BaseResultMap">
+		select <include refid="Base_Column_List" />
+		from bss_apk_software_code 
+		where status = 'USABLE'
+		order by CREATE_DATE
+	</select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from bss_apk_software_code
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.ysten.local.bss.device.domain.ApkSoftwareCode"  useGeneratedKeys="true" keyProperty="id">
+    insert into bss_apk_software_code (name, code, 
+      status, create_date, description, 
+      oper_user, last_modify_time)
+    values (#{name,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, 
+      #{status,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, #{description,jdbcType=VARCHAR}, 
+      #{operUser,jdbcType=VARCHAR}, #{lastModifyTime,jdbcType=TIMESTAMP})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.ysten.local.bss.device.domain.ApkSoftwareCode" >
+    update bss_apk_software_code
+    set name = #{name,jdbcType=VARCHAR},
+      code = #{code,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      oper_user = #{operUser,jdbcType=VARCHAR},
+      last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.cms.repository.mapper.CatgItemMapper" >
+    <resultMap id="BaseResultMap" type="catgItem">
+        <id column="catg_item_id" property="catgItemId" jdbcType="BIGINT" />
+        <result column="grade" property="grade" jdbcType="INTEGER" />
+        <result column="type" property="type" jdbcType="INTEGER" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="FDNCode" property="FDNCode" jdbcType="VARCHAR" />	
+        <result column="catg_alias" property="catgAlias" jdbcType="VARCHAR" />	
+        <result column="fid" property="parentCatgId" jdbcType="BIGINT" />
+        <result column="member_catg" property="memberCatg" jdbcType="INTEGER" />
+        <result column="catg_number" property="catgNumber" jdbcType="INTEGER" />
+        <result column="action_type_id" property="actionTypeId" jdbcType="VARCHAR" />
+        <result column="sub_style_id" property="subStyleId" jdbcType="VARCHAR" />
+        <result column="catg_type_id" property="catgTypeId" jdbcType="VARCHAR" />
+        <result column="action_link" property="actionLink" jdbcType="VARCHAR" />
+        <result column="inner_pic" property="innerPic" jdbcType="VARCHAR" />
+        <result column="out_pic" property="outPic" jdbcType="VARCHAR" />
+        <result column="ppv_code" property="ppvCode" jdbcType="VARCHAR" />
+        <result column="status" property="status" jdbcType="VARCHAR" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="create_user" property="createUser" jdbcType="VARCHAR" />
+        <result column="last_modify_date" property="lastModifyDate" jdbcType="TIMESTAMP" />
+        <result column="last_modify_user" property="lastModifyUser" jdbcType="VARCHAR" />
+        <result column="catg_desc" property="catgDesc" jdbcType="VARCHAR" />
+    </resultMap>
+    
+    <sql id="Base_Column_List">
+        catg_item_id, grade, type, name, FDNCode, catg_alias, fid, member_catg, catg_number, action_type_id, sub_style_id, catg_type_id, 
+        action_link, inner_pic, out_pic, ppv_code, create_time, create_user, last_modify_date, last_modify_user, catg_desc 
+    </sql>
+    
+    <select id="getCatgItemByCatgItemId" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List" /> from cms_catg_item where catg_item_id = #{catgItemId}
+    </select>
+</mapper>

@@ -1,0 +1,27 @@
+* {
+	font-family: "Arial", Gadget, sans-serif;
+	font-size: 12px;
+}
+h1 {
+	font-size: 20px;
+}
+
+.navigation li a {
+	font-size: 14px;
+}
+.label li a {
+	font-size: 12px;
+	line-height: 24px;
+	font-weight: normal;
+	color: #ffffff;
+	text-decoration: none;
+}
+.green {
+	color: #348600;
+}
+.orange  {
+	color: #E7611A;
+}
+.tools_link li a.green {
+	color: #348600;
+}

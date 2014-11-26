@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.device.repository.mapper.CustomerCustMapper" >
+  <resultMap id="BaseResultMap" type="customerCust" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="cust_id" property="custId" jdbcType="VARCHAR" />
+    <result column="cust_name" property="custName" jdbcType="VARCHAR" />
+    <result column="cust_type" property="custType" jdbcType="VARCHAR" />
+    <result column="link_name" property="linkName" jdbcType="VARCHAR" />
+    <result column="link_tel" property="linkTel" jdbcType="VARCHAR" />
+    <result column="state" property="state" jdbcType="VARCHAR" />
+    <result column="cust_manager" property="custManager" jdbcType="VARCHAR" />
+    <result column="cust_developer" property="custDeveloper" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="reservel_one" property="reservelOne" jdbcType="VARCHAR" />
+    <result column="reservel_two" property="reservelTwo" jdbcType="VARCHAR" />
+    <result column="group_ip" property="groupIP" jdbcType="VARCHAR" />
+    <result column="group_id" property="groupId" jdbcType="VARCHAR" />
+    <result column="max_termina" property="maxTermina" jdbcType="SMALLINT" />
+    <association property="region" javaType="city">
+    	<id column="region" property="id" jdbcType="BIGINT" />
+    </association>
+  </resultMap>
+  
+  <resultMap id="AllResultMap" type="customerCust" >
+    <id column="c_id" property="id" jdbcType="BIGINT" />
+    <result column="c_cust_id" property="custId" jdbcType="VARCHAR" />
+    <result column="c_cust_name" property="custName" jdbcType="VARCHAR" />
+    <result column="c_cust_type" property="custType" jdbcType="VARCHAR" />
+    <result column="c_link_name" property="linkName" jdbcType="VARCHAR" />
+    <result column="c_link_tel" property="linkTel" jdbcType="VARCHAR" />
+    <result column="c_state" property="state" jdbcType="VARCHAR" />
+    <result column="c_cust_manager" property="custManager" jdbcType="VARCHAR" />
+    <result column="c_cust_developer" property="custDeveloper" jdbcType="VARCHAR" />
+    <result column="c_create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="c_update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="c_reservel_one" property="reservelOne" jdbcType="VARCHAR" />
+    <result column="c_reservel_two" property="reservelTwo" jdbcType="VARCHAR" />
+    <result column="c_group_ip" property="groupIP" jdbcType="VARCHAR" />
+    <result column="c_group_id" property="groupId" jdbcType="VARCHAR" />
+    <result column="c_max_termina" property="maxTermina" jdbcType="SMALLINT" />
+	<association property="region" javaType="city">
+         <id column="c_id" property="id" jdbcType="BIGINT" />
+         <result column="c_code" property="code" jdbcType="VARCHAR"/>
+         <result column="c_name" property="name" jdbcType="VARCHAR" />
+    </association>
+  </resultMap>
+ 
+  <sql id="Base_Column_List" >
+  	id,  cust_id, cust_name, cust_type, region, link_name, link_tel, state, cust_manager, cust_developer,
+  	create_date, update_date, reservel_one, reservel_two, group_ip, group_id, max_termina 
+  </sql>
+  
+	<select id="getById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+   		select 
+    	<include refid="Base_Column_List"/>
+    	from bss_customer_cust c
+    	where c.ID = #{id,jdbcType=BIGINT}
+	</select>
+	
+	<select id="getByCustId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+		select 
+    	<include refid="Base_Column_List"/>
+    	from bss_customer_cust c
+    	where c.cust_id = #{custId}
+	</select>
+	
+	<select id="getByGroupIP" resultMap="BaseResultMap" parameterType="java.lang.String" >
+		select 
+    	<include refid="Base_Column_List"/>
+    	from bss_customer_cust c
+    	where
+	    	c.group_ip like #{groupIp}
+	</select>
+	
+	<select id="getCustByIp" resultMap="BaseResultMap" parameterType="java.lang.String" >
+		select 
+    	<include refid="Base_Column_List"/>
+    	from bss_customer_cust c
+    	<where>
+    		 <if test="groupIp != null and groupIp !=''">
+	    	c.group_ip like #{groupIp}
+	         </if>
+    	</where>
+    	order by create_date desc
+	</select>
+   
+   <select id="getCountByIp" resultType="int" parameterType="java.lang.String">
+   		select count(c.id)
+    	from bss_customer_cust c
+    	<where>
+    		 <if test="groupIp != null and groupIp !=''">
+	    	c.group_ip like #{groupIp}
+	         </if>
+    	</where>
+   </select>
+  
+    <insert id="save" parameterType="customerCust" useGeneratedKeys="true" keyProperty="id">
+   		insert into bss_customer_cust (cust_id, cust_name, cust_type, region, link_name, link_tel, state, cust_manager, cust_developer,
+  			create_date, update_date, reservel_one, reservel_two, group_ip, group_id, max_termina)
+   	 	values ( #{custId,jdbcType=VARCHAR},
+   	 			#{custName,jdbcType=VARCHAR},
+   	 			#{custType,jdbcType=VARCHAR},
+   	 			#{region.id,jdbcType=BIGINT},
+   	 			#{linkName,jdbcType=VARCHAR},
+   	 			#{linkTel,jdbcType=VARCHAR},
+   	 			#{state,jdbcType=VARCHAR},
+   	 			#{custManager,jdbcType=VARCHAR},
+   	 			#{custDeveloper,jdbcType=VARCHAR},
+      			#{createDate,jdbcType=TIMESTAMP},
+      			#{updateDate,jdbcType=TIMESTAMP},
+   	 			#{reservelOne,jdbcType=VARCHAR},
+   	 			#{reservelTwo,jdbcType=VARCHAR},
+   	 			#{groupIP,jdbcType=VARCHAR},
+   	 			#{groupId,jdbcType=VARCHAR},
+   	 			#{maxTermina,jdbcType=SMALLINT}
+   	 			)
+    </insert>
+  
+  <update id="update" parameterType="customerCust" >
+    update bss_customer_cust
+    set 
+		cust_name=#{custName,jdbcType=VARCHAR},
+   	 	cust_type=#{custType,jdbcType=VARCHAR},
+   	 	<if test="region != null">region=#{region.id,jdbcType=BIGINT},</if>
+   	 	link_name=#{linkName,jdbcType=VARCHAR},
+   	 	link_tel=#{linkTel,jdbcType=VARCHAR},
+   	 	state=#{state,jdbcType=VARCHAR},
+   	 	cust_manager=#{custManager,jdbcType=VARCHAR},
+   	 	cust_developer=#{custDeveloper,jdbcType=VARCHAR},
+      	create_date=#{createDate,jdbcType=TIMESTAMP},
+      	update_date=#{updateDate,jdbcType=TIMESTAMP},
+   	 	reservel_one=#{reservelOne,jdbcType=VARCHAR},
+   	 	reservel_two=#{reservelTwo,jdbcType=VARCHAR},
+   	 	group_ip=#{groupIP,jdbcType=VARCHAR},
+   	 	group_id=#{groupId,jdbcType=VARCHAR},
+   	 	max_termina=#{maxTermina, jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+ 
+  <select id="findCustomerCusts" parameterType="map" resultMap="BaseResultMap">
+  	select bcc.id as id,  bcc.cust_id as cust_id, bcc.cust_name as cust_name, bcc.cust_type as cust_type, 
+  		  bcc.region as region, bcc.link_name as link_name, bcc.link_tel as link_tel, bcc.state as state, 
+  		  bcc.cust_manager as cust_manager, bcc.cust_developer as cust_developer,bcc.create_date as create_date, 
+  		  bcc.update_date as update_date, bcc.reservel_one as reservel_one, bcc.reservel_two as reservel_two, 
+  		  bcc.group_ip as group_ip, bcc.group_id as group_id, bcc.max_termina as max_termina
+    	from bss_customer_cust bcc
+    	left outer join bss_city bc on bcc.region = bc.id
+    	<where>
+    		1=1
+	    	<if test="custId != null and custId != ''">
+	    		and bcc.cust_id like '%${custId}%'
+	    	</if>
+	    	<if test="custName != null and custName != ''">
+	    		and bcc.cust_name like '%${custName}%'
+	    	</if>
+	    	<if test="linkTel != null and linkTel != ''">
+	    		and bcc.link_tel like '%${linkTel}%'
+	    	</if>
+	    	<if test="groupIp != null and groupIp != ''">
+	    		and bcc.group_ip like '%${groupIp}%'
+	    	</if>
+	    	<if test="groupId != null and groupId != ''">
+	    		and bcc.group_id like '%${groupId}%'
+	    	</if>
+    	</where>
+    	limit ${pageNo}, ${pageSize}
+  </select>
+  
+  <select id="getTotalCountCustomerCusts" parameterType="map" resultType="java.lang.Integer">
+  	select count(*)
+	from bss_customer_cust bcc
+    	left outer join bss_city bc on bcc.region = bc.code
+    	<where>
+    		1=1
+	    	<if test="custId != null and custId != ''">
+	    		and bcc.cust_id like '%${custId}%'
+	    	</if>
+	    	<if test="custName != null and custName != ''">
+	    		and bcc.cust_name like '%${custName}%'
+	    	</if>
+	    	<if test="linkTel != null and linkTel != ''">
+	    		and bcc.link_tel like '%${linkTel}%'
+	    	</if>
+	    	<if test="groupIp != null and groupIp != ''">
+	    		and bcc.group_ip like '%${groupIp}%'
+	    	</if>
+	    	<if test="groupId != null and groupId != ''">
+	    		and bcc.group_id like '%${groupId}%'
+	    	</if>
+    	</where>
+  </select>
+  
+  
+  <delete id="deleteCustomerCustByCustId" parameterType="java.lang.String">
+  	delete from bss_customer_cust
+  	where cust_id = #{custId}
+  </delete>
+</mapper>

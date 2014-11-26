@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.device.repository.mapper.PanelPackageDeviceMapMapper" >
+  <resultMap id="BaseResultMap" type="com.ysten.local.bss.device.domain.PanelPackageDeviceMap" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="panel_package_id" property="panelPackageId" jdbcType="BIGINT" />
+    <result column="ysten_id" property="ystenId" jdbcType="VARCHAR" />
+    <result column="device_group_id" property="deviceGroupId" jdbcType="BIGINT" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, panel_package_id, ysten_id, device_group_id, create_date, type
+  </sql>
+
+  <select id="findMapByPanelIdAndType" resultMap="BaseResultMap" parameterType="map">
+		select
+		<include refid="Base_Column_List" />
+		from
+		bss_panel_package_device_map
+		where
+		panel_package_id = #{panelPackageId,jdbcType=BIGINT} and type = #{type,jdbcType=VARCHAR}
+	</select>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select
+    <include refid="Base_Column_List" />
+    from bss_panel_package_device_map
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from bss_panel_package_device_map
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <delete id="deletePanelPackageMapByPanelId" parameterType="java.lang.Long" >
+    delete from ${tableName}
+    where panel_package_id = #{panelPackageId,jdbcType=BIGINT}
+    <if test="type!=null and type!=''">
+          and type = #{type,jdbcType=VARCHAR}
+    </if>
+  </delete>
+
+  <insert id="insert" parameterType="com.ysten.local.bss.device.domain.PanelPackageDeviceMap" useGeneratedKeys="true" keyProperty="id">
+    insert into bss_panel_package_device_map (panel_package_id, ysten_id, 
+      device_group_id, create_date, type
+      )
+    values (#{panelPackageId,jdbcType=BIGINT}, #{ystenId,jdbcType=VARCHAR}, 
+      #{deviceGroupId,jdbcType=BIGINT}, #{createDate,jdbcType=TIMESTAMP}, #{type,jdbcType=VARCHAR}
+      )
+  </insert>
+  
+  <insert id="bulkSaveDevicePanelMap" parameterType="java.util.List">
+    	insert into bss_panel_package_device_map 
+    	(panel_package_id, ysten_id, device_group_id, create_date, type)
+    	values
+    	 <foreach collection="list" item="item" index="index" separator="," >
+    	 (#{item.panelPackageId,jdbcType=BIGINT}, #{item.ystenId,jdbcType=VARCHAR}, 
+      	  #{item.deviceGroupId,jdbcType=BIGINT}, #{item.createDate,jdbcType=TIMESTAMP}, #{item.type,jdbcType=VARCHAR})
+    	</foreach>
+    </insert>
+
+  <insert id="insertSelective" parameterType="com.ysten.local.bss.device.domain.PanelPackageDeviceMap" >
+    insert into bss_panel_package_device_map
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="panelPackageId != null" >
+        panel_package_id,
+      </if>
+      <if test="ystenId != null" >
+        ysten_id,
+      </if>
+      <if test="deviceGroupId != null" >
+        device_group_id,
+      </if>
+      <if test="createDate != null" >
+        create_date,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="panelPackageId != null" >
+        #{panelPackageId,jdbcType=BIGINT},
+      </if>
+      <if test="ystenId != null" >
+        #{ystenId,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceGroupId != null" >
+        #{deviceGroupId,jdbcType=BIGINT},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.ysten.local.bss.device.domain.PanelPackageDeviceMap" >
+    update bss_panel_package_device_map
+    <set >
+      <if test="panelPackageId != null" >
+        panel_package_id = #{panelPackageId,jdbcType=BIGINT},
+      </if>
+      <if test="ystenId != null" >
+        ysten_id = #{ystenId,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceGroupId != null" >
+        device_group_id = #{deviceGroupId,jdbcType=BIGINT},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ysten.local.bss.device.domain.PanelPackageDeviceMap" >
+    update bss_panel_package_device_map
+    set panel_package_id = #{panelPackageId,jdbcType=BIGINT},
+      ysten_id = #{ystenId,jdbcType=VARCHAR},
+      device_group_id = #{deviceGroupId,jdbcType=BIGINT},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      type = #{type,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <update id="updateByYstenId" parameterType="com.ysten.local.bss.device.domain.PanelPackageDeviceMap" >
+    update bss_panel_package_device_map
+    set panel_package_id = #{panelPackageId,jdbcType=BIGINT},
+      create_date = #{createDate,jdbcType=TIMESTAMP}
+    where ysten_id = #{ystenId,jdbcType=VARCHAR}
+  </update>
+
+  <select id="getPanelDeviceMapByGroupId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+	select
+    <include refid="Base_Column_List" />
+     from bss_panel_package_device_map where device_group_id = #{deviceGroupId,jdbcType=BIGINT}
+      limit 1
+  </select>
+
+    <select id="getPanelDeviceMapByYstenId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from bss_panel_package_device_map where ysten_id = #{ystenId,jdbcType=VARCHAR}
+        limit 1
+    </select>
+
+  <delete id="deletePanelDeviceMapByGroupId" parameterType="java.lang.Long">
+		delete from bss_panel_package_device_map where device_group_id = #{deviceGroupId,jdbcType=BIGINT}
+  </delete>
+
+  <delete id="deletePanelDeviceMapByCode" parameterType="java.lang.String">
+		delete from bss_panel_package_device_map where ysten_id = #{ystenId,jdbcType=VARCHAR}
+  </delete>
+  
+  <delete id="deletePanelDeviceMapByYstenIds" parameterType="java.util.List">
+      delete from ${tableName}
+       where ${character} in
+        <foreach collection="ystenIds" item="id"  open="(" separator="," close=")">  
+            #{id} 
+        </foreach>
+	</delete>
+	
+	<delete id="deletePanelDeviceMapByGroupIds" parameterType="java.util.List">
+      delete from ${tableName}
+       where ${character} in
+        <foreach collection="groupIds" item="id"  open="(" separator="," close=")">  
+            #{id} 
+        </foreach>
+	</delete>
+</mapper>

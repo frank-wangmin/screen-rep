@@ -1,0 +1,1 @@
+jsydjt_panel.sql为初始化角本。

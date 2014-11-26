@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.system.repository.mapper.SysMenuMapper" >
+  <resultMap id="BaseResultMap" type="sysMenu" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="authority_id" property="authorityId" jdbcType="BIGINT" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
+    <result column="order_sq" property="orderSq" jdbcType="BIGINT" />
+    <result column="parent_id" property="parentId" jdbcType="BIGINT" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+  </resultMap>
+ 
+  <sql id="Base_Column_List" >
+    id, authority_id, name, url,order_sq, parent_id, description
+  </sql>
+   <select id="findAll" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from bss_sys_menu order by order_sq asc
+  </select>
+  <select id="findSysMenus" resultMap="BaseResultMap" parameterType="map">
+    select 
+    <include refid="Base_Column_List" />
+    from bss_sys_menu order by order_sq asc
+    limit #{currentPage} , #{pageSize}
+  </select>
+  <select id="findByPK" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from bss_sys_menu
+    where id = #{id,jdbcType=BIGINT} order by order_sq asc
+  </select>
+  
+   <select id="getSysMenuBySysIdAndAuthorityId" resultMap="BaseResultMap" parameterType="map" >
+    select 
+    <include refid="Base_Column_List" />
+    from bss_sys_menu
+    where 
+    id = #{sysMenuId}
+    and authority_id = #{authorityId} order by order_sq asc
+  </select>
+  <select id="getSysMenuByParentId" resultMap="BaseResultMap" parameterType="map" >
+    select 
+    <include refid="Base_Column_List" />
+    from bss_sys_menu
+    where parent_id = #{parentId} and authority_id = #{authorityId} order by order_sq asc
+  </select>
+  
+    <select id="getSysMenuByAuthorityId" resultMap="BaseResultMap" parameterType="map" >
+    select 
+    <include refid="Base_Column_List" />
+    from bss_sys_menu
+    where  authority_id = #{authorityId} order by order_sq asc
+  </select>
+    <select id="getCount"  resultType="java.lang.Integer" >
+    select count(*) from bss_sys_menu
+  </select>
+  
+  <delete id="deleteByPK" parameterType="java.lang.Long" >
+    delete from bss_sys_menu
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  
+  <insert id="save" parameterType="sysMenu" >
+    insert into bss_sys_menu (AUTHORITY_ID, name, 
+      url, parent_id, description)
+    values (#{authorityId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, 
+      #{url,jdbcType=VARCHAR}, #{parentId,jdbcType=BIGINT}, #{description,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="update" parameterType="sysMenu" >
+    update bss_sys_menu
+    set AUTHORITY_ID = #{authorityId,jdbcType=BIGINT},
+      name = #{name,jdbcType=VARCHAR},
+      url = #{url,jdbcType=VARCHAR},
+      parent_id = #{parentId,jdbcType=BIGINT},
+      description = #{description,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

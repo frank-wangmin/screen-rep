@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.screen.repository.mapper.ScreenManagerMapper" >
+  <resultMap id="BaseResultMap" type="screenManager" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <association property="area" javaType="area">
+        <id column="area_id" property="id" jdbcType="BIGINT" />
+   	</association>
+  </resultMap>
+  
+  <resultMap id="AllResultMap" type="screenManager" >
+    <id column="s_id" property="id" jdbcType="BIGINT" />
+    <result column="s_name" property="name" jdbcType="VARCHAR" />
+    <result column="s_url" property="url" jdbcType="VARCHAR" />
+    <result column="s_create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="s_description" property="description" jdbcType="VARCHAR" />
+    <association property="area" javaType="area">
+        <id column="a_id" property="id" jdbcType="BIGINT" />
+        <result column="a_code" property="code" jdbcType="VARCHAR" />
+        <result column="a_name" property="name" jdbcType="VARCHAR" />
+        <result column="a_state" property="state" jdbcType="VARCHAR"/>
+        <result column="a_parent_id" property="parentId" jdbcType="BIGINT" />
+        <result column="a_parent_name" property="parentName" jdbcType="VARCHAR" />
+        <result column="a_memo" property="memo" jdbcType="VARCHAR" />
+    </association>
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+		id,name,url,create_date,description,area_id
+  </sql>
+  
+  <select id="getAllScreenManager" parameterType="int" resultMap="BaseResultMap">
+  	select 
+  	<include refid="Base_Column_List" />
+  	from bss_screen_manager where area_id = #{areaId}
+  </select>
+  
+   <select id="findAllScreenManager" resultMap="BaseResultMap">
+  	select 
+  	sm.id,sm.name,sm.url,sm.create_date,sm.description
+  	from bss_screen_manager sm
+  	join bss_area ar on sm.area_id = ar.id
+  	group by sm.area_id
+  </select>
+  
+  <select id="getAllArea" resultType="map">
+  	select 
+  	ar.name, ar.id
+  	from bss_screen_manager sm
+  	join bss_area ar on sm.area_id = ar.id
+  	group by sm.area_id
+  </select>
+  
+  	<select id="getById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+	    select
+		<include refid="Base_Column_List" />
+		from
+		bss_screen_manager
+		where id = #{id}
+	</select>
+	
+	<select id="findAll" resultMap="AllResultMap" parameterType="map">
+	    select
+		s.id as s_id, s.url as s_url,s.name as s_name, s.create_date as s_create_date,s.description as s_description,s.area_id as s_area_id,
+        a.id as a_id, a.code as a_code,a.name as a_name, a.state as a_state,a.parent_id as a_parent_id,a.memo as a_memo,
+        a.parent_name as a_parent_name
+		from
+		bss_screen_manager s
+		left outer join bss_area a on s.area_id = a.id
+		<where>
+	       	<if test="name!=null and name!=''">
+	                s.name like '%${name}%'
+	   		</if>
+        </where>
+        order by s.id desc
+        limit #{pageNo},#{pageSize}
+	</select>
+	
+	<insert id="save" parameterType="screenManager" useGeneratedKeys="true" keyProperty="id">
+        insert into bss_screen_manager(name, url,create_date,description,area_id) values
+        (#{name,jdbcType=VARCHAR},#{url,jdbcType=VARCHAR},#{createDate,jdbcType=TIMESTAMP},
+        #{description,jdbcType=VARCHAR},#{area.id,jdbcType=BIGINT})
+  	</insert>
+  
+   <update id="update" parameterType="screenManager">
+        update bss_screen_manager
+        set
+        name = #{name,jdbcType=VARCHAR},
+        url = #{url,jdbcType=VARCHAR},
+        description = #{description,jdbcType=VARCHAR},
+        area_id = #{area.id,jdbcType=BIGINT}
+        where
+        id = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <delete id="delete" parameterType="java.util.List">
+      delete from bss_screen_manager where id in 
+      <foreach collection="ids" item="id"  open="(" separator="," close=")">  
+           #{id} 
+      </foreach>
+  </delete>
+  
+   <select id="getCount" resultType="java.lang.Integer">
+        select count(*) from  bss_screen_manager
+        <where>
+	       	<if test="name!=null and name!=''">
+	                name like '%${name}%'
+	   		</if>
+        </where>
+  </select>
+  
+</mapper>

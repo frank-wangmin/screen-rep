@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.device.repository.mapper.BackgroundImageUserMapMapper">
+    <resultMap id="BaseResultMap" type="backgroundImageUserMap">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="background_image_id" property="backgroundImageId" jdbcType="BIGINT"/>
+        <result column="code" property="code" jdbcType="VARCHAR" />
+        <result column="user_group_id" property="userGroupId" jdbcType="BIGINT"/>
+        <result column="create_date" property="createDate" jdbcType="TIMESTAMP"/>
+        <result column="type" property="type" jdbcType="VARCHAR"/>
+        <result column="loop_time" property="loopTime" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    id, background_image_id, code, user_group_id, create_date, type, loop_time
+    </sql>
+
+
+    <insert id="bulkSaveUserBackgroundMap" parameterType="java.util.List">
+    		insert into bss_background_image_user_map
+    		(background_image_id, code, user_group_id, create_date, type, loop_time)
+    		values
+    		<foreach collection="list" item="item" index="index" separator=",">
+     		(#{item.backgroundImageId, jdbcType=BIGINT}, #{item.code,jdbcType=VARCHAR}, #{item.userGroupId,jdbcType=BIGINT},
+    		#{item.createDate,jdbcType=TIMESTAMP}, #{item.type,jdbcType=VARCHAR}, #{item.loopTime,jdbcType=BIGINT})
+            </foreach>
+    </insert>
+    
+    <insert id="save" parameterType="backgroundImageUserMap">
+    		insert into bss_background_image_user_map
+    		(background_image_id, code, user_group_id, create_date, type, loop_time)
+    		values
+    		(#{backgroundImageId, jdbcType=BIGINT}, #{code,jdbcType=VARCHAR}, #{userGroupId,jdbcType=BIGINT},
+    		#{createDate,jdbcType=TIMESTAMP}, #{type,jdbcType=VARCHAR}, #{loopTime,jdbcType=BIGINT})
+    </insert>
+
+    <select id="findMapByUserCode" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        bss_background_image_user_map
+        where
+        code = #{code,jdbcType=VARCHAR}
+    </select>
+
+    <select id="findMapByUserGroupId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        bss_background_image_user_map
+        where
+        user_group_id = #{userGroupId,jdbcType=BIGINT}
+    </select>
+	<select id="findBGUserMapByBGId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+		select 
+		<include refid="Base_Column_List"/>
+        	from
+        	bss_background_image_user_map
+        	where background_image_id = #{id, jdbcType=BIGINT}
+	</select>
+	<select id="findMapByBGIdAndUserCode" parameterType="map" resultMap="BaseResultMap">
+		select 
+		<include refid="Base_Column_List"/>
+        	from
+        	bss_background_image_user_map
+        	where background_image_id = #{id, jdbcType=BIGINT}
+        	and code = #{code,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="findMapByBGIdAndGroupId" parameterType="map" resultMap="BaseResultMap">
+		select 
+		<include refid="Base_Column_List"/>
+        	from
+        	bss_background_image_user_map
+        	where background_image_id = #{id, jdbcType=BIGINT}
+        	and user_group_id = #{userGroupId,jdbcType=BIGINT}
+	</select>
+	
+	<select id="getBGImageMapByBGIdAndType" parameterType="map" resultMap="BaseResultMap">
+		select 
+		<include refid="Base_Column_List"/>
+        	from
+        	bss_background_image_user_map
+        	where background_image_id = #{bgId, jdbcType=BIGINT}
+        	and type = #{type,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByBGId" parameterType="java.lang.Long">
+		delete from bss_background_image_user_map where background_image_id = #{id, jdbcType=BIGINT}
+	</delete>
+   <delete id="deleteBackGroundImageMapByGroupId" parameterType="java.lang.Long">
+  	delete from bss_background_image_user_map where user_group_id = #{groupId,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteMapByUserCode" parameterType="java.lang.String">
+      delete from bss_background_image_user_map where code = #{code,jdbcType=VARCHAR}
+  </delete>
+</mapper>

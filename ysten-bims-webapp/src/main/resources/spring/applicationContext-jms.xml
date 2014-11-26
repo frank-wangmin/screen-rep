@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+    <!-- 去除ActiveMQ配置
+    <bean id="topicSendConnectionFactory" class="org.apache.activemq.spring.ActiveMQConnectionFactory">
+        <property name="userName" value="${activemq_user}" />
+        <property name="password" value="${activemq_password}" />
+        <property name="brokerURL" value="${activemq_url}" />
+        <property name="useAsyncSend" value="true" />
+    </bean>
+
+    <bean id="ysten.topic.redis.clear"  class="org.apache.activemq.command.ActiveMQTopic">
+        <constructor-arg value="bims.topic.redis.clear"/>
+    </bean>
+
+    <bean id="messageConvertForCache" class="com.ysten.cache.jms.JmsMessageConverter"></bean>
+
+    <bean id="redisSendJmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <property name="connectionFactory" ref="topicSendConnectionFactory"></property>
+        <property name="defaultDestination" ref="ysten.topic.redis.clear" />
+        <property name="pubSubDomain" value="true"/>
+        <property name="messageConverter" ref="messageConvertForCache" />
+        <property name="explicitQosEnabled" value="true" />
+        <property name="deliveryMode" value="2" />
+        <property name="sessionAcknowledgeMode" value="1" />
+    </bean>
+
+    <bean id="redisMessageSender" class="com.ysten.cache.jms.RedisMessageSender">
+        <property name="jmsTemplate" ref="redisSendJmsTemplate"></property>
+    </bean> -->
+</beans>

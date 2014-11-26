@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.panel.repository.mapper.PanelPackageMapper">
+    <resultMap id="BaseResultMap" type="panelPackage">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="package_name" property="packageName" jdbcType="VARCHAR"/>
+        <result column="package_desc" property="packageDesc" jdbcType="VARCHAR"/>
+        <result column="is_default" property="isDefault" jdbcType="INTEGER"/>
+        <result column="opr_userid" property="oprUserId" jdbcType="BIGINT"/>
+        <result column="platform_id" property="platFormId" jdbcType="BIGINT"/>
+        <result column="epg_package_id" property="epgPackageId" jdbcType="BIGINT"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="epg_style2" property="epgStyle2" jdbcType="VARCHAR"/>
+        <result column="epg_style1" property="epgStyle1" jdbcType="VARCHAR"/>
+        <result column="nav_datas" property="navsData" jdbcType="VARCHAR"/>
+        <result column="package_type" property="packageType" jdbcType="INTEGER"/>
+        <result column="online_status" property="onlineStatus" jdbcType="INTEGER"/>
+        <result column="district_code" property="districtCode" jdbcType="VARCHAR"/>
+
+        <result column="version" property="version" jdbcType="BIGINT"/>
+        <result column="max_page_number" property="maxPageNumber" jdbcType="INTEGER"/>
+        <result column="default_background_1080p" property="defaultBackground1080p" jdbcType="VARCHAR"/>
+        <result column="default_background_720p" property="defaultBackground720p" jdbcType="VARCHAR"/>
+        <result column="common_top_nav" property="commonTopNav" jdbcType="VARCHAR"/>
+        <result column="zip_url" property="zipUrl" jdbcType="VARCHAR"/>
+        <result column="zip_url_1080p" property="zipUrl1080p" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    id,package_name,package_desc,is_default,opr_userid,platform_id,epg_package_id,create_time,update_time,nav_datas,epg_style1,epg_style2,package_type,online_status,
+    district_code,version,max_page_number,default_background_1080p,default_background_720p,common_top_nav,zip_url,zip_url_1080p
+    </sql>
+
+    <sql id="Base_Table_Name">
+  	 bss_panel_package
+    </sql>
+
+    <sql id="Map_Table_Name">
+  	 bss_panel_package_panel_map
+    </sql>
+    <select id="findPanelPackageListOfArea" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bss_panel_package p
+        <where>
+            <if test="distCode != null and distCode !=''">
+                p.district_code = #{distCode, jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+
+    <select id="getPanelPackageById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Base_Table_Name"/>
+        where id = #{panelPackageId,jdbcType=BIGINT}
+        and online_status = 99
+    </select>
+
+    <select id="getPackageByYstenIdOrGroupId" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        p.*
+        from bss_panel_package p
+        join bss_panel_package_device_map m
+        where p.id = m.panel_package_id
+        <if test="ystenId !=null ">
+            and m.ysten_id = #{ystenId, jdbcType=VARCHAR}
+        </if>
+        <if test="groupId !=null ">
+            and m.device_group_id = #{groupId, jdbcType=BIGINT}
+        </if>
+        and p.online_status = 99
+        and p.is_default = 0
+        limit 1
+    </select>
+
+    <select id="getPackageByCustomerCodeOrGroupId" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        p.*
+        from bss_panel_package p
+        join bss_panel_package_user_map m
+        where p.id = m.panel_package_id
+        <if test="customerCode !=null ">
+            and m.code = #{customerCode, jdbcType=VARCHAR}
+        </if>
+        <if test="groupId !=null ">
+            and m.user_group_id = #{groupId, jdbcType=BIGINT}
+        </if>
+        and p.online_status = 99
+        and p.is_default = 0
+        limit 1
+    </select>
+
+    <select id="getDefaultPackage" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Base_Table_Name"/>
+        where is_default = #{isDefault,jdbcType=INTEGER}
+        and online_status = 99
+        limit 1
+    </select>
+
+
+    <select id="findIdAndEpgIdList" resultMap="BaseResultMap">
+        select
+        id,epg_package_id
+        from
+        <include refid="Base_Table_Name"/>
+        where epg_package_id IS NOT NULL
+        order by id desc
+    </select>
+
+    <select id="findAllPanelPackageList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bss_panel_package p
+        where p.is_default = 0
+        and p.online_status = 99
+    </select>
+
+    <select id="findAllEpgList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Base_Table_Name"/>
+        where epg_package_id IS NOT NULL
+        order by id
+    </select>
+
+    <select id="getAllCustomedTargetList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Base_Table_Name"/>
+        where epg_package_id IS NULL
+        and online_status = 99
+        order by id desc
+    </select>
+
+    <select id="getTargetList" resultMap="BaseResultMap" parameterType="PanelQueryCriteria">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Base_Table_Name"/>
+        <where>
+            online_status = 99
+            <if test="Id != null">
+                and id= #{Id,jdbcType=BIGINT}
+            </if>
+            <if test="name != null and name != ''">
+                and package_name like '%${name}%'
+            </if>
+            <if test="epgId != null">
+                and epg_package_id = #{epgId,jdbcType=BIGINT}
+            </if>
+            <if test="dataScope == 'custom'">
+                and epg_package_id is null
+            </if>
+            <if test="dataScope == 'outter'">
+                and epg_package_id is not null
+            </if>
+        </where>
+        order by id desc
+        limit #{start} , #{limit}
+    </select>
+
+    <select id="getTargetCount" resultType="java.lang.Integer" parameterType="map">
+        select
+        count(id)
+        from
+        <include refid="Base_Table_Name"/>
+        <where>
+            online_status = 99
+            <if test="name != null and name != ''">
+                and package_name like '%${name}%'
+            </if>
+            <if test="epgId != null">
+                and epg_package_id = #{epgId,jdbcType=BIGINT}
+            </if>
+            <if test="Id != null">
+                and id= #{Id,jdbcType=BIGINT}
+            </if>
+            <if test="dataScope == 'custom'">
+                and epg_package_id is null
+            </if>
+
+            <if test="dataScope == 'outter'">
+                and epg_package_id is not null
+            </if>
+        </where>
+    </select>
+    <select id="getPackageByEpgPackageId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Base_Table_Name"/>
+        where epg_package_id = #{epgPackageId,jdbcType=BIGINT}
+    </select>
+
+    <delete id="deleteByIds" parameterType="java.util.List">
+        delete from
+        <include refid="Base_Table_Name"/>
+        where id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteById" parameterType="java.lang.Long">
+        delete from
+        <include refid="Base_Table_Name"/>
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <delete id="deletePanelPackageMapByPackageIds" parameterType="java.util.List">
+        delete from
+        <include refid="Map_Table_Name"/>
+        where package_id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteByEpgPackageId" parameterType="java.util.List">
+        delete from
+        <include refid="Base_Table_Name"/>
+        where epg_package_id is NOT NULL
+    </delete>
+
+
+    <insert id="batchSavePanelPackage" parameterType="java.util.List">
+        insert into
+        <include refid="Base_Table_Name"/>
+        (
+        package_name,
+        package_desc,
+        is_default,
+        opr_userid,
+        platform_id,
+        epg_package_id,
+        create_time,
+        update_time,
+        nav_datas,
+        epg_style1,
+        epg_style2,
+        package_type,
+        online_status,
+        district_code
+        )
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.packageName,jdbcType=VARCHAR},
+            #{item.packageDesc,jdbcType=VARCHAR},
+            #{item.isDefault,jdbcType=INTEGER},
+            #{item.oprUserId,jdbcType=BIGINT},
+            #{item.platFormId,jdbcType=BIGINT},
+            #{item.epgPackageId,jdbcType=BIGINT},
+            #{item.createTime,jdbcType=TIMESTAMP},
+            #{item.updateTime,jdbcType=TIMESTAMP},
+            #{item.navsData,jdbcType=VARCHAR},
+            #{item.epgStyle1,jdbcType=VARCHAR},
+            #{item.epgStyle2,jdbcType=VARCHAR},
+            #{item.packageType,jdbcType=INTEGER},
+            #{item.onlineStatus,jdbcType=INTEGER},
+            #{item.districtCode,jdbcType=VARCHAR}
+            )
+        </foreach>
+    </insert>
+
+    <insert id="save" parameterType="panelPackage" useGeneratedKeys="true" keyProperty="id">
+        insert into
+        <include refid="Base_Table_Name"/>
+        (
+        package_name,
+        package_desc,
+        is_default,
+        opr_userid,
+        platform_id,
+        epg_package_id,
+        create_time,
+        update_time,
+        nav_datas,
+        epg_style1,
+        epg_style2,
+        package_type,
+        online_status,
+        district_code,
+        version,
+        max_page_number,
+        default_background_1080p,
+        default_background_720p,
+        common_top_nav
+        )
+        values (
+        #{packageName,jdbcType=VARCHAR},
+        #{packageDesc,jdbcType=VARCHAR},
+        #{isDefault,jdbcType=INTEGER},
+        #{oprUserId,jdbcType=BIGINT},
+        #{platFormId,jdbcType=BIGINT},
+        #{epgPackageId,jdbcType=BIGINT},
+        #{createTime,jdbcType=TIMESTAMP},
+        #{updateTime,jdbcType=TIMESTAMP},
+        #{navsData,jdbcType=VARCHAR},
+        #{epgStyle1,jdbcType=VARCHAR},
+        #{epgStyle2,jdbcType=VARCHAR},
+        #{packageType,jdbcType=INTEGER},
+        #{onlineStatus,jdbcType=INTEGER},
+        #{districtCode,jdbcType=VARCHAR},
+        #{version,jdbcType=BIGINT},
+        #{maxPageNumber,jdbcType=INTEGER},
+        #{defaultBackground1080p,jdbcType=VARCHAR},
+        #{defaultBackground720p,jdbcType=VARCHAR},
+        #{commonTopNav,jdbcType=VARCHAR}
+        )
+
+    </insert>
+
+    <update id="batchUpdate" parameterType="java.util.List">
+        update
+        <include refid="Base_Table_Name"/>
+        set
+        package_name = #{item.packageName,jdbcType=VARCHAR},
+        package_desc = #{item.packageDesc,jdbcType=VARCHAR},
+        is_default = #{item.isDefault,jdbcType=INTEGER},
+        opr_userid = #{item.oprUserId,jdbcType=BIGINT},
+        platform_id = #{item.platFormId,jdbcType=BIGINT},
+        update_time = #{item.updateTime,jdbcType=TIMESTAMP},
+        nav_datas = #{item.navsData,jdbcType=VARCHAR},
+        epg_style1 =#{item.epgStyle1,jdbcType=VARCHAR},
+        epg_style2 =#{item.epgStyle2,jdbcType=VARCHAR},
+        package_type = #{item.packageType,jdbcType=INTEGER},
+        online_status = #{item.onlineStatus,jdbcType=INTEGER},
+        district_code = #{districtCode,jdbcType=VARCHAR}
+        where
+        epg_package_id in
+        <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+            #{item.epgPackageId}
+        </foreach>
+    </update>
+
+
+    <update id="update" parameterType="panelPackage">
+        update
+        <include refid="Base_Table_Name"/>
+        set
+        package_name = #{packageName,jdbcType=VARCHAR},
+        package_desc = #{packageDesc,jdbcType=VARCHAR},
+        is_default = #{isDefault,jdbcType=INTEGER},
+        opr_userid = #{oprUserId,jdbcType=BIGINT},
+        platform_id = #{platFormId,jdbcType=BIGINT},
+        epg_package_id = #{epgPackageId,jdbcType=BIGINT},
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+        nav_datas = #{navsData,jdbcType=VARCHAR},
+        epg_style1 =#{epgStyle1,jdbcType=VARCHAR},
+        epg_style2 =#{epgStyle2,jdbcType=VARCHAR},
+        package_type = #{packageType,jdbcType=INTEGER},
+        online_status = #{onlineStatus,jdbcType=INTEGER},
+        district_code = #{districtCode,jdbcType=VARCHAR},
+
+        version = #{version,jdbcType=BIGINT},
+        max_page_number = #{maxPageNumber,jdbcType=INTEGER},
+        default_background_1080p = #{defaultBackground1080p,jdbcType=VARCHAR},
+        default_background_720p = #{defaultBackground720p,jdbcType=VARCHAR},
+        common_top_nav = #{commonTopNav,jdbcType=VARCHAR},
+        zip_url = #{zipUrl,jdbcType=VARCHAR},
+        zip_url_1080p = #{zipUrl1080p,jdbcType=VARCHAR}
+        where
+        id = #{id,jdbcType=BIGINT}
+    </update>
+
+</mapper>

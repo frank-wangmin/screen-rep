@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.device.repository.mapper.UserGroupPpInfoMapMapper" >
+  	<resultMap id="BaseResultMap" type="userGroupPpInfoMap" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="user_group_id" property="userGroupId" jdbcType="BIGINT"/>
+    <!-- <result column="product_type" property="productType" jdbcType="VARCHAR" /> -->
+    <result column="product_id" property="productId" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+  	</resultMap>
+  
+  	<sql id="Base_Column_List" >
+    id, user_group_id,product_id, create_date, update_date
+  	</sql>
+  
+ 	<!--  select id="findMapByUserGroupIdAndProductType" resultMap="BaseResultMap" parameterType="map">
+		select
+		<include refid="Base_Column_List" />
+		from
+		bss_user_group_pp_info_map
+		<where>
+			<if test="userGroupId != null and userGroupId != ''">
+	    		user_group_id = #{userGroupId,jdbcType=BIGINT}
+	    	</if>
+			<if test="productType != null and productType != ''">
+	    		and product_type = #{productType,jdbcType=VARCHAR}
+	    	</if>
+		</where>
+		
+	</select> -->
+	
+	<select id="findMapByUserGroupIdAndProductId" resultMap="BaseResultMap" parameterType="map">
+		select
+		<include refid="Base_Column_List" />
+		from
+		bss_user_group_pp_info_map
+		<where>
+			<if test="userGroupId != null and userGroupId != ''">
+	    		user_group_id = #{userGroupId,jdbcType=BIGINT}
+	    	</if>
+			<if test="productId != null and productId != ''">
+	    		and product_id = #{productId,jdbcType=VARCHAR}
+	    	</if>
+		</where>
+		
+	</select>
+ 
+ 	<delete id="deleteMapByUserGroupId" parameterType="java.lang.Long">
+   		delete from bss_user_group_pp_info_map where user_group_id = #{userGroupId,jdbcType=BIGINT}
+ 	</delete>
+ 
+    <insert id="save" parameterType="userGroupPpInfoMap" useGeneratedKeys="true" keyProperty="id">
+	     insert into bss_user_group_pp_info_map (
+	        user_group_id,product_id, create_date, update_date
+	       )
+	     values (
+	     	#{userGroupId,jdbcType=BIGINT},
+	     	#{productId,jdbcType=VARCHAR},
+	     	#{createDate,jdbcType=TIMESTAMP},
+	     	#{updateDate,jdbcType=TIMESTAMP}	     				
+	       )
+     </insert>
+     
+      <update id="update" parameterType="userGroupPpInfoMap" >
+    		update bss_user_group_pp_info_map
+            set  
+            	product_id = #{productId,jdbcType=VARCHAR},
+            	update_date = #{updateDate,jdbcType=TIMESTAMP}
+    		where user_group_id = #{userGroupId,jdbcType=BIGINT}
+     </update>
+</mapper>

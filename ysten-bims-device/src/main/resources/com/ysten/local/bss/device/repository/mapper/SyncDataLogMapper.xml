@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.device.repository.mapper.SyncDataLogMapper" >
+  <resultMap id="BaseResultMap" type="syncDataLog" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="data_id" property="dataId" jdbcType="BIGINT" />
+    <result column="device_code" property="deviceCode" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="customer_code" property="customerCode" jdbcType="VARCHAR" />
+    <result column="back_url" property="backUrl" jdbcType="VARCHAR" />
+    <result column="flag" property="flag" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="service_name" property="serviceName" jdbcType="VARCHAR" />
+    <result column="message" property="message" jdbcType="VARCHAR" />
+    <result column="cause" property="cause" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, data_id, device_code, user_id, customer_code, back_url, flag, create_date, service_name, message, cause
+  </sql>
+  
+   <insert id="save" parameterType="syncDataLog" useGeneratedKeys="true" keyProperty="id">
+    insert into  bss_sync_data_log
+        (data_id, device_code,user_id,customer_code,back_url,flag,create_date,service_name,message, cause)
+    values 
+        (#{dataId,jdbcType=BIGINT}, #{deviceCode,jdbcType=VARCHAR},#{userId,jdbcType=VARCHAR}, #{customerCode,jdbcType=VARCHAR}, #{backUrl,jdbcType=VARCHAR},
+        #{flag,jdbcType=VARCHAR},#{createDate,jdbcType=TIMESTAMP},#{serviceName,jdbcType=VARCHAR},#{message,jdbcType=VARCHAR},#{cause,jdbcType=VARCHAR})
+  </insert>
+</mapper>

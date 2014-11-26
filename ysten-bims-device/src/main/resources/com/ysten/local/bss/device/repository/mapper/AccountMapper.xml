@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.device.repository.mapper.AccountMapper">
+	<resultMap id="BaseResultMap" type="account">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="code" property="code" jdbcType="VARCHAR" />
+		<result column="customer_id" property="customerId" jdbcType="VARCHAR" />
+		<result column="customer_code" property="customerCode" jdbcType="VARCHAR" />
+		<result column="pay_password" property="payPassword" jdbcType="VARCHAR" />
+		<result column="state" property="state" jdbcType="VARCHAR" />
+		<result column="balance" property="balance" jdbcType="DECIMAL" />
+		<result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id, code, customer_id,customer_code,pay_password,state, balance, create_date 
+  </sql>
+
+	<select id="getById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		from bss_account
+		where
+		id = #{id,jdbcType=BIGINT}
+	</select>
+
+	<select id="getByAccountCode" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from
+		bss_account
+		where
+		code = #{accountId}
+	</select>
+	
+	<select id="getAccountByCustomerId" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from bss_account
+		where
+		customer_id = #{customerId, jdbcType=VARCHAR}
+	</select>
+	
+	<update id="updateState" parameterType="map">
+		update bss_account
+		set
+		state = #{state,jdbcType=VARCHAR}
+		where id in
+		<foreach collection="ids" open="(" close=")" separator="," item="id">
+			#{id}    
+    </foreach>
+	</update>
+
+	<insert id="save" parameterType="account" useGeneratedKeys="true" keyProperty="id">
+		insert into bss_account
+		(code, customer_id,customer_code, pay_password, state, balance, create_date)
+		values
+		(#{code,jdbcType=VARCHAR}, #{customerId,jdbcType=VARCHAR},#{customerCode,jdbcType=VARCHAR}, #{payPassword,jdbcType=VARCHAR},
+		#{state,jdbcType=VARCHAR}, #{balance,jdbcType=DECIMAL},#{createDate,jdbcType=TIMESTAMP})
+  </insert>
+
+	<delete id="deleteById" parameterType="java.lang.Long">
+		delete from	bss_account
+		where id = #{id,jdbcType=BIGINT}
+  </delete>
+
+	<update id="update" parameterType="account">
+		update bss_account set
+		code = #{accountId,jdbcType=VARCHAR},
+		customer_id = #{customerId,jdbcType=VARCHAR},
+		customer_code= #{customerCode,jdbcType=VARCHAR},
+		pay_password = #{payPassword,jdbcType=VARCHAR},
+		state = #{state,jdbcType=VARCHAR},
+		balance = #{balance,jdbcType=DECIMAL}
+		where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

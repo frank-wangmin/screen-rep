@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.device.repository.mapper.DeviceHistoryMapper" >
+  <resultMap id="BaseResultMap" type="deviceHistory" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="activate_date" property="activateDate" jdbcType="TIMESTAMP" />
+    <result column="state_change_date" property="stateChangeDate" jdbcType="TIMESTAMP" />
+    <result column="expire_date" property="expireDate" jdbcType="TIMESTAMP" />
+    <result column="state" property="state" jdbcType="VARCHAR" />
+    <result column="bind_type" property="bindType" jdbcType="VARCHAR" />
+    <result column="distribute_state" property="distributeState" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="ip_address" property="ipAddress" jdbcType="VARCHAR" />
+    <result column="mac" property="mac" jdbcType="VARCHAR"/>
+    <result column="sno" property="sno" jdbcType="VARCHAR"/>
+    <result column="is_lock" property="isLock" jdbcType="VARCHAR"/>
+    <result column="product_no" property="productNo" jdbcType="VARCHAR"/>
+    <result column="is_sync" property="isSync" jdbcType="VARCHAR"/>
+    <result column="version_seq" property="versionSeq" jdbcType="INTEGER"/>
+    <result column="ysten_id" property="ystenId" jdbcType="VARCHAR"/>
+    <result column="prepare_open" property="prepareOpen" jdbcType="VARCHAR"/>
+    <result column="history_create_date" property="historyCreateDate" jdbcType="TIMESTAMP" />
+    <result column="soft_code" property="softCode" jdbcType="VARCHAR"/>
+    <association property="area" javaType="area">
+        <id column="area_id" property="id" jdbcType="BIGINT" />
+    </association>
+    <association property="deviceType" javaType="deviceType">
+        <id column="device_type_id" property="id" jdbcType="BIGINT" />
+    </association>
+    <association property="deviceVendor" javaType="deviceVendor">
+         <id column="device_vendor_id" property="id" jdbcType="BIGINT" />
+    </association>
+    <association property="city" javaType="city">
+         <id column="city_id" property="id" jdbcType="BIGINT" />
+    </association>
+     <association property="spDefine" javaType="spDefine">
+         <id column="sp_define_id" property="id" jdbcType="BIGINT" />
+    </association>
+  </resultMap>
+  
+  <sql id="Base_Column_List" > 
+    id, code, create_date, activate_date,state_change_date,state,bind_type,distribute_state,description,area_id,
+    device_vendor_id,device_type_id,mac,ip_address,sno,city_id,sp_define_id,expire_date,is_lock,product_no,soft_code,
+    is_sync,version_seq,ysten_id,prepare_open,history_create_date
+  </sql>
+  
+  <insert id="save" parameterType="deviceHistory" useGeneratedKeys="true" keyProperty="id">
+  	insert into bss_device_history
+  	(code,ysten_id, create_date, activate_date,state_change_date,state,bind_type,distribute_state,description,area_id,
+    device_vendor_id,device_type_id,mac,ip_address,sno,city_id,sp_define_id,expire_date,is_lock,product_no,
+    soft_code, is_sync, version_seq,history_create_date)
+    values(
+    		#{code,jdbcType=VARCHAR},
+    		#{ystenId,jdbcType=VARCHAR},
+    		#{createDate,jdbcType=TIMESTAMP},
+    		#{activateDate,jdbcType=TIMESTAMP},
+    		#{stateChangeDate,jdbcType=TIMESTAMP},
+    		#{state,jdbcType=VARCHAR},
+    		#{bindType,jdbcType=VARCHAR},
+    		#{distributeState,jdbcType=VARCHAR},
+    		#{description,jdbcType=VARCHAR},
+    		#{area.id,jdbcType=INTEGER},
+    		#{deviceVendor.id,jdbcType=INTEGER},
+    		#{deviceType.id,jdbcType=INTEGER},
+    		#{mac,jdbcType=VARCHAR},
+    		#{ipAddress,jdbcType=VARCHAR},
+    		#{sno,jdbcType=VARCHAR},
+    		#{city.id,jdbcType=INTEGER},
+    		#{spDefine.id,jdbcType=VARCHAR},
+    		#{expireDate,jdbcType=TIMESTAMP},
+    		#{isLock,jdbcType=VARCHAR},
+    		#{productNo,jdbcType=VARCHAR},
+    		#{softCode,jdbcType=VARCHAR},
+    		#{isSync,jdbcType=VARCHAR},
+    		#{versionSeq,jdbcType=VARCHAR},
+    		#{historyCreateDate,jdbcType=TIMESTAMP}
+    		)
+  </insert>
+
+  <update id="update" parameterType="device" >
+     update bss_device_history
+      set code = #{code,jdbcType=VARCHAR},
+      ysten_id = #{ystenId,jdbcType=VARCHAR},
+      state_change_date = #{stateChangeDate,jdbcType=TIMESTAMP},
+      activate_date = #{activateDate,jdbcType=TIMESTAMP},
+      expire_date = #{expireDate,jdbcType=TIMESTAMP},
+      state = #{state,jdbcType=VARCHAR},
+      bind_type = #{bindType,jdbcType=VARCHAR},
+      distribute_state = #{distributeState,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      area_id = #{area.id,jdbcType=INTEGER},
+      device_vendor_id = #{deviceVendor.id,jdbcType=INTEGER},
+      device_type_id = #{deviceType.id,jdbcType=INTEGER},
+      mac = #{mac,jdbcType=VARCHAR},
+      sno = #{sno,jdbcType=VARCHAR},
+      sp_define_id = #{spDefine.id,jdbcType=VARCHAR},
+      ip_address = #{ipAddress,jdbcType=VARCHAR},
+      is_lock = #{isLock,jdbcType=VARCHAR},
+      city_id = #{city.id,jdbcType=INTEGER},
+      product_no = #{productNo,jdbcType=VARCHAR},
+      soft_code = #{softCode,jdbcType=VARCHAR},
+      is_sync = #{isSync,jdbcType=VARCHAR},
+      version_seq = #{versionSeq,jdbcType=VARCHAR},
+      prepare_open = #{prepareOpen},
+      history_create_date = #{historyCreateDate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <select id="getDeviceById" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List"/>
+    from bss_device_history 
+    where 
+        id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="getDeviceByYstenId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List"/>
+    from bss_device_history
+    where 
+        ysten_id = #{ystenId}
+  </select>
+  
+</mapper>

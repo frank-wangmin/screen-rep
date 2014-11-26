@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.interfaceUrl.repository.mapper.InterfaceUrlMapper" >
+  <resultMap id="BaseResultMap" type="interfaceUrl" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="interface_name" property="interfaceName" jdbcType="VARCHAR" />
+    <result column="interface_url" property="interfaceUrl" jdbcType="VARCHAR" />
+        <association property="area" column="area_id" javaType="area">
+            <id column="id" property="id" jdbcType="BIGINT" />
+        </association>
+  </resultMap>
+  
+  	<resultMap id="AllResultMap" type="interfaceUrl">
+        <id column="i_id" property="id" jdbcType="BIGINT" />
+        <result column="i_interface_name" property="interfaceName" jdbcType="VARCHAR" />
+        <result column="i_interface_url" property="interfaceUrl" jdbcType="VARCHAR" />
+        <association property="area" column="area_id" javaType="area">
+            <id column="a_id" property="id" jdbcType="BIGINT" />
+            <result column="a_name" property="name" jdbcType="VARCHAR" />
+        </association>
+    </resultMap>
+  
+ 
+  <sql id="Base_Column_List" >
+    id, interface_name, area_id, interface_url
+  </sql>
+  
+   <select id="findAll" resultMap="AllResultMap">
+    select 
+    i.id as i_id,i.interface_name as i_interface_name,i.interface_url as i_interface_url,
+    a.id as a_id,a.name as a_name
+    from bss_interface_url i left join  bss_area a on a.id = i.area_id
+    <where>
+    	<if test="interfaceName!=null and interfaceName!=''">
+    		i.interface_name like '%${interfaceName}%'
+    	</if>
+    	<if test="areaId!=null and areaId!=''">
+    		and i.area_id = #{areaId}
+    	</if>
+    </where>
+    order by i.id desc
+    limit ${pageNo} , ${pageSize}
+  </select>
+  
+  <select id="getById" resultMap="AllResultMap" parameterType="java.lang.Long" >
+    select 
+    i.id as i_id,i.interface_name as i_interface_name,i.interface_url as i_interface_url,
+    a.id as a_id,a.name as a_name
+    from bss_interface_url i left join  bss_area a on a.id = i.area_id
+    where i.id = #{id,jdbcType=BIGINT} 
+  </select>
+  
+  <select id="getCount"  resultType="java.lang.Integer" >
+    select count(*) 
+    from bss_interface_url i left join  bss_area a on a.id = i.area_id
+    <where>
+    	<if test="interfaceName!=null and interfaceName!=''">
+    		i.interface_name like '%${interfaceName}%'
+    	</if>
+    	<if test="areaId!=null and areaId!=''">
+    		and i.area_id = #{areaId}
+    	</if>
+    </where>
+  </select>
+  
+  <delete id="delete" parameterType="java.lang.Long" >
+    delete from bss_interface_url  where id = #{id,jdbcType=BIGINT}
+  </delete>
+  
+  <delete id="deleteByIds" parameterType="java.util.List">
+      delete from bss_interface_url where id in 
+      <foreach collection="ids" item="id"  open="(" separator="," close=")">  
+           #{id} 
+      </foreach>
+  </delete>
+  
+  <insert id="save" parameterType="interfaceUrl" useGeneratedKeys="true" keyProperty="id">
+    insert into bss_interface_url (interface_name, area_id, interface_url)
+    values (#{interfaceName,jdbcType=VARCHAR}, #{area.id,jdbcType=BIGINT}, #{interfaceUrl,jdbcType=VARCHAR})
+  </insert>
+  
+  <update id="update" parameterType="interfaceUrl" >
+    update bss_interface_url
+    set interface_name = #{interfaceName,jdbcType=VARCHAR},
+      area_id = #{area.id,jdbcType=BIGINT},
+      interface_url = #{interfaceUrl,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <select id="getByAreaAndName" parameterType="map" resultMap="BaseResultMap">
+  	select 
+  		<include refid="Base_Column_List" />
+    	from bss_interface_url
+    	where area_id = #{areaId,jdbcType=BIGINT}
+    	and interface_name = #{interfaceName,jdbcType=VARCHAR}
+        limit 1
+  </select>
+</mapper>

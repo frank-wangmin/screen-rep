@@ -1,0 +1,1047 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.device.repository.mapper.CustomerMapper" >
+  <resultMap id="BaseResultMap" type="customer" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="outer_code" property="outerCode" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="login_name" property="loginName" jdbcType="VARCHAR" />
+    <result column="real_name" property="realName" jdbcType="VARCHAR" />
+    <result column="nick_name" property="nickName" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="customer_type" property="customerType" jdbcType="VARCHAR" />
+    <result column="state" property="state" jdbcType="VARCHAR" />
+    <result column="sex" property="sex" jdbcType="VARCHAR" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="profession" property="profession" jdbcType="VARCHAR" />
+    <result column="hobby" property="hobby" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="activate_date" property="activateDate" jdbcType="TIMESTAMP" />
+    <result column="identity_type" property="identityType" jdbcType="VARCHAR" />
+    <result column="identity_code" property="identityCode" jdbcType="VARCHAR" />
+    <result column="state_change_date" property="stateChangeDate" jdbcType="TIMESTAMP" />
+    <result column="zip_code" property="zipCode" jdbcType="VARCHAR" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="mail" property="mail" jdbcType="VARCHAR" />
+    <result column="source" property="source" jdbcType="VARCHAR" />
+    <result column="device_code" property="deviceCode" jdbcType="VARCHAR" />
+    <result column="province" property="province" jdbcType="VARCHAR" />
+    <result column="age" property="age" jdbcType="BIGINT" />
+    <result column="verification_code" property="verificationCode" jdbcType="VARCHAR" />
+    <result column="rate" property="rate" jdbcType="INTEGER" />
+    <result column="start_date" property="startDate" jdbcType="TIMESTAMP" />
+    <result column="end_date" property="endDate" jdbcType="TIMESTAMP" />
+    <result column="service_stop" property="serviceStop" jdbcType="TIMESTAMP" />
+    <result column="county" property="county" jdbcType="VARCHAR" />
+    <result column="terminal_model" property="terminalModel" jdbcType="VARCHAR" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />     
+    <result column="suspended_date" property="suspendedDate" jdbcType="TIMESTAMP" />
+    <result column="cancelled_date" property="cancelledDate" jdbcType="TIMESTAMP" />
+    <result column="cust_id" property="custId" jdbcType="VARCHAR" />
+    <result column="is_lock" property="isLock" jdbcType="VARCHAR" />
+    <result column="is_sync" property="isSync" jdbcType="VARCHAR"/>
+    <result column="district_code" property="districtCode" jdbcType="VARCHAR"/>
+      <result column="loop_time" property="loopTime" jdbcType="BIGINT"/>
+    <association property="area" javaType="area">
+    	<id column="area_id" property="id" jdbcType="BIGINT" />
+    </association>
+    <association property="region" javaType="city">
+    	<id column="region" property="id" jdbcType="BIGINT" />
+    </association>
+  </resultMap>
+  
+  <resultMap id="AllResultMap" type="customer" >
+    <id column="c_id" property="id" jdbcType="BIGINT" />
+    <result column="c_code" property="code" jdbcType="VARCHAR" />
+    <result column="c_outer_code" property="outerCode" jdbcType="VARCHAR" />
+    <result column="c_user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="c_login_name" property="loginName" jdbcType="VARCHAR" />
+    <result column="c_real_name" property="realName" jdbcType="VARCHAR" />
+    <result column="c_nick_name" property="nickName" jdbcType="VARCHAR" />
+    <result column="c_password" property="password" jdbcType="VARCHAR" />
+    <result column="c_customer_type" property="customerType" jdbcType="VARCHAR" />
+    <result column="c_state" property="state" jdbcType="VARCHAR" />
+    <result column="c_sex" property="sex" jdbcType="VARCHAR" />
+    <result column="c_phone" property="phone" jdbcType="VARCHAR" />
+    <result column="c_profession" property="profession" jdbcType="VARCHAR" />
+    <result column="c_hobby" property="hobby" jdbcType="VARCHAR" />
+    <result column="c_create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="c_identity_type" property="identityType" jdbcType="VARCHAR" />
+    <result column="c_identity_code" property="identityCode" jdbcType="VARCHAR" />
+    <result column="c_state_change_date" property="stateChangeDate" jdbcType="TIMESTAMP" />
+    <result column="c_zip_code" property="zipCode" jdbcType="VARCHAR" />
+    <result column="c_address" property="address" jdbcType="VARCHAR" />
+    <result column="c_mail" property="mail" jdbcType="VARCHAR" />
+    <result column="c_source" property="source" jdbcType="VARCHAR" />
+    <result column="c_device_code" property="deviceCode" jdbcType="VARCHAR" />
+    <result column="c_province" property="province" jdbcType="VARCHAR" />
+    <result column="c_age" property="age" jdbcType="BIGINT" />
+    <result column="c_activate_date" property="activateDate" jdbcType="TIMESTAMP" />
+    <result column="c_verification_code" property="verificationCode" jdbcType="VARCHAR" />
+    <result column="c_rate" property="rate" jdbcType="INTEGER" />
+    <result column="c_start_date" property="startDate" jdbcType="TIMESTAMP" />
+    <result column="c_end_date" property="endDate" jdbcType="TIMESTAMP" />
+    <result column="c_service_stop" property="serviceStop" jdbcType="VARCHAR" />
+    <result column="c_county" property="county" jdbcType="VARCHAR" />
+    <result column="c_terminal_model" property="terminalModel" jdbcType="VARCHAR" />
+    <result column="c_update_time" property="updateTime" jdbcType="TIMESTAMP" />     
+    <result column="c_suspended_date" property="suspendedDate" jdbcType="TIMESTAMP" />
+    <result column="c_cancelled_date" property="cancelledDate" jdbcType="TIMESTAMP" />
+    <result column="c_cust_id" property="custId" jdbcType="VARCHAR" />
+    <result column="c_is_lock" property="isLock" jdbcType="VARCHAR" />
+    <result column="c_is_sync" property="isSync" jdbcType="VARCHAR"/>
+   <association property="area" javaType="area">
+    	<id column="a_id" property="id" jdbcType="BIGINT" />
+	    <result column="a_code" property="code" jdbcType="VARCHAR" />
+	    <result column="a_name" property="name" jdbcType="VARCHAR" />
+	    <result column="a_state" property="state" jdbcType="VARCHAR"/>
+	    <result column="a_parent_id" property="parentId" jdbcType="BIGINT" />
+	    <result column="a_memo" property="memo" jdbcType="VARCHAR" />
+    </association>
+    <association property="region" javaType="city">
+         <id column="bc_id" property="id" jdbcType="BIGINT" />
+         <result column="bc_code" property="code" jdbcType="VARCHAR"/>
+         <result column="bc_name" property="name" jdbcType="VARCHAR" />
+    </association>
+  </resultMap>
+ 
+  <sql id="Base_Column_List" >
+    id, code,outer_code,user_id, login_name, real_name, nick_name, password, customer_type, state, sex,phone, profession, hobby, create_date, identity_type,identity_code,
+    state_change_date,zip_code, address,mail, area_id,source,device_code,province,age,activate_date,verification_code,rate,start_date,end_date,region,
+    county,service_stop,terminal_model,update_time,suspended_date,cancelled_date,cust_id,is_sync,is_lock,district_code
+  </sql>
+  
+  <sql id="Base_of_group_Column_List" >
+    c.id, c.code,c.outer_code,c.user_id, c.login_name, c.real_name, c.nick_name, c.password, c.customer_type, c.state, c.sex,c.phone, c.profession, c.hobby, c.create_date, c.identity_type,c.identity_code,
+    c.state_change_date,c.zip_code, c.address,mail, c.area_id,c.source,c.device_code,c.province,age,c.activate_date,c.verification_code,c.rate,c.start_date,c.end_date,c.region,
+    c.county,c.service_stop,c.terminal_model,c.update_time,c.suspended_date,c.cancelled_date,c.cust_id,c.is_sync,c.is_lock,c.district_code
+  </sql>
+  
+     <select id="getCustomerByIds" resultMap="AllResultMap" parameterType="java.util.List">
+    select c.id as c_id, c.user_id as c_user_id, c.code as c_code, c.login_name as c_login_name, c.real_name as c_real_name, c.nick_name as c_nick_name, c.password as c_password,
+    c.customer_type as c_customer_type, c.state as c_state, c.sex as c_sex,c.phone as c_phone,c.profession as c_profession,c.hobby as c_hobby,
+    c.create_date as c_create_date,c.identity_type as c_identity_type,c.identity_code as c_identity_code,c.state_change_date as c_state_change_date, 
+    c.zip_code as c_zip_code, c.address as c_address,c.mail as c_mail, c.area_id as c_area_id,c.source as c_source,c.device_code as c_device_code,
+    c.province as c_province,c.age as c_age,c.activate_date as c_activate_date,c.verification_code as c_verification_code,c.rate as c_rate,
+    c.start_date as c_start_date,c.end_date as c_end_date,c.region as c_region,c.county as c_county,c.service_stop as c_service_stop,
+    c.terminal_model as c_terminal_model,c.update_time as c_update_time, c.suspended_date as c_suspended_date,c.cancelled_date as c_cancelled_date,
+    c.cust_id as c_cust_id,c.is_lock as c_is_lock,c.is_sync as c_is_sync,a.id as a_id, a.code as a_code, a.name as a_name,a.state as a_state, a.parent_id as a_parent_id, a.memo as a_memo,
+    bc.id as bc_id,bc.name as bc_name,bc.code as bc_code,bc.create_date as bc_create_date
+    from bss_customer c
+    left outer join bss_area a on c.AREA_ID = a.id
+    left outer join bss_city bc on bc.id = c.region
+     where c.id in 
+        <foreach collection="ids" item="id"  open="(" separator="," close=")">  
+            #{id} 
+        </foreach>
+    </select>
+  
+  <select id="getById" resultMap="AllResultMap" parameterType="java.lang.Long" >
+    select 
+    c.id as c_id, c.user_id as c_user_id, c.code as c_code, c.outer_code as c_outer_code, c.login_name as c_login_name, c.real_name as c_real_name, c.nick_name as c_nick_name, c.password as c_password,
+    c.customer_type as c_customer_type, c.state as c_state, c.sex as c_sex,c.phone as c_phone,c.profession as c_profession,c.hobby as c_hobby,
+    c.create_date as c_create_date,c.identity_type as c_identity_type,c.identity_code as c_identity_code,c.state_change_date as c_state_change_date, 
+    c.zip_code as c_zip_code, c.address as c_address,c.mail as c_mail, c.area_id as c_area_id,c.source as c_source,c.device_code as c_device_code,
+    c.province as c_province,c.age as c_age,c.activate_date as c_activate_date,c.verification_code as c_verification_code,c.rate as c_rate,
+    c.start_date as c_start_date,c.end_date as c_end_date,c.region as c_region,c.county as c_county,c.service_stop as c_service_stop,c.is_sync as c_is_sync,
+    c.terminal_model as c_terminal_model,c.update_time as c_update_time, c.suspended_date as c_suspended_date,c.cancelled_date as c_cancelled_date,
+    c.cust_id as c_cust_id,a.id as a_id, a.code as a_code, a.name as a_name,a.state as a_state, a.parent_id as a_parent_id, a.memo as a_memo,
+    bc.id as bc_id,bc.name as bc_name,bc.code as bc_code,bc.create_date as bc_create_date
+    from bss_customer c
+    left outer join bss_area a on c.AREA_ID = a.id
+    left outer join bss_city bc on bc.id = c.region
+    where c.ID = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="getMinCustomerByCustId" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select 
+    <include refid="Base_Column_List"/>
+    from bss_customer c
+    where c.cust_id = #{custId,jdbcType=VARCHAR}
+    and device_code is null
+    and state = 'NORMAL'
+    order by id
+    limit 1
+  </select>
+  
+  <select id="getCustomersByCustId" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select 
+    <include refid="Base_Column_List"/>
+    from bss_customer c
+    where c.cust_id = #{custId,jdbcType=VARCHAR}   
+    order by id
+  </select>
+  
+  <select id="getByCode" resultMap="AllResultMap" parameterType="java.lang.String" >
+    select 
+    c.id as c_id, c.user_id as c_user_id,c.code as c_code,c.outer_code as c_outer_code,c.login_name as c_login_name, c.real_name as c_real_name, c.nick_name as c_nick_name, c.password as c_password,
+    c.customer_type as c_customer_type, c.state as c_state, c.sex as c_sex,c.phone as c_phone,c.profession as c_profession,c.hobby as c_hobby,
+    c.create_date as c_create_date,c.identity_type as c_identity_type,c.identity_code as c_identity_code,c.state_change_date as c_state_change_date, 
+    c.zip_code as c_zip_code, c.address as c_address,c.mail as c_mail, c.area_id as c_area_id,c.source as c_source,c.device_code as c_device_code,
+    c.province as c_province,c.age as c_age,c.activate_date as c_activate_date,c.verification_code as c_verification_code,c.rate as c_rate,
+    c.start_date as c_start_date,c.end_date as c_end_date,c.region as c_region,c.county as c_county,c.service_stop as c_service_stop,c.terminal_model as c_terminal_model,c.update_time as c_update_time, c.suspended_date as c_suspended_date,c.cancelled_date as c_cancelled_date,
+    c.cust_id as c_cust_id,c.is_sync as c_is_sync,
+    a.id as a_id, a.code as a_code, a.name as a_name,a.state as a_state, a.parent_id as a_parent_id, a.memo as a_memo
+    from bss_customer c
+    left outer join bss_area a on c.AREA_ID = a.id
+    left outer join bss_city bc on bc.id = c.region
+    where c.CODE = #{userCode}
+  </select>
+  
+    <insert id="save" parameterType="customer" useGeneratedKeys="true" keyProperty="id">
+   		insert into bss_customer (code,outer_code,region,rate,county,login_name,real_name,nick_name,password,customer_type,state,sex,phone,profession,hobby,create_date,
+    	identity_type,identity_code,state_change_date,zip_code,address,mail,area_id,start_date,end_date,source,device_code,district_code,
+    	province,age,activate_date,verification_code,user_id,update_time,terminal_model,suspended_date,cancelled_date,service_stop,cust_id,is_sync,is_lock)
+   	 	values ( #{code,jdbcType=VARCHAR},
+   	 	    #{outerCode,jdbcType=VARCHAR},
+   	 		#{region.id,jdbcType=BIGINT},
+   	 		#{rate,jdbcType=INTEGER},
+   	 		#{county,jdbcType=VARCHAR},
+   	 		#{loginName,jdbcType=VARCHAR},
+   	 		#{realName,jdbcType=VARCHAR},
+   	 		#{nickName,jdbcType=VARCHAR}, 
+   	 		#{password,jdbcType=VARCHAR}, 
+      		#{customerType,jdbcType=VARCHAR}, 
+      		#{state,jdbcType=VARCHAR},
+      		#{sex,jdbcType=VARCHAR}, 
+      		#{phone,jdbcType=VARCHAR}, 
+      		#{profession,jdbcType=VARCHAR}, 
+      		#{hobby,jdbcType=VARCHAR}, 
+      		#{createDate,jdbcType=TIMESTAMP}, 
+      		#{identityType,jdbcType=VARCHAR}, 
+      		#{identityCode,jdbcType=VARCHAR}, 
+      		#{stateChangeDate,jdbcType=TIMESTAMP}, 
+      		#{zipCode,jdbcType=VARCHAR}, 
+      		#{address,jdbcType=VARCHAR},
+      		#{mail,jdbcType=VARCHAR},
+      		#{area.id,jdbcType=BIGINT},
+      		#{startDate,jdbcType=TIMESTAMP},
+      		#{endDate,jdbcType=TIMESTAMP},
+      		#{source,jdbcType=VARCHAR},
+      		#{deviceCode,jdbcType=VARCHAR},
+      		#{districtCode,jdbcType=VARCHAR},
+      		#{province,jdbcType=VARCHAR},
+      		#{age,jdbcType=BIGINT},
+      		#{activateDate,jdbcType=TIMESTAMP},
+      		#{verificationCode,jdbcType=VARCHAR},
+      		#{userId,jdbcType=VARCHAR},
+      		#{updateTime,jdbcType=TIMESTAMP},
+      		#{terminalModel,jdbcType=VARCHAR},
+      		#{suspendedDate,jdbcType=TIMESTAMP},
+      		#{cancelledDate,jdbcType=TIMESTAMP},
+      		#{serviceStop,jdbcType=VARCHAR},
+      		#{custId,jdbcType=VARCHAR},
+      		#{isSync,jdbcType=VARCHAR},
+      		#{isLock,jdbcType=VARCHAR}
+      		)
+    </insert>
+  
+  <update id="update" parameterType="customer" >
+    update bss_customer
+    set 
+      code = #{code,jdbcType=VARCHAR},
+      outer_code = #{outerCode,jdbcType=VARCHAR},
+      rate=#{rate,jdbcType=VARCHAR},
+      login_name = #{loginName,jdbcType=VARCHAR},
+      real_name = #{realName,jdbcType=VARCHAR},
+      nick_name = #{nickName,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      customer_type = #{customerType,jdbcType=VARCHAR},
+      state = #{state,jdbcType=VARCHAR},
+      sex = #{sex,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=VARCHAR},
+      profession = #{profession,jdbcType=VARCHAR},
+      hobby = #{hobby,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      identity_type = #{identityType,jdbcType=VARCHAR},
+      identity_code = #{identityCode,jdbcType=VARCHAR},
+      state_change_date = now(),
+      zip_code = #{zipCode,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      mail = #{mail,jdbcType=VARCHAR},
+      area_id = #{area.id,jdbcType=BIGINT},
+      region = #{region.id,jdbcType=BIGINT},
+      source = #{source,jdbcType=VARCHAR},
+      device_code = #{deviceCode,jdbcType=VARCHAR},
+      district_code=#{districtCode,jdbcType=VARCHAR},
+      province = #{province,jdbcType=VARCHAR},
+      age = #{age,jdbcType=BIGINT},
+      verification_code = #{verificationCode,jdbcType=VARCHAR},
+      activate_date = #{activateDate,jdbcType=TIMESTAMP},
+      user_id = #{userId,jdbcType=VARCHAR},
+      service_stop = #{serviceStop,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      terminal_model = #{terminalModel,jdbcType=VARCHAR},
+      suspended_date = #{suspendedDate,jdbcType=TIMESTAMP},
+      cancelled_date = #{cancelledDate,jdbcType=TIMESTAMP},
+      is_lock=#{isLock,jdbcType=VARCHAR},
+      cust_id=#{custId,jdbcType=VARCHAR},
+      is_sync = #{isSync,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+   <update id="updateByUserId" parameterType="customer" >
+    update bss_customer
+    set 
+      code = #{code,jdbcType=VARCHAR},
+      rate=#{rate,jdbcType=VARCHAR},
+      login_name = #{loginName,jdbcType=VARCHAR},
+      real_name = #{realName,jdbcType=VARCHAR},
+      nick_name = #{nickName,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      customer_type = #{customerType,jdbcType=VARCHAR},
+      state = #{state,jdbcType=VARCHAR},
+      sex = #{sex,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=VARCHAR},
+      profession = #{profession,jdbcType=VARCHAR},
+      hobby = #{hobby,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      identity_type = #{identityType,jdbcType=VARCHAR},
+      identity_code = #{identityCode,jdbcType=VARCHAR},
+      state_change_date = now(),
+      zip_code = #{zipCode,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      mail = #{mail,jdbcType=VARCHAR},
+      area_id = #{area.id,jdbcType=BIGINT},
+      region = #{region.id,jdbcType=BIGINT},
+      source = #{source,jdbcType=VARCHAR},
+      device_code = #{deviceCode,jdbcType=VARCHAR},
+      province = #{province,jdbcType=VARCHAR},
+      age = #{age,jdbcType=BIGINT},
+      verification_code = #{verificationCode,jdbcType=VARCHAR},
+      activate_date = #{activateDate,jdbcType=TIMESTAMP},
+      service_stop = #{serviceStop,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      terminal_model = #{terminalModel,jdbcType=VARCHAR},
+      suspended_date = #{suspendedDate,jdbcType=TIMESTAMP},
+      cancelled_date = #{cancelledDate,jdbcType=TIMESTAMP},
+      is_lock=#{isLock,jdbcType=VARCHAR},
+      cust_id=#{custId,jdbcType=VARCHAR},
+      is_sync = #{isSync,jdbcType=VARCHAR}
+    where user_id = #{userId,jdbcType=VARCHAR}
+  </update>
+  
+  <update id="pauseAndRecoverDevice" parameterType="map" >
+    update bss_customer
+    set       
+      state = #{state,jdbcType=VARCHAR}  
+    where user_id = #{userId,jdbcType=VARCHAR}
+  </update>
+  
+  <select id="getByLoginName" resultMap="BaseResultMap" parameterType="map">
+    select 
+    <include refid="Base_Column_List"/>
+    from bss_customer c
+    where c.login_name = #{loginName,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="getBySource" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select 
+    <include refid="Base_Column_List"/>
+    from bss_customer c
+    where c.source = #{source,jdbcType=VARCHAR}
+  </select>
+
+    <select id="getCustomerByUserIdAndOuterCode" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from bss_customer c
+        where c.user_id = #{userId,jdbcType=VARCHAR}
+        <if test="outerCode != null and outerCode != ''">
+            and c.outer_code = #{outerCode,jdbcType=VARCHAR}
+        </if>
+    </select>
+
+    <select id="getCustomerByUserIdAndAreaId" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from bss_customer c
+        where c.user_id = #{userId,jdbcType=VARCHAR} and c.area_id = #{areaId,jdbcType=BIGINT}
+    </select>
+
+    <delete id="delCustomerByUserIdAndOuterCode" parameterType="map">
+      delete from bss_customer where user_id = #{userId,jdbcType=VARCHAR} and outer_code = #{outerCode,jdbcType=VARCHAR} and id != #{Id,jdbcType=BIGINT}
+    </delete>
+
+  <select id="getCustomerByCustIdAndDeviceCode" resultMap="BaseResultMap" parameterType="map">
+    select 
+    	<include refid="Base_Column_List"/>
+    from bss_customer c
+    where c.cust_id = #{custId,jdbcType=VARCHAR} and c.device_code = #{deviceCode,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="getLatestCreateCustomerByCustId" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select 
+    <include refid="Base_Column_List"/>
+    from bss_customer c
+    where c.cust_id = #{custId,jdbcType=VARCHAR} order by c.id desc limit 1
+  </select>
+  
+  <select id="getByPhone" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select 
+    <include refid="Base_Column_List"/>
+    from bss_customer c
+    where c.phone = #{phone,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="getByUserId" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select 
+    <include refid="Base_Column_List"/>
+    from bss_customer c
+    where c.user_id = #{userId,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="getNotProcessedCustomers" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List"/>
+		from bss_customer 
+		where terminal_model = '1'
+  </select>	
+  
+  <select id="getAllCustomerByCustId" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List"/>
+		from bss_customer 
+		where cust_id = #{custId, jdbcType=VARCHAR}
+  </select>
+   
+  <update id="updateCustomerAsProcessed">
+  	 update bss_customer set terminal_model = '0' where user_id in
+     <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+     </foreach>
+  </update>
+  
+  <update id="updateSyncById" parameterType="map">
+  	 update bss_customer set is_sync = #{isSync,jdbcType=VARCHAR} where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <select id="getAllCustomerCreatedLastDay" parameterType="map" resultType="long">
+		select
+		count(id)
+		from bss_customer cus
+		where cus.create_date between #{start} and #{end} 
+		and cus.source != #{source}  
+		and cus.region = #{region,jdbcType=VARCHAR}
+  </select>	
+  
+  <select id="getAllCustomer" parameterType="java.lang.String" resultType="long">
+		select
+		count(id)
+		from bss_customer cus
+		where cus.source != #{source} 
+		and cus.region = #{region}
+  </select>	
+  
+  <select id="getAllCustomerCancelLastDay" parameterType="map" resultType="long">
+		select
+		count(id)
+		from bss_customer cus
+		where cus.state_change_date between #{start} and #{end} 
+		and cus.source != #{source}  
+		and cus.region = #{region,jdbcType=VARCHAR}
+		and cus.state = "CANCEL"
+  </select>	
+  
+  <select id="findCustomersByCondition" resultMap="AllResultMap">
+	select c.id as c_id, c.user_id as c_user_id, c.code as c_code,c.outer_code as c_outer_code,  c.login_name as c_login_name, c.real_name as c_real_name, c.nick_name as c_nick_name, c.password as c_password,
+    c.customer_type as c_customer_type, c.state as c_state, c.sex as c_sex,c.phone as c_phone,c.profession as c_profession,c.hobby as c_hobby,
+    c.create_date as c_create_date,c.identity_type as c_identity_type,c.identity_code as c_identity_code,c.state_change_date as c_state_change_date, 
+    c.zip_code as c_zip_code, c.address as c_address,c.mail as c_mail, c.area_id as c_area_id,c.source as c_source,c.device_code as c_device_code,
+    c.province as c_province,c.age as c_age,c.activate_date as c_activate_date,c.verification_code as c_verification_code,c.rate as c_rate,
+    c.start_date as c_start_date,c.end_date as c_end_date,c.region as c_region,c.county as c_county,c.service_stop as c_service_stop,
+    c.terminal_model as c_terminal_model,c.update_time as c_update_time, c.suspended_date as c_suspended_date,c.cancelled_date as c_cancelled_date,
+    c.cust_id as c_cust_id,c.is_lock as c_is_lock,c.is_sync as c_is_sync,a.id as a_id, a.code as a_code, a.name as a_name,a.state as a_state, a.parent_id as a_parent_id, a.memo as a_memo,
+    bc.id as bc_id,bc.name as bc_name,bc.code as bc_code,bc.create_date as bc_create_date
+    from bss_customer c
+    left outer join bss_area a on c.AREA_ID = a.id
+    left outer join bss_city bc on bc.id = c.region
+    <where>
+    	<if test="id != null and id != ''">
+    		c.id = #{id}
+    	</if>
+    	<if test="userId != null and userId != ''">
+    		and c.user_id like '%${userId}%'
+    	</if>
+    	<if test="code != null and code != ''">
+    		and c.code like '%${code}%'
+    	</if>
+    	<if test="userIds != null and userIds != ''">
+    		and c.user_id in 
+	        <foreach collection="userIds" item="uId"  open="(" separator="," close=")">  
+	            #{uId} 
+	        </foreach>
+    	</if>
+    	<if test="codes != null and codes != ''">
+    		and c.code in 
+	        <foreach collection="codes" item="uCode"  open="(" separator="," close=")">  
+	            #{uCode} 
+	        </foreach>
+    	</if>
+    	<if test="phone != null and phone != ''">
+    		and c.phone like '%${phone}%'
+    	</if> 
+    	  
+    	<if test="loginName != null and loginName != ''">
+    		and c.login_name like '%${loginName}%'
+    	</if>
+    	<if test="region != null and region != ''">
+    		and c.region = #{region}
+    	</if> 
+    	<if test="area != null and area != '' and area != '0'">
+    		and c.area_id = #{area}
+    	</if> 
+    	<if test="serviceStop != null and serviceStop != ''">
+    		and c.service_stop like '%${serviceStop}%'
+    	</if> 
+    	<if test="state != null and state != ''">
+    		and c.state = #{state}
+    	</if> 
+    	<if test="nickName != null and nickName != ''">
+    		and c.nick_name like '%${nickName}%'
+    	</if>     	
+    	<if test="realName != null and realName != ''">
+    		and c.real_name like '%${realName}%'
+    	</if>  
+    	<if test="source != null and source != ''">
+    		and c.source like '%${source}%'
+    	</if>  
+    	<if test="age != null and age != ''">
+    		and c.age = #{age}
+    	</if>  
+    	<if test="rate != null and rate != ''">
+    		and c.rate = #{rate}
+    	</if> 
+    	 <if test="startDate!=null and startDate!='' and endDate !=null and endDate !=''">
+      	 	and c.create_date between #{startDate} and #{endDate} 
+        </if>
+        <if test="startDateAvtive !=null and startDateAvtive !='' and endDateAvtive !=null and endDateAvtive !=''">
+      	 	and c.activate_date between #{startDateAvtive} and #{endDateAvtive} 
+        </if> 
+    </where>
+    order by c.id desc
+    <if test="pageNo != null">
+	 limit #{pageNo}, #{pageSize}
+    </if>  
+  </select>	  
+  <select id="findCustomersOfGroupByCondition" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_of_group_Column_List"/>
+        from
+        bss_customer c left JOIN ${tableName} m on m.code=c.code
+        <where>
+        <if test="group != null and group != ''">
+            m.${character}=#{group}
+        </if>
+        <if test="userId != null and userId != ''">
+    		and c.user_id like '%${userId}%'
+    	</if>
+    	<if test="code != null and code != ''">
+    		and c.code like '%${code}%'
+    	</if>
+    	<if test="phone != null and phone != ''">
+    		and c.phone like '%${phone}%'
+    	</if>
+    	<if test="region != null and region != ''">
+    		and c.region = #{region}
+    	</if>
+        </where>
+        order by c.id desc
+    <if test="pageNo != null">
+	 limit #{pageNo}, #{pageSize}
+    </if>
+    </select>
+
+    <select id="findCustomersByBackImageId" resultMap="BaseResultMap" parameterType="map">
+        select
+         c.id, c.code,c.user_id, c.login_name, c.real_name, c.nick_name, c.password, c.customer_type, c.state, c.sex,c.phone, c.profession, c.hobby, c.create_date, c.identity_type,c.identity_code,
+    c.state_change_date,c.zip_code, c.address,mail, c.area_id,c.source,c.device_code,c.province,age,c.activate_date,c.verification_code,c.rate,c.start_date,c.end_date,c.region,
+    c.county,c.service_stop,c.terminal_model,c.update_time,c.suspended_date,c.cancelled_date,c.cust_id,c.is_sync,c.is_lock,c.district_code,m.loop_time as loop_time
+        from
+        bss_customer c,${tableName} m
+        <where>
+          m.code=c.code
+            <if test="group != null and group != ''">
+              and  m.${character}=#{group}
+            </if>
+            <if test="userId != null and userId != ''">
+                and c.user_id like '%${userId}%'
+            </if>
+            <if test="code != null and code != ''">
+                and c.code like '%${code}%'
+            </if>
+            <if test="phone != null and phone != ''">
+                and c.phone like '%${phone}%'
+            </if>
+            <if test="region != null and region != ''">
+                and c.region = #{region}
+            </if>
+        </where>
+        order by c.id desc
+        <if test="pageNo != null">
+            limit #{pageNo}, #{pageSize}
+        </if>
+    </select>
+    
+    <select id="getUserCountOfGroupByCondition" resultType="java.lang.Integer" parameterType="map" >
+        select
+         count(c.id)
+        from
+        bss_customer c left JOIN ${tableName} m on m.code=c.code
+        <where>
+        <if test="group != null and group != ''">
+            m.${character}=#{group}
+        </if>  
+        <if test="userId != null and userId != ''">
+    		and c.user_id like '%${userId}%'
+    	</if>
+    	<if test="code != null and code != ''">
+    		and c.code like '%${code}%'
+    	</if>
+    	<if test="phone != null and phone != ''">
+    		and c.phone like '%${phone}%'
+    	</if> 
+    	<if test="region != null and region != ''">
+    		and c.region = #{region}
+    	</if> 
+        </where>
+    </select>
+   <select id="findCustomersToExport" resultMap="AllResultMap">
+	select c.id as c_id, c.user_id as c_user_id, c.code as c_code, c.outer_code as c_outer_code, c.login_name as c_login_name, c.real_name as c_real_name, c.nick_name as c_nick_name, c.password as c_password,
+    c.customer_type as c_customer_type, c.state as c_state, c.sex as c_sex,c.phone as c_phone,c.profession as c_profession,c.hobby as c_hobby,
+    c.create_date as c_create_date,c.identity_type as c_identity_type,c.identity_code as c_identity_code,c.state_change_date as c_state_change_date, 
+    c.zip_code as c_zip_code, c.address as c_address,c.mail as c_mail, c.area_id as c_area_id,c.source as c_source,c.device_code as c_device_code,
+    c.province as c_province,c.age as c_age,c.activate_date as c_activate_date,c.verification_code as c_verification_code,c.rate as c_rate,
+    c.start_date as c_start_date,c.end_date as c_end_date,c.region as c_region,c.county as c_county,c.service_stop as c_service_stop,
+    c.terminal_model as c_terminal_model,c.update_time as c_update_time, c.suspended_date as c_suspended_date,c.cancelled_date as c_cancelled_date,
+    c.cust_id as c_cust_id,c.is_lock as c_is_lock,c.is_sync as c_is_sync,a.id as a_id, a.code as a_code, a.name as a_name,a.state as a_state, a.parent_id as a_parent_id, a.memo as a_memo,
+    bc.id as bc_id,bc.name as bc_name,bc.code as bc_code,bc.create_date as bc_create_date
+    from bss_customer c
+    left outer join bss_area a on c.AREA_ID = a.id
+    left outer join bss_city bc on bc.id = c.region
+    <where>
+    	<if test="id != null and id != ''">
+    		c.id = #{id}
+    	</if>
+    	<if test="userId != null and userId != ''">
+    		and c.user_id like '%${userId}%'
+    	</if>
+    	<if test="code != null and code != ''">
+    		and c.code like '%${code}%'
+    	</if>
+    	<if test="phone != null and phone != ''">
+    		and c.phone like '%${phone}%'
+    	</if> 
+    	  
+    	<if test="loginName != null and loginName != ''">
+    		and c.login_name like '%${loginName}%'
+    	</if>
+    	<if test="region != null and region != ''">
+    		and c.region = #{region}
+    	</if> 
+    	<if test="area != null and area != ''">
+    		and c.area_id = #{area}
+    	</if> 
+    	<if test="serviceStop != null and serviceStop != ''">
+    		and c.service_stop like '%${serviceStop}%'
+    	</if> 
+    	<if test="nickName != null and nickName != ''">
+    		and c.nick_name like '%${nickName}%'
+    	</if>     	
+    	<if test="realName != null and realName != ''">
+    		and c.real_name like '%${realName}%'
+    	</if>  
+    	<if test="source != null and source != ''">
+    		and c.source like '%${source}%'
+    	</if>  
+    	<if test="age != null and age != ''">
+    		and c.age = #{age}
+    	</if>  
+    	<if test="rate != null and rate != ''">
+    		and c.rate = #{rate}
+    	</if>  
+    	 <if test="startDate!=null and startDate!='' and endDate !=null and endDate !=''">
+      	 	and c.create_date between #{startDate} and #{endDate} 
+        </if>
+        <if test="startDateAvtive !=null and startDateAvtive !='' and endDateAvtive !=null and endDateAvtive !=''">
+      	 	and c.activate_date between #{startDateAvtive} and #{endDateAvtive} 
+        </if>
+    </where>
+    order by c.id desc
+    <if test="pageNo != null">
+	 limit #{pageNo}, #{pageSize}
+    </if>  
+  </select>	 
+  
+  <select id="findExportCustomers" resultMap="AllResultMap">
+	select c.id as c_id, c.user_id as c_user_id, c.code as c_code, c.outer_code as c_outer_code, c.login_name as c_login_name, c.real_name as c_real_name, c.nick_name as c_nick_name, c.password as c_password,
+    c.customer_type as c_customer_type, c.state as c_state, c.sex as c_sex,c.phone as c_phone,c.profession as c_profession,c.hobby as c_hobby,
+    c.create_date as c_create_date,c.identity_type as c_identity_type,c.identity_code as c_identity_code,c.state_change_date as c_state_change_date, 
+    c.zip_code as c_zip_code, c.address as c_address,c.mail as c_mail, c.area_id as c_area_id,c.source as c_source,c.device_code as c_device_code,
+    c.province as c_province,c.age as c_age,c.activate_date as c_activate_date,c.verification_code as c_verification_code,c.rate as c_rate,
+    c.start_date as c_start_date,c.end_date as c_end_date,c.region as c_region,c.county as c_county,c.service_stop as c_service_stop,
+    c.terminal_model as c_terminal_model,c.update_time as c_update_time, c.suspended_date as c_suspended_date,c.cancelled_date as c_cancelled_date,
+    c.cust_id as c_cust_id,c.is_lock as c_is_lock,c.is_sync as c_is_sync,a.id as a_id, a.code as a_code, a.name as a_name,a.state as a_state, a.parent_id as a_parent_id, a.memo as a_memo,
+    bc.id as bc_id,bc.name as bc_name,bc.code as bc_code,bc.create_date as bc_create_date
+    from bss_customer c
+    left outer join bss_area a on c.AREA_ID = a.id
+    left outer join bss_city bc on bc.id = c.region
+    <where>
+    	<if test="uUserId != null and uUserId != ''">
+    		and c.user_id like '%${uUserId}%'
+    	</if>
+    	<if test="uCode != null and uCode != ''">
+    		and c.code like '%${uCode}%'
+    	</if>
+    	<if test="uPhone != null and uPhone != ''">
+    		and c.phone like '%${uPhone}%'
+    	</if>
+    	<if test="areaId != null and areaId != ''">
+    		and c.area_id = #{areaId}
+    	</if> 
+    	<if test="userId != null and userId != ''">
+    		and c.user_id in 
+	        <foreach collection="userId" item="uId"  open="(" separator="," close=")">  
+	            #{uId} 
+	        </foreach>
+    	</if>
+    	<if test="code != null and code != ''">
+    		and c.code in 
+	        <foreach collection="code" item="uc"  open="(" separator="," close=")">  
+	            #{uc} 
+	        </foreach>
+    	</if>
+    	<if test="phone != null and phone != ''">
+    		and c.phone like '%${phone}%'
+    	</if> 
+    	<if test="loginName != null and loginName != ''">
+    		and c.login_name like '%${loginName}%'
+    	</if>
+    	<if test="region != null and region != ''">
+    		and c.region = #{region}
+    	</if> 
+    	<if test="area != null and area != '' and area != '0'">
+    		and c.area_id = #{area}
+    	</if> 
+    	<if test="state != null and state != ''">
+    		and c.state = #{state}
+    	</if> 
+    	<if test="nickName != null and nickName != ''">
+    		and c.nick_name like '%${nickName}%'
+    	</if>     	
+    	 <if test="startDate!=null and startDate!='' and endDate !=null and endDate !=''">
+      	 	and c.create_date between #{startDate} and #{endDate} 
+        </if>
+        <if test="startDateAvtive !=null and startDateAvtive !='' and endDateAvtive !=null and endDateAvtive !=''">
+      	 	and c.activate_date between #{startDateAvtive} and #{endDateAvtive} 
+        </if> 
+    </where>
+  </select>	 
+  
+  <select id="getCountByCondition" resultType="int">
+	select count(id)
+	from bss_customer c
+	<where>
+    	<if test="id != null and id != ''">
+    		c.id = #{id}
+    	</if>
+    	<if test="userId != null and userId != ''">
+    		and c.user_id like '%${userId}%'
+    	</if>
+    	<if test="code != null and code != ''">
+    		and c.code like '%${code}%'
+    	</if>
+    	<if test="userIds != null and userIds != ''">
+    		and c.user_id in 
+	        <foreach collection="userIds" item="uId"  open="(" separator="," close=")">  
+	            #{uId} 
+	        </foreach>
+    	</if>
+    	<if test="codes != null and codes != ''">
+    		and c.code in 
+	        <foreach collection="codes" item="uCode"  open="(" separator="," close=")">  
+	            #{uCode} 
+	        </foreach>
+    	</if>
+    	<if test="phone != null and phone != ''">
+    		and c.phone like '%${phone}%'
+    	</if> 
+    	  
+    	<if test="loginName != null and loginName != ''">
+    		and c.login_name like '%${loginName}%'
+    	</if>
+    	<if test="region != null and region != ''">
+    		and c.region = #{region}
+    	</if> 
+    	<if test="area != null and area != ''">
+    		and c.area_id = #{area}
+    	</if> 
+    	<if test="serviceStop != null and serviceStop != ''">
+    		and c.service_stop like '%${serviceStop}%'
+    	</if> 
+    	<if test="state != null and state != ''">
+    		and c.state = #{state}
+    	</if>
+    	<if test="nickName != null and nickName != ''">
+    		and c.nick_name like '%${nickName}%'
+    	</if>     	
+    	<if test="realName != null and realName != ''">
+    		and c.real_name like '%${realName}%'
+    	</if>  
+    	<if test="source != null and source != ''">
+    		and c.source like '%${source}%'
+    	</if>  
+    	<if test="age != null and age != ''">
+    		and c.age = #{age}
+    	</if>  
+    	<if test="rate != null and rate != ''">
+    		and c.rate = #{rate}
+    	</if>  
+    </where>
+  </select>	   
+  
+  <delete id="delete">
+  	delete from bss_customer where id = #{customerId}
+  </delete>
+  
+  <select id="findCanBindCustomersByCondition" parameterType="map" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/> 
+    from
+    (
+      select <include refid="Base_Column_List"/>
+	  from bss_customer a 
+	  where a.customer_type='PERSONAL' and a.state='NORMAL' and
+	  not exists (select 1 from bss_device_customer_account_map b where a.id = b.customer_id)
+	  union
+	  select <include refid="Base_Column_List"/> 
+	  from bss_customer a 
+	  where a.customer_type='GROUP' and a.state='NORMAL'
+    ) a 
+    <where>
+    	<if test="userId != null and userId != ''">
+    		user_id like '%${userId}%'
+    	</if>
+    	<if test="code != null and code != ''">
+    		and code like '%${code}%'
+    	</if>
+    	<if test="phone != null and phone != ''">
+    		and phone like '%${phone}%'
+    	</if> 
+    	<if test="loginName != null and loginName != ''">
+    		and login_name like '%${loginName}%'
+    	</if>
+    	<if test="region != null and region != ''">
+    		and region = #{region}
+    	</if> 
+    	<if test="area != null and area != ''">
+    		and area_id = #{area}
+    	</if> 
+    	<if test="serviceStop != null and serviceStop != ''">
+    		and service_stop like '%${serviceStop}%'
+    	</if> 
+    	<if test="nickName != null and nickName != ''">
+    		and nick_name like '%${nickName}%'
+    	</if>     	
+    	<if test="realName != null and realName != ''">
+    		and real_name like '%${realName}%'
+    	</if>  
+    	<if test="source != null and source != ''">
+    		and source like '%${source}%'
+    	</if>  
+    	<if test="age != null and age != ''">
+    		and age = #{age}
+    	</if>  
+    	<if test="rate != null and rate != ''">
+    		and rate = #{rate}
+    	</if>      
+    </where>
+    order by id desc
+    <if test="pageSize != null and pageSize != ''">
+    limit #{pageNo}, #{pageSize} 
+    </if>
+  </select>	   
+ <select id="getCountByState" parameterType="map" resultType="java.lang.Long">
+   select count(id)  from  bss_customer 
+   where source != #{source}  and  state = #{state}  and create_date between #{start} and #{end}
+   and area_id = #{province}
+   </select>
+
+    <select id="getLastInsertId" parameterType="map" resultType="java.lang.Long">
+        SELECT LAST_INSERT_ID()
+   </select>
+   
+   <!-- 开户统计，已废弃 -->
+   <select id="getCountByRegionAndState" parameterType="map" resultType="java.lang.Long">
+   select count(id) from  bss_customer 
+   where source != #{source}  and  state = #{state}  and create_date between #{start} and #{end}
+   and area_id = #{province} and region = #{city}
+   group by region
+   </select>
+  
+  <select id="getCountByCanBindCustomerCondition" parameterType="customer" resultType="int">
+    select count(1)
+    from
+    (
+      select <include refid="Base_Column_List"/>
+	  from bss_customer a 
+	  where a.customer_type='PERSONAL' and a.state='NORMAL' and
+	  not exists (select 1 from bss_device_customer_account_map b where a.id = b.customer_id)
+	  union
+	  select <include refid="Base_Column_List"/> 
+	  from bss_customer a 
+	  where a.customer_type='GROUP' and a.state='NORMAL'
+    ) a 
+    <where>
+    	<if test="userId != null and userId != ''">
+    		user_id like '%${userId}%'
+    	</if>
+    	<if test="code != null and code != ''">
+    		and code like '%${code}%'
+    	</if>
+    	<if test="phone != null and phone != ''">
+    		and phone like '%${phone}%'
+    	</if> 
+    	<if test="loginName != null and loginName != ''">
+    		and login_name like '%${loginName}%'
+    	</if>
+    	<if test="region != null and region != ''">
+    		and region = #{region}
+    	</if> 
+    	<if test="area != null and area != ''">
+    		and area_id = #{area}
+    	</if> 
+    	<if test="serviceStop != null and serviceStop != ''">
+    		and service_stop like '%${serviceStop}%'
+    	</if> 
+    	<if test="nickName != null and nickName != ''">
+    		and nick_name like '%${nickName}%'
+    	</if>     	
+    	<if test="realName != null and realName != ''">
+    		and real_name like '%${realName}%'
+    	</if>  
+    	<if test="source != null and source != ''">
+    		and source like '%${source}%'
+    	</if>  
+    	<if test="age != null and age != ''">
+    		and age = #{age}
+    	</if>  
+    	<if test="rate != null and rate != ''">
+    		and rate = #{rate}
+    	</if>      
+    </where>    
+  </select>	  
+  <select id="getAllCustomerByIsSync" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+   	select 
+   	<include refid="Base_Column_List"/>
+    from bss_customer
+    where is_sync = 'WAITSYNC'
+    <if test="num != null">
+        limit #{num}
+    </if>
+   </select>
+   
+    <select id="getCountByIsSync" resultType="int">
+   	select 
+   	count(id)
+    from bss_customer
+    where is_sync = 'WAITSYNC'
+   </select>
+  <select id="getOpenAndCancelCustomer" parameterType="map" resultMap="BaseResultMap">
+  	select <include refid="Base_Column_List"/>
+  	from bss_customer
+  	where create_date BETWEEN #{createStartDate} and #{createEndDate}
+  	<if test="cancelStartDate != null">
+  		or cancelled_date BETWEEN #{cancelStartDate} and #{cancelEndDate}
+  	</if>
+  </select>
+  
+  <select id="getAccountUserReport" resultType="userActiveStatistics">
+    select cityId, account, accounts from 
+    (
+    
+  	  select region as cityId, count(region) as account, 0 as accounts from bss_customer where 
+	    source != 'OTHERS' and
+	    date_format(create_date, '%Y-%m-%d') = #{activeDate} and
+	    state = 'NORMAL' and
+	    area_id = #{province} 
+  	  group by region
+	  union
+  	  select region as cityId, 0 as account, count(region) as accounts from bss_customer where 
+	    source != 'OTHERS' and
+	    date_format(create_date, '%Y-%m-%d') &lt;= #{activeDate} and
+	    state = 'NORMAL' and
+	    area_id = #{province} 
+	  group by region	    
+    ) a order by a.cityId
+  </select>
+  
+   <select id="getActiveUserReport" resultType="userActiveStatistics">
+    select cityId, activeUser, activeUsers from 
+    (
+    
+  	  select region as cityId, count(region) as activeUser, 0 as activeUsers from bss_customer where 
+	    source != 'OTHERS' and
+	    date_format(activate_date, '%Y-%m-%d') = #{activeDate} and
+	    state = #{statisticsType} and
+	    area_id = #{province} 
+  	  group by region
+	  union
+  	  select region as cityId, 0 as activeUser, count(region) as activeUsers from bss_customer where 
+	    source != 'OTHERS' and
+	    date_format(activate_date, '%Y-%m-%d') &lt;= #{activeDate} and
+	    state = #{statisticsType} and
+	    area_id = #{province} 
+	  group by region	    
+    ) a order by a.cityId
+  </select>
+  
+  <select id="getCancelUserReport" resultType="userActiveStatistics">
+    select cityId, cancelUser, cancelUsers from 
+    (
+    
+  	  select region as cityId, count(region) as cancelUser, 0 as cancelUsers from bss_customer where 
+	    source != 'OTHERS' and
+	    date_format(cancelled_date, '%Y-%m-%d') = #{cancelledDate} and
+	    state = #{statisticsType} and
+	    area_id = #{province} 
+  	  group by region
+	  union
+  	  select region as cityId, 0 as cancelUser, count(region) as cancelUsers from bss_customer where 
+	    source != 'OTHERS' and
+	    date_format(cancelled_date, '%Y-%m-%d') = #{cancelledDate} and
+	    state = #{statisticsType} and
+	    area_id = #{province} 
+	  group by region	    
+    ) a order by a.cityId
+  </select>
+  
+  <select id="checkInputSql" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        d.*
+        from (${sql})d
+    </select>
+    
+    <select id="getcustomerByNickName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    	select 
+   	<include refid="Base_Column_List"/>
+    from bss_customer
+    where nick_name = #{nickName} 
+    </select>
+
+    <select id="findCustomersByUserCodes" parameterType="java.util.List" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bss_customer
+        where code in
+        <foreach collection="codes" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="findAreaByBusiness" resultType="java.lang.Long" parameterType="map">
+
+        select distinct c.area_id from bss_customer c left join ${tableName} m on c.code=m.code where m.${character}=#{id,jdbcType=BIGINT}
+
+    </select>
+</mapper>

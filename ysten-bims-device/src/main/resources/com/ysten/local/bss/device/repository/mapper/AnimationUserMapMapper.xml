@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.device.repository.mapper.AnimationUserMapMapper">
+    <resultMap id="BaseResultMap" type="animationUserMap">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="boot_animation_id" property="bootAnimationId" jdbcType="BIGINT"/>
+        <result column="code" property="code" jdbcType="VARCHAR"/>
+        <result column="user_group_id" property="userGroupId" jdbcType="BIGINT"/>
+        <result column="type" property="type" jdbcType="VARCHAR"/>
+        <result column="create_date" property="createDate" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    id, boot_animation_id, user_group_id,code, type, create_date
+    </sql>
+
+    <select id="findMapByUserCode" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        bss_animation_user_map
+        where
+        code = #{code,jdbcType=VARCHAR}
+        and type = #{type,jdbcType=VARCHAR}
+    </select>
+
+    <select id="findMapByUserGroupId" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        bss_animation_user_map
+        where
+        user_group_id = #{userGroupId,jdbcType=BIGINT}
+        and type = #{type,jdbcType=VARCHAR}
+    </select>
+
+
+    <insert id="bulkSaveUserAnimationMap" parameterType="java.util.List">
+		insert into bss_animation_user_map
+		(boot_animation_id, user_group_id, type, create_date,code)
+		values
+		<foreach collection="list" index="index" separator="," item="item">
+		(#{item.bootAnimationId,jdbcType=VARCHAR},#{item.userGroupId,jdbcType=BIGINT},#{item.type,jdbcType=VARCHAR}, #{item.createDate,jdbcType=TIMESTAMP}, #{item.code,jdbcType=VARCHAR})
+        </foreach>
+    </insert>
+
+    
+  	<insert id="save" parameterType="animationUserMap" useGeneratedKeys="true" keyProperty="id">
+		insert into bss_animation_user_map
+		(boot_animation_id, user_group_id, type, create_date,code)
+		values (#{bootAnimationId,jdbcType=VARCHAR},#{userGroupId,jdbcType=BIGINT},#{type,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, #{code,jdbcType=VARCHAR})
+  	</insert>
+  	
+ 	<delete id="deleteByAnimationId" parameterType="java.util.List">
+      delete from bss_animation_user_map
+       where boot_animation_id in 
+        <foreach collection="ids" item="id"  open="(" separator="," close=")">  
+            #{id} 
+        </foreach>
+	</delete>
+      
+  <delete id="deleteByAnimationIdAndType" parameterType="map">
+      delete from bss_animation_user_map where boot_animation_id = #{bootAnimationId,jdbcType=BIGINT} and type = #{type,jdbcType=VARCHAR}
+  </delete>
+  
+   <delete id="deleteMapByUserGroupId" parameterType="java.lang.Long">
+      delete from bss_animation_user_map where user_group_id = #{userGroupId,jdbcType=BIGINT}
+  </delete>
+  
+  <delete id="deleteMapByUserCode" parameterType="java.lang.String">
+      delete from bss_animation_user_map where code = #{code,jdbcType=VARCHAR}
+  </delete>
+  
+	<select id="findAnimationUserMapByAnimationIdAndType" resultMap="BaseResultMap" parameterType="map">
+		select
+		<include refid="Base_Column_List" />
+		from
+		bss_animation_user_map
+		<where>
+		     boot_animation_id = #{bootAnimationId,jdbcType=BIGINT}
+	    	<if test="type != null and type !=''">
+    			 and type = #{type,jdbcType=VARCHAR}
+    		</if>
+	    </where>
+	</select>
+</mapper>

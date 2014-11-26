@@ -1,0 +1,26 @@
+html,body {
+	width: 100%;
+	height: 100%;
+	padding: 0;
+	margin: 0;
+	overflow: auto; /* when page gets too small */
+}
+
+#container {
+	background: #999;
+	height: 100%;
+	margin: 0 auto;
+	width: 100%;
+}
+
+.pane {
+	display: none; /* will appear when layout inits */
+	padding-top: 6px;
+}
+
+.ui-layout-resizer {
+	background-image: url("../images/down.png");
+	background-repeat: no-repeat;
+	background-size: 20px 20px;
+	background-position: center top;
+}

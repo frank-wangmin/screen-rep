@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.device.repository.mapper.UserGroupMapMapper" >
+  <resultMap id="BaseResultMap" type="userGroupMap" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="user_group_id" property="userGroupId" jdbcType="BIGINT" /> 
+   	<result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, code, user_group_id, create_date
+  </sql>
+  
+    <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+		select <include refid="Base_Column_List" />
+		from bss_user_group_map
+		where id = #{id, jdbcType=BIGINT}
+    </select>
+    
+	<select id="findByUserCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+		select <include refid="Base_Column_List" />
+		from bss_user_group_map
+		where code = #{code, jdbcType=VARCHAR}
+    </select>
+    
+    <select id="getByUserCodeAndGroupId" parameterType="map" resultMap="BaseResultMap">
+		select <include refid="Base_Column_List" />
+		from bss_user_group_map
+		where code = #{code, jdbcType=VARCHAR} and user_group_id = #{groupId, jdbcType=BIGINT}
+        limit 1
+    </select>
+
+    <insert id="bulkSaveUserGroupMap" parameterType="java.util.List">
+    	insert into bss_user_group_map
+    	(code, user_group_id, create_date)
+    	values
+        <foreach collection="list" item="item" index="index" separator=",">
+     	(#{item.code, jdbcType=VARCHAR}, #{item.userGroupId, jdbcType=BIGINT}, #{item.createDate,jdbcType=TIMESTAMP})
+        </foreach>
+    </insert>
+    
+    <insert id="save" parameterType="userGroupMap" useGeneratedKeys="true" keyProperty="id">
+    	insert into bss_user_group_map
+    	(code, user_group_id, create_date)
+    	values
+    	(#{code, jdbcType=VARCHAR}, #{userGroupId, jdbcType=BIGINT}, #{createDate,jdbcType=TIMESTAMP})
+    </insert>
+    <select id="getByCodeAndGroup" parameterType="map" resultMap="BaseResultMap">
+    		select <include refid="Base_Column_List" />
+		from bss_user_group_map
+		where code = #{code, jdbcType=VARCHAR}
+		and user_group_id = #{groupId, jdbcType=BIGINT}
+    </select>
+    
+    <select id="getMapByGroupId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    	 	select <include refid="Base_Column_List" />
+    	    from bss_user_group_map
+    	 	where user_group_id = #{groupId, jdbcType=BIGINT}
+    </select>
+    
+    <delete id="deleteMapByGroupId" parameterType="java.lang.Long">
+    	 	delete from bss_user_group_map
+    	 	where user_group_id = #{groupId, jdbcType=BIGINT}
+    </delete>
+    <delete id="deleteMapByUserCode" parameterType="java.lang.String">
+    	 	delete from bss_user_group_map
+    	 	where code = #{code, jdbcType=VARCHAR}
+    </delete>
+    <delete id="deleteMapByCodeAndGroup" parameterType="map">
+    	 	delete from bss_user_group_map
+    	 	where code = #{code, jdbcType=VARCHAR} and user_group_id = #{groupId, jdbcType=BIGINT}
+    </delete>
+
+    <delete id="deleteMapByUserCodeAndGroupId" parameterType="map">
+    	 	delete from bss_user_group_map
+    	 	where code = #{code, jdbcType=VARCHAR} and user_group_id = #{groupId, jdbcType=BIGINT}
+    </delete>
+
+     <delete id="deleteMapByUserCodesAndGroups" parameterType="map">
+    	 	delete from bss_user_group_map
+    	 	where code in 
+	        <foreach collection="codes" item="code"  open="(" separator="," close=")">  
+	            #{code} 
+	        </foreach>
+		    and user_group_id in 
+	        <foreach collection="groupIds" item="groupId"  open="(" separator="," close=")">  
+	            #{groupId} 
+	        </foreach>
+    </delete>
+</mapper>

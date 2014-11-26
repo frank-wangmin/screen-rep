@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.device.repository.mapper.CustomerGroupMapper" >
+  <resultMap id="BaseResultMap" type="customerGroup" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="group_id" property="groupId" jdbcType="VARCHAR" />
+    <result column="group_name" property="groupName" jdbcType="VARCHAR" />
+    <result column="link_name" property="linkName" jdbcType="VARCHAR" />
+    <result column="link_tel" property="linkTel" jdbcType="VARCHAR" />
+    <result column="state" property="state" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="additional_info" property="additionalInfo" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <resultMap id="AllResultMap" type="customerGroup" >
+    <id column="c_id" property="id" jdbcType="BIGINT" />
+    <result column="c_group_id" property="groupId" jdbcType="VARCHAR" />
+    <result column="c_group_name" property="groupName" jdbcType="VARCHAR" />
+    <result column="c_link_name" property="linkName" jdbcType="VARCHAR" />
+    <result column="c_link_tel" property="linkTel" jdbcType="VARCHAR" />
+    <result column="c_state" property="state" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="additional_info" property="additionalInfo" jdbcType="VARCHAR" />
+  </resultMap>
+ 
+  <sql id="Base_Column_List" >
+  	id, group_id, group_name, link_name, link_tel, state, create_date, update_date, additional_info
+  </sql>
+
+  	<select id="getById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+   		select 
+    	<include refid="Base_Column_List"/>
+    	from bss_customer_group c
+    	where c.ID = #{id,jdbcType=BIGINT}
+	</select>
+	
+  	<select id="getByGroupId" resultMap="BaseResultMap" parameterType="java.lang.String">
+   		select 
+    	<include refid="Base_Column_List"/>
+    	from bss_customer_group c
+    	where c.group_id = #{groupId}
+	</select>	
+	
+  
+    <insert id="save" parameterType="customerGroup" useGeneratedKeys="true" keyProperty="id">
+   		insert into bss_customer_group (group_id, group_name, link_name, link_tel, state, create_date, update_date, additional_info)
+   	 	values ( #{groupId,jdbcType=VARCHAR},
+   	 			#{groupName,jdbcType=VARCHAR},
+   	 			#{linkName,jdbcType=VARCHAR},
+   	 			#{linkTel,jdbcType=VARCHAR},
+   	 			#{state,jdbcType=VARCHAR},
+      			#{createDate,jdbcType=TIMESTAMP},
+      			#{updateDate,jdbcType=TIMESTAMP},
+   	 			#{additionalInfo,jdbcType=VARCHAR})
+    </insert>
+  
+  <update id="update" parameterType="customerGroup" >
+    update bss_customer_group
+    set 
+      group_name= #{groupName,jdbcType=VARCHAR},
+      link_name= #{linkName,jdbcType=VARCHAR},
+      link_tel= #{linkTel,jdbcType=VARCHAR},
+      state= #{state,jdbcType=VARCHAR},
+      create_date= #{createDate,jdbcType=TIMESTAMP},
+      update_date= #{updateDate,jdbcType=TIMESTAMP},
+      additional_info= #{additionalInfo,jdbcType=VARCHAR}
+    where group_id = #{groupId,jdbcType=BIGINT}
+  </update>
+  
+  <select id="findCustomerGroups" parameterType="map" resultMap="BaseResultMap">
+  	select  
+  	<include refid="Base_Column_List"/>
+    	from bss_customer_group
+    	where 1=1
+    	<if test="groupId != null and groupId != ''">
+    		and group_id like '%${groupId}%'
+    	</if>
+    	<if test="groupName != null and groupName != ''">
+    		and group_name like '%${groupName}%'
+    	</if>
+    	<if test="linkName != null and linkName != ''">
+    		and link_name like '%${linkName}%'
+    	</if>
+    	<if test="linkTel != null and linkTel != ''">
+    		and link_tel like '%${linkTel}%'
+    	</if>
+    	limit ${pageNo}, ${pageSize}
+  </select>
+  
+  <select id="getTotalCountCustomerGroups" parameterType="map" resultType="java.lang.Integer">
+  	select  count(*)
+    	from bss_customer_group
+    	where 1=1
+    	<if test="groupId != null and groupId != ''">
+    		and group_id like '%${groupId}%'
+    	</if>
+    	<if test="groupName != null and groupName != ''">
+    		and group_name like '%${groupName}%'
+    	</if>
+    	<if test="linkName != null and linkName != ''">
+    		and link_name like '%${linkName}%'
+    	</if>
+    	<if test="linkTel != null and linkTel != ''">
+    		and link_tel like '%${linkTel}%'
+    	</if>
+  </select>
+  
+  
+  <delete id="deleteCustomerGroupByGroupId" parameterType="java.lang.String">
+  	delete from bss_customer_group
+  	where group_id = #{groupId}
+  </delete>
+</mapper>

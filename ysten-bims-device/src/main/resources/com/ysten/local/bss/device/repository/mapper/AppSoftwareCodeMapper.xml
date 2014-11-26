@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.device.repository.mapper.AppSoftwareCodeMapper" >
+  <resultMap id="BaseResultMap" type="appSoftwareCode" >
+    <id column = "id" property = "id" jdbcType = "BIGINT" />
+		<result column = "name" property = "name" jdbcType = "VARCHAR" />
+		<result column = "code"   property = "code" jdbcType = "VARCHAR" />
+		<result column = "status"   property = "status" jdbcType = "VARCHAR" />
+		<result column = "description"   property = "description" jdbcType = "VARCHAR" />
+		<result column = "create_date"   property = "createDate" jdbcType = "TIMESTAMP" />
+		<result  column = "last_modify_time"   property = "lastModifyTime" jdbcType = "TIMESTAMP"/>
+		<result  column = "oper_user" property = "operUser" jdbcType = "VARCHAR"/>
+		<result column="distribute_state" property="distributeState" jdbcType="VARCHAR" />
+  </resultMap>
+ 
+  <sql id="Base_Column_List" > 
+   id,name,code,status,description,create_date,last_modify_time,oper_user,distribute_state
+  </sql>
+  
+   <sql id="Base_Table_Name">
+  	 bss_app_software_code
+    </sql>
+    
+   <sql id="Where_Condition">
+     <where>
+     	<if test="name != null and name != ''">
+     		and name like '%${name}%'
+     	</if>
+     	<if test="status != null and status != ''">
+     		and status = #{status}
+     	</if>
+     </where>
+   </sql>
+  <select id="getAppSoftwareCodeByCode" resultMap="BaseResultMap" parameterType="map" >
+    select 
+        <include refid="Base_Column_List"/>
+    from 
+        bss_app_software_code
+    where 
+        code = #{code,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+		select <include refid="Base_Column_List" />
+		from bss_app_software_code
+		where id = #{id, jdbcType=BIGINT}
+	</select>
+	
+	<select id="findAll" resultMap="BaseResultMap">
+		select <include refid="Base_Column_List" />
+		from bss_app_software_code
+		where status = 'USABLE' 
+		order by CREATE_DATE
+	</select>
+   
+    <select id="findAppSoftwareCodesByCondition" resultMap="BaseResultMap" parameterType="com.ysten.local.bss.device.bean.DeviceUpgradeCondition" >
+	 select 
+	 <include refid="Base_Column_List" />
+     from bss_app_software_code
+     <include refid="Where_Condition"/>
+	 order by CREATE_DATE desc
+     <if test="pageNo != null and pageSize != null">
+      limit #{pageNo},#{pageSize}
+    </if>
+   </select>
+   
+   <select id="countAppSoftwareCodesByCondition" resultType="int" parameterType="com.ysten.local.bss.device.bean.DeviceUpgradeCondition" >
+     select count(id) 
+     from bss_app_software_code
+     <include refid="Where_Condition"/>
+   </select>
+   
+   <select id="findSoftwareCodeByName" resultMap="BaseResultMap" parameterType="java.lang.String" >
+	 select 
+	 <include refid="Base_Column_List" />
+     from bss_app_software_code
+     where name = #{name}
+	 order by CREATE_DATE desc
+   </select>
+   
+   <insert id="save" parameterType="appSoftwareCode" useGeneratedKeys="true" keyProperty="id">
+     insert into bss_app_software_code (
+     	 name,code,status,description,create_date,last_modify_time,oper_user,distribute_state
+       )
+     values ( #{name,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}
+     		, #{status,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}
+     		, #{createDate,jdbcType=TIMESTAMP}, #{lastModifyTime,jdbcType=TIMESTAMP},
+     		#{operUser,jdbcType=VARCHAR},#{distributeState,jdbcType=VARCHAR}
+       )
+   </insert>
+
+   <update id="updateByPrimaryKey" parameterType="appSoftwareCode" >
+     update bss_app_software_code
+     set 
+     	name = #{name,jdbcType=VARCHAR},
+        code = #{code,jdbcType=VARCHAR},
+        status = #{status,jdbcType=VARCHAR},
+        description = #{description,jdbcType=VARCHAR},
+        oper_user=#{operUser,jdbcType=VARCHAR},
+		last_modify_time=#{lastModifyTime,jdbcType=TIMESTAMP},
+		distribute_state = #{distributeState,jdbcType=VARCHAR}
+     where  
+        id = #{id,jdbcType=BIGINT}
+   </update>
+   
+   <update id="updateDistributeStateById" parameterType="map">
+  	 update bss_app_software_code set distribute_state = #{distributeState,jdbcType=VARCHAR} where id = #{id,jdbcType=BIGINT}
+  </update>
+   
+    <delete id="delete" parameterType="java.util.List">
+      delete from <include refid="Base_Table_Name"/>
+       where id in 
+      <foreach collection="ids" item="id"  open="(" separator="," close=")">  
+            #{id} 
+        </foreach>
+  </delete>
+</mapper>

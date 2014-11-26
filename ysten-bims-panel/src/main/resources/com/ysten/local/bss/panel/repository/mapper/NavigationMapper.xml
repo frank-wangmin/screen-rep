@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.panel.repository.mapper.NavigationMapper">
+    <resultMap id="BaseResultMap" type="navigation">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="nav_type" property="navType" jdbcType="INTEGER"/>
+        <result column="title" property="title" jdbcType="VARCHAR"/>
+        <result column="title_comment" property="titleComment" jdbcType="VARCHAR"/>
+        <result column="action_type" property="actionType" jdbcType="VARCHAR"/>
+        <result column="action_url" property="actionUrl" jdbcType="VARCHAR"/>
+        <result column="image_url" property="imageUrl" jdbcType="VARCHAR"/>
+        <result column="image_disturl" property="imageDisturl" jdbcType="VARCHAR"/>
+        <result column="show_title" property="showTitle" jdbcType="INTEGER"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="opr_userid" property="oprUserId" jdbcType="BIGINT"/>
+        <result column="sort_num" property="sortNum" jdbcType="INTEGER"/>
+        <result column="epg_nav_id" property="epgNavId" jdbcType="BIGINT"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="online_status" property="onlineStatus" jdbcType="INTEGER"/>
+        <result column="nav_name" property="navName" jdbcType="VARCHAR"/>
+
+        <result column="version" property="version" jdbcType="BIGINT"/>
+        <result column="focus_img" property="focusImg" jdbcType="VARCHAR"/>
+        <result column="current_page_img" property="currentPageImg" jdbcType="VARCHAR"/>
+        <result column="top_nav_type" property="topNavType" jdbcType="VARCHAR"/>
+        <result column="align" property="align" jdbcType="VARCHAR"/>
+        <result column="canfocus" property="canfocus" jdbcType="VARCHAR"/>
+        <result column="params" property="params" jdbcType="VARCHAR"/>
+        <result column="resolution" property="resolution" jdbcType="VARCHAR"/>
+
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    id,nav_type,title,title_comment,action_type,action_url,image_url,image_disturl,show_title,status,opr_userid,
+    sort_num,epg_nav_id,create_time,update_time,online_status,nav_name,version,focus_img,current_page_img,
+    top_nav_type,align,canfocus,params,resolution
+    </sql>
+
+    <sql id="Base_Table_Name">
+  	 bss_panel_nav_define
+    </sql>
+
+
+    <insert id="batchInsert" parameterType="java.util.List">
+        insert into
+        <include refid="Base_Table_Name"/>
+        (
+        nav_type,title,title_comment,action_type,action_url,image_url,
+        image_disturl,show_title,status,opr_userid,
+        sort_num,epg_nav_id,create_time,update_time,online_status,nav_name
+        )
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            ( #{item.navType,jdbcType=INTEGER},
+            #{item.title,jdbcType=VARCHAR},
+            #{item.titleComment,jdbcType=VARCHAR},
+            #{item.actionType,jdbcType=VARCHAR},
+            #{item.actionUrl,jdbcType=VARCHAR},
+            #{item.imageUrl,jdbcType=VARCHAR},
+            #{item.imageDisturl,jdbcType=VARCHAR},
+            #{item.showTitle,jdbcType=INTEGER},
+            #{item.status,jdbcType=INTEGER},
+            #{item.oprUserId,jdbcType=BIGINT},
+            #{item.sortNum,jdbcType=INTEGER},
+            #{item.epgNavId,jdbcType=BIGINT},
+            #{item.createTime,jdbcType=TIMESTAMP},
+            #{item.updateTime,jdbcType=TIMESTAMP},
+            #{item.onlineStatus,jdbcType=INTEGER},
+            #{item.navName,jdbcType=VARCHAR}
+            )
+        </foreach>
+    </insert>
+
+    <insert id="insert" parameterType="navigation" useGeneratedKeys="true" keyProperty="id">
+        insert into
+        <include refid="Base_Table_Name"/>
+        (
+        nav_type,title,title_comment,action_type,action_url,image_url,
+        image_disturl,show_title,status,opr_userid,
+        sort_num,epg_nav_id,create_time,update_time,online_status,nav_name,version,focus_img,
+        current_page_img,top_nav_type,align,canfocus,params,resolution
+        )
+        values ( #{navType,jdbcType=INTEGER},
+        #{title,jdbcType=VARCHAR},
+        #{titleComment,jdbcType=VARCHAR},
+        #{actionType,jdbcType=VARCHAR},
+        #{actionUrl,jdbcType=VARCHAR},
+        #{imageUrl,jdbcType=VARCHAR},
+        #{imageDisturl,jdbcType=VARCHAR},
+        #{showTitle,jdbcType=INTEGER},
+        #{status,jdbcType=INTEGER},
+        #{oprUserId,jdbcType=BIGINT},
+        #{sortNum,jdbcType=INTEGER},
+        #{epgNavId,jdbcType=BIGINT},
+        #{createTime,jdbcType=TIMESTAMP},
+        #{updateTime,jdbcType=TIMESTAMP},
+        #{onlineStatus,jdbcType=INTEGER},
+        #{navName,jdbcType=VARCHAR},
+        #{version,jdbcType=BIGINT},
+        #{focusImg,jdbcType=VARCHAR},
+        #{currentPageImg,jdbcType=VARCHAR},
+        #{topNavType,jdbcType=VARCHAR},
+        #{align,jdbcType=VARCHAR},
+        #{canfocus,jdbcType=VARCHAR},
+        #{params,jdbcType=VARCHAR},
+        #{resolution,jdbcType=VARCHAR}
+        )
+
+    </insert>
+    <select id="getByEpgNavId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Base_Table_Name"/>
+        where epg_nav_id = #{epgNavId,jdbcType=BIGINT}
+    </select>
+
+    <update id="updateNavStatus" parameterType="java.util.Map">
+        update
+        <include refid="Base_Table_Name"/>
+        set
+        online_status = #{status}
+        where
+        epg_nav_id in
+        <foreach collection="navList" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+
+    </update>
+
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Base_Table_Name"/>
+        where id = #{id,jdbcType=BIGINT}
+        and online_status = 99
+    </select>
+
+    <select id="selectByNavName" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Base_Table_Name"/>
+        where nav_name = #{navName,jdbcType=VARCHAR}
+        and online_status = 99
+        limit 1
+    </select>
+    <select id="findEpgNavList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Base_Table_Name"/>
+        where epg_nav_id IS NOT NULL
+        order by id
+    </select>
+
+    <select id="selectByNavType" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Base_Table_Name"/>
+        where nav_type = #{navType,jdbcType=BIGINT}
+        and online_status = 99 and epg_nav_id IS NULL
+        order by id desc
+    </select>
+
+    <select id="findNavigationByNavTypeAndDpi" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Base_Table_Name"/>
+        where nav_type = #{navType,jdbcType=BIGINT}
+        and resolution = #{dpi,jdbcType=VARCHAR}
+        and online_status = 99
+        and epg_nav_id IS NULL
+        order by id desc
+    </select>
+
+    <!-- <select id="selectByNavType" resultMap="BaseResultMap" >
+         select
+         <include refid="Base_Column_List" />
+         from <include refid="Base_Table_Name"/>
+         where nav_type = #{navType,jdbcType=BIGINT}
+         and epg_nav_id IS NULL
+         order by id desc
+     </select>-->
+
+    <select id="findNavListByEpgNavIds" parameterType="java.util.List" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Base_Table_Name"/>
+        where epg_nav_id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        order by sort_num
+    </select>
+
+    <select id="getListByCondition" resultMap="BaseResultMap" parameterType="PanelQueryCriteria">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Base_Table_Name"/>
+        <where>
+            online_status = 99
+            <if test="title != null and title != ''">
+                and title like '%${title}%'
+            </if>
+            <if test="name != null and name != ''">
+                and nav_name like '%${name}%'
+            </if>
+            <if test="Id != null">
+                and id = #{Id,jdbcType=BIGINT}
+            </if>
+            <if test="epgId != null">
+                and epg_nav_id = #{epgId,jdbcType=BIGINT}
+            </if>
+            <if test="dataScope == 'custom'">
+                and epg_nav_id is null
+            </if>
+            <if test="dataScope == 'outter'">
+                and epg_nav_id is not null
+            </if>
+            <if test="navType != null and navType != '' and navType != 0">
+                and nav_type = #{navType}
+            </if>
+            <if test="actionType != null and actionType != ''">
+                and action_type = #{actionType}
+            </if>
+        </where>
+        order by id desc
+        limit #{start} , #{limit}
+    </select>
+
+    <select id="getCountByCondition" parameterType="PanelQueryCriteria" resultType="java.lang.Integer">
+        select
+        count(id) from
+        <include refid="Base_Table_Name"/>
+        <where>
+            online_status = 99
+            <if test="title != null and title != ''">
+                and title like '%${title}%'
+            </if>
+            <if test="name != null and name != ''">
+                and nav_name like '%${name}%'
+            </if>
+            <if test="Id != null">
+                and id = #{Id,jdbcType=BIGINT}
+            </if>
+            <if test="epgId != null">
+                and epg_nav_id = #{epgId,jdbcType=BIGINT}
+            </if>
+            <if test="dataScope == 'custom'">
+                and epg_nav_id is null
+            </if>
+            <if test="dataScope == 'outter'">
+                and epg_nav_id is not null
+            </if>
+            <if test="navType != null and navType != '' and navType != 0">
+                and nav_type = #{navType}
+            </if>
+            <if test="actionType != null and actionType != ''">
+                and action_type = #{actionType}
+            </if>
+        </where>
+        order by id desc
+    </select>
+    <!--<update id="updateNavByEpgNavId" parameterType="navigation" >
+        update <include refid="Base_Table_Name"/>
+        set
+        nav_type = #{navType,jdbcType=INTEGER},
+        title = #{title,jdbcType=VARCHAR},
+        title_comment = #{titleComment,jdbcType=VARCHAR},
+        action_type = #{actionType,jdbcType=VARCHAR},
+        action_url = #{actionUrl,jdbcType=VARCHAR},
+        image_url = #{imageUrl,jdbcType=VARCHAR},
+        image_disturl =  #{imageDisturl,jdbcType=VARCHAR},
+        show_title = #{showTitle,jdbcType=INTEGER},
+        opr_userid = #{oprUserId,jdbcType=BIGINT},
+        sort_num =  #{sortNum,jdbcType=INTEGER},
+        update_time = #{updateTime,jdbcType=TIMESTAMP}
+        where
+        epg_nav_id = #{epgNavId,jdbcType=BIGINT}
+    </update>
+-->
+
+    <update id="updateByPrimaryKey" parameterType="navigation">
+        update
+        <include refid="Base_Table_Name"/>
+        set
+        nav_type = #{navType,jdbcType=INTEGER},
+        title = #{title,jdbcType=VARCHAR},
+        title_comment = #{titleComment,jdbcType=VARCHAR},
+        action_type = #{actionType,jdbcType=VARCHAR},
+        action_url = #{actionUrl,jdbcType=VARCHAR},
+        image_url = #{imageUrl,jdbcType=VARCHAR},
+        image_disturl = #{imageDisturl,jdbcType=VARCHAR},
+        show_title = #{showTitle,jdbcType=INTEGER},
+        opr_userid = #{oprUserId,jdbcType=BIGINT},
+        sort_num = #{sortNum,jdbcType=INTEGER},
+        epg_nav_id = #{epgNavId,jdbcType=BIGINT},
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+        online_status = #{onlineStatus,jdbcType=INTEGER},
+        nav_name = #{navName,jdbcType=VARCHAR},
+
+        version = #{version,jdbcType=BIGINT},
+        focus_img = #{focusImg,jdbcType=VARCHAR},
+        current_page_img = #{currentPageImg,jdbcType=VARCHAR},
+        top_nav_type = #{topNavType,jdbcType=VARCHAR},
+        align = #{align,jdbcType=VARCHAR},
+        canfocus = #{canfocus,jdbcType=VARCHAR},
+        params = #{params,jdbcType=VARCHAR},
+        resolution = #{resolution,jdbcType=VARCHAR}
+        where
+        id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from
+        <include refid="Base_Table_Name"/>
+        where id = #{navId,jdbcType=BIGINT}
+    </delete>
+
+
+    <delete id="deleteByEpgNavId" parameterType="java.lang.Long">
+        delete from
+        <include refid="Base_Table_Name"/>
+        where epg_nav_id is NOT NULL
+    </delete>
+
+</mapper>

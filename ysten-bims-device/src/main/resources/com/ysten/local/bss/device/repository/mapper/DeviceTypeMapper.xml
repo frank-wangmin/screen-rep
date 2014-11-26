@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.device.repository.mapper.DeviceTypeMapper">
+	<resultMap id="BaseResultMap" type="deviceType">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="code" property="code" jdbcType="VARCHAR" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="state" property="state" jdbcType="VARCHAR" />
+		<result column="terminal_type" property="terminalType" jdbcType="VARCHAR" />
+		<result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+		<result column="description" property="description" jdbcType="VARCHAR" />
+		<association property="deviceVendor" javaType="deviceVendor">
+			<id column="device_vendor_id" property="id" />
+		</association>
+	</resultMap>
+	
+	<resultMap id="AllResultMap" type="deviceType">
+        <id column="T_ID" property="id" jdbcType="BIGINT" />
+        <result column="T_CODE" property="code" jdbcType="VARCHAR" />
+        <result column="T_NAME" property="name" jdbcType="VARCHAR" />
+        <result column="T_STATE" property="state" jdbcType="VARCHAR" />
+        <result column="t_terminal_type" property="terminalType" jdbcType="VARCHAR" />
+        <result column="t_CREATE_DATE" property="createDate" jdbcType="TIMESTAMP" />
+        <result column="T_DESCRIPTION" property="description" jdbcType="VARCHAR" />
+        <association property="deviceVendor" column="T_VENDOR_ID"
+            javaType="deviceVendor">
+            <id column="V_ID" property="id" jdbcType="BIGINT" />
+            <result column="V_NAME" property="name" jdbcType="VARCHAR" />
+            <result column="V_CODE" property="code" jdbcType="VARCHAR" />
+        </association>
+    </resultMap>
+
+	<sql id="Base_Column_List">
+		id,code,name,description,device_vendor_id,terminal_type,create_date
+	</sql>
+
+    <select id="getById" resultMap="AllResultMap" parameterType="java.lang.Long">
+        select t.ID as T_ID,t.CODE as T_CODE, t.NAME as T_NAME,t.create_date as t_create_date,
+        t.DEVICE_VENDOR_ID as T_DEVICE_VENDOR_ID,t.terminal_type as t_terminal_type,
+        t.STATE AS T_STATE,t.DESCRIPTION AS T_DESCRIPTION,v.ID as V_ID , v.CODE as
+        V_CODE, v.NAME as V_NAME
+        from bss_device_type t left join
+        bss_device_vendor v on v.id =
+        t.DEVICE_VENDOR_ID
+        where t.ID =
+        #{id,jdbcType=BIGINT}
+  	</select>
+  	
+  	<select id="findByVendorId" resultMap="BaseResultMap"
+        parameterType="map">
+        select
+        <include refid="Base_Column_List" />
+        from
+        bss_device_type
+        where
+        DEVICE_VENDOR_ID = #{vendorId}
+    </select>
+    
+    <select id="getDeviceTypeById" resultMap="BaseResultMap"
+        parameterType="map">
+        select
+        <include refid="Base_Column_List" />
+        from
+        bss_device_type
+        where
+        id = #{id}
+    </select>
+
+    <select id="findByName" resultMap="BaseResultMap"
+        parameterType="map">
+        select
+        <include refid="Base_Column_List" />
+        from
+        bss_device_type
+        <where>
+            <if test="name!=null and name != ''">
+                NAME like '%${name}%'
+        </if>
+            <if test="vendorId!=null">
+                and DEVICE_VENDOR_ID = #{vendorId}
+        </if>
+            <if test="state!=null">
+                and state = #{state}
+        </if>
+        </where>
+        <if
+            test="(startRowNo != null and size !=null) and (startRowNo >=0 and size >0)">
+            limit #{startRowNo},#{size}
+    </if>
+    </select>
+
+    <select id="getCountByName" resultType="int">
+        select
+        count(*)
+        from bss_device_type t left join  bss_device_vendor v on v.id = t.DEVICE_VENDOR_ID
+        <where>
+            <if test="deviceTypeName!=null and deviceTypeName!=''">
+                t.name like '${deviceTypeName}%'
+   		</if>
+            <if test="deviceTypeCode!=null and deviceTypeCode!=''">
+                and t.code like '${deviceTypeCode}%'
+   		</if>
+            <if test="deviceVendorId!=null and deviceVendorId!=''">
+                and t.device_vendor_id = #{deviceVendorId}
+   		</if>
+        </where>
+    </select>
+    <select id="findDeviceTypeByVendorId" resultMap="AllResultMap" parameterType="map">
+        select t.ID as T_ID,t.CODE as T_CODE, t.NAME as T_NAME, t.create_date as t_create_date,
+        t.DEVICE_VENDOR_ID as T_DEVICE_VENDOR_ID,t.terminal_type as t_terminal_type,
+        t.STATE AS T_STATE,t.DESCRIPTION AS T_DESCRIPTION,v.ID as V_ID , v.CODE as
+        V_CODE, v.NAME as V_NAME
+        from bss_device_type t left join
+        bss_device_vendor v on v.id =
+        t.DEVICE_VENDOR_ID
+        where
+        t.device_vendor_id = #{vendorId} and t.state = #{state}
+  </select>
+
+    <select id="findAllDeviceTypes" resultMap="AllResultMap"
+        parameterType="map">
+        select t.ID as T_ID,t.CODE as T_CODE, t.NAME as T_NAME,t.create_date as t_create_date,
+        t.DEVICE_VENDOR_ID as T_DEVICE_VENDOR_ID, t.STATE AS T_STATE,t.terminal_type as t_terminal_type,
+        t.DESCRIPTION AS T_DESCRIPTION,v.ID as V_ID , v.CODE as V_CODE,
+        v.NAME as V_NAME
+        from bss_device_type t left join
+        bss_device_vendor v on v.id =
+        t.DEVICE_VENDOR_ID
+        <where>
+            <if test="deviceTypeName!=null and deviceTypeName!=''">
+                t.name like '${deviceTypeName}%'
+   		</if>
+            <if test="deviceTypeCode!=null and deviceTypeCode!=''">
+                and t.code like '${deviceTypeCode}%'
+   		</if>
+            <if test="deviceVendorId!=null and deviceVendorId!=''">
+                and t.device_vendor_id = #{deviceVendorId}
+   		</if>
+        </where>
+        order by t.id desc
+        limit #{pageNo},#{pageSize}
+    </select>
+
+    <select id="getDeviceTypeByNameOrCode" resultMap="AllResultMap"
+        parameterType="map">
+        select t.ID as T_ID,t.CODE as T_CODE, t.NAME as T_NAME,t.create_date as t_create_date,t.STATE
+        AS T_STATE,t.DESCRIPTION AS T_DESCRIPTION,t.terminal_type as t_terminal_type,
+        t.DEVICE_VENDOR_ID as
+        T_DEVICE_VENDOR_ID, v.ID as V_ID , v.CODE as V_CODE, v.NAME as
+        V_NAME
+        from bss_device_type t left join bss_device_vendor v on
+        v.id =
+        t.DEVICE_VENDOR_ID
+        <where>
+            <if test="deviceVendor!=null and deviceVendor!=''">
+                t.device_vendor_id = #{deviceVendor}
+   		</if>
+            <if test="deviceTypeName!=null and deviceTypeName!=''">
+                and t.name = #{deviceTypeName}
+   		</if>
+            <if test="deviceTypeCode!=null and deviceTypeCode!=''">
+                and t.code = #{deviceTypeCode}
+   		</if>
+        </where>
+    </select>
+
+    <select id="findAllType" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from bss_device_type order by CODE
+    </select>
+
+    <delete id="deleteById" parameterType="java.lang.Long">
+        delete from
+        bss_device_type
+        where ID = #{id,jdbcType=BIGINT}
+  </delete>
+
+    <insert id="save" parameterType="deviceType"
+        useGeneratedKeys="true" keyProperty="id">
+        insert into bss_device_type
+        (ID,NAME, DEVICE_VENDOR_ID,CODE,STATE,terminal_type,create_date,DESCRIPTION)
+        values (
+        #{id,jdbcType=BIGINT},
+        #{name,jdbcType=VARCHAR},
+        #{deviceVendor.id,jdbcType=BIGINT},
+        #{code,jdbcType=VARCHAR},
+        #{state,jdbcType=VARCHAR},
+        #{terminalType,jdbcType=VARCHAR},
+        #{createDate,jdbcType=TIMESTAMP},
+        #{description,jdbcType=VARCHAR}
+        )
+  </insert>
+
+    <select id="getCount" resultType="java.lang.Integer">
+        select count(*) from
+        bss_device_type
+  </select>
+
+    <update id="update" parameterType="deviceType">
+        update bss_device_type
+        set
+        NAME = #{name,jdbcType=VARCHAR},
+        CODE = #{code,jdbcType=VARCHAR},
+        device_vendor_id = #{deviceVendor.id,jdbcType=BIGINT},
+        state = #{state,jdbcType=VARCHAR},
+        terminal_type = #{terminalType,jdbcType=VARCHAR},
+        description = #{description,jdbcType=VARCHAR}
+        where
+        ID = #{id,jdbcType=BIGINT}
+    </update>
+    
+    <select id="findDeviceTypeIdsByCode" resultType="java.lang.Long" parameterType="map">
+    	select id from bss_device_type 
+    	where code in 
+    	<foreach collection="codes" item="code" open="(" separator="," close=")">
+         	#{code,jdbcType=VARCHAR}
+     	</foreach>
+  	</select>
+
+    <select id="findDeviceTypes" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select id,name
+        from bss_device_type
+
+        <if test="deviceTypeId!=null and deviceTypeId!=''">
+            where
+            id=#{deviceTypeId}
+        </if>
+
+    </select>
+</mapper>

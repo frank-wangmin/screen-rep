@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.device.repository.mapper.UserUpgradeMapMapper" >
+  <resultMap id="BaseResultMap" type="userUpgradeMap" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+    <result column="upgrade_id" property="upgradeId" jdbcType="BIGINT" /> 
+    <result column="user_group_id" property="userGroupId" jdbcType="BIGINT"/>
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, user_group_id, user_id, upgrade_id, type, create_date
+  </sql>
+ <select id="findMapByUpgradeIdAndType" resultMap="BaseResultMap" parameterType="map">
+		select
+		<include refid="Base_Column_List" />
+		from
+		bss_user_upgrade_map
+		where
+		upgrade_id = #{upgradeId,jdbcType=BIGINT}
+		<if test="type != null and type != ''">
+    		and type = #{type,jdbcType=VARCHAR}
+    	</if>
+</select> 
+
+<select id="getUserUpgradeMapByUserGroupId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+   	select
+		<include refid="Base_Column_List" />
+		 from bss_user_upgrade_map where user_group_id = #{userGroupId,jdbcType=BIGINT}
+ </select>
+ <select id="getUserUpgradeMapByUserId" resultMap="BaseResultMap" parameterType="java.lang.String">
+   	select
+		<include refid="Base_Column_List" />
+		 from bss_user_upgrade_map where user_id = #{userId,jdbcType=VARCHAR}
+ </select>
+ <delete id="deleteUserUpgradeMapByUserGroupId" parameterType="java.lang.Long">
+   	delete from bss_user_upgrade_map where user_group_id = #{userGroupId,jdbcType=BIGINT}
+ </delete>
+ 
+  <delete id="deleteUserUpgradeMapByUserId" parameterType="java.lang.String">
+      delete from bss_user_upgrade_map where user_id = #{userId,jdbcType=VARCHAR}
+  </delete>
+  
+ <insert id="save" parameterType="userUpgradeMap" useGeneratedKeys="true" keyProperty="id">
+	     insert into bss_user_upgrade_map (
+	        user_id, upgrade_id, user_group_id, type, create_date
+	       )
+	     values (
+	     	#{userId,jdbcType=VARCHAR},
+	     	#{upgradeId,jdbcType=BIGINT},
+	     	#{userGroupId,jdbcType=BIGINT},
+	     	#{type,jdbcType=VARCHAR},
+	     	#{createDate,jdbcType=TIMESTAMP}	     				
+	       )
+     </insert>
+     
+  <delete id="deleteByUpgradeId" parameterType="java.util.List">
+      delete from bss_user_upgrade_map
+       where upgrade_id in 
+      <foreach collection="ids" item="id"  open="(" separator="," close=")">  
+            #{id} 
+        </foreach>
+      </delete>
+</mapper>

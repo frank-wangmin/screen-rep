@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.device.repository.mapper.DeviceAbnormalLogMapper" >
+  <resultMap id="BaseResultMap" type="deviceAbnormalLog" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="original_device_id" property="originalDeviceId" jdbcType="BIGINT" />
+    <result column="device_code" property="deviceCode" jdbcType="VARCHAR" />
+    <result column="mac" property="mac" jdbcType="VARCHAR" />
+    <result column="ysten_id" property="ystenId" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="original_data_status" property="originalDataStatus" jdbcType="VARCHAR" />
+    <result column="operation" property="operation" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="service_name" property="serviceName" jdbcType="VARCHAR" />
+    <result column="message" property="message" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, original_device_id, device_code, mac, ysten_id, status, original_data_status, operation, create_date, service_name, message
+  </sql>
+  
+   <insert id="save" parameterType="deviceAbnormalLog" useGeneratedKeys="true" keyProperty="id">
+    insert into  bss_device_abnormal_log
+        (original_device_id, device_code, mac, ysten_id, status, original_data_status, operation, create_date, service_name, message)
+    values 
+        (#{originalDeviceId,jdbcType=BIGINT}, #{deviceCode,jdbcType=VARCHAR},#{mac,jdbcType=VARCHAR}, #{ystenId,jdbcType=VARCHAR},
+        #{status,jdbcType=VARCHAR}, #{originalDataStatus,jdbcType=VARCHAR}, #{operation,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP},
+        #{serviceName,jdbcType=VARCHAR}, #{message,jdbcType=VARCHAR})
+  </insert>
+</mapper>

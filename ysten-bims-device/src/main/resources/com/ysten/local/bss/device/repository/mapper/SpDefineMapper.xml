@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.device.repository.mapper.SpDefineMapper" >
+  <resultMap id="BaseResultMap" type="spDefine" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="state" property="state" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, code,name, description,state,create_date
+  </sql>
+  
+  <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from bss_sp_define
+    where id = #{id}
+  </select>
+  
+  <select id="getByName" resultMap="BaseResultMap" parameterType="map" >
+    select 
+    <include refid="Base_Column_List" />
+    from bss_sp_define
+    where name = #{name}
+  </select>
+  
+  <delete id="delete" parameterType="java.lang.Integer" >
+    delete from bss_sp_define where id = #{id}
+  </delete>
+  
+  <insert id="save" parameterType="spDefine" useGeneratedKeys="true" keyProperty="id">
+    insert into bss_sp_define (code, name, description, state,create_date)
+    values (#{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{description,jdbcType=VARCHAR}, #{state,jdbcType=VARCHAR},#{createDate,jdbcType=TIMESTAMP})
+  </insert>
+  
+  <update id="update" parameterType="spDefine" >
+    update bss_sp_define
+    set code = #{code,jdbcType=VARCHAR},
+      	name = #{name,jdbcType=VARCHAR},
+      	description = #{description,jdbcType=VARCHAR},
+      	state = #{state,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <select id="findSpDefine" resultMap="BaseResultMap" parameterType="map" >
+    select 
+    	<include refid="Base_Column_List" />
+    from 
+    	bss_sp_define
+    <where> 
+		<if test="name != null and name !=''">
+    		name like '%${name}%'
+    	</if>
+    	<if test="code != null and code != ''">
+    		and code like '%${code}%'
+    	</if>
+	</where>
+    order by id desc
+    limit ${pageNo},${pageSize}
+  </select>
+  
+  <select id="getCountByCondition" resultType="java.lang.Integer" parameterType="map">
+  	select 
+  		count(*)
+  	from 
+  		bss_sp_define
+  	<where> 
+		<if test="name != null and name !=''">
+    		name like '%${name}%'
+    	</if>
+    	<if test="code != null and code != ''">
+    		and code like '%${code}%'
+    	</if>
+	</where>
+  </select>
+  
+  <select id="findAllSp" resultMap="BaseResultMap" parameterType="map" >
+    select 
+    	<include refid="Base_Column_List" />
+    from 
+    	bss_sp_define
+  </select>
+  
+  <select id="getSpDefineListById" resultMap="BaseResultMap" parameterType="map" >
+    select 
+        <include refid="Base_Column_List" />
+    from 
+        bss_sp_define
+     <where>
+         <if test="id != null and id != ''">
+             id = ${id}
+         </if>
+          <if test="state != null and state != ''">
+             and state = ${state}
+         </if>
+     </where>
+  </select>
+</mapper>

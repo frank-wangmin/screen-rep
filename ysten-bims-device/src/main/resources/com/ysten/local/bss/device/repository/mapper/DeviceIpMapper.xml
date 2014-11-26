@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.device.repository.mapper.DeviceIpMapper">
+	<resultMap id="BaseResultMap" type="DeviceIp">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="ip_seg" property="ipSeg" jdbcType="VARCHAR" />
+		<result column="mask_length" property="maskLength" jdbcType="INTEGER" />
+		<result column="start_ip_value" property="startIpValue" jdbcType="DECIMAL" />
+		<result column="end_ip_value" property="endIpValue" jdbcType="DECIMAL" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id, ip_seg, mask_length,start_ip_value,end_ip_value
+    </sql>
+    
+	<select id="getDeviceIpByIpValue" resultMap="BaseResultMap" parameterType="java.lang.Long">
+	    select
+		<include refid="Base_Column_List" />
+		from
+		bss_device_ip
+		where
+		#{ipValue} between start_ip_value and end_ip_value
+	</select>
+	
+	<select id="getById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+	    select
+		<include refid="Base_Column_List" />
+		from
+		bss_device_ip
+		where id = #{id}
+	</select>
+	
+	<select id="findAllDeviceIpByIpSeg" resultMap="BaseResultMap" parameterType="java.lang.Long">
+	    select
+		<include refid="Base_Column_List" />
+		from
+		bss_device_ip
+		<where>
+       	<if test="ipSeg!=null and ipSeg!=''">
+                ip_seg like '%${ipSeg}%'
+   		</if>
+        </where>
+        order by id desc
+        limit #{pageNo},#{pageSize}
+	</select>
+	
+    <select id="getCountByIpSeq" resultType="java.lang.Integer">
+        select count(*) from
+        bss_device_ip
+        <where>
+       	<if test="ipSeg!=null and ipSeg!=''">
+                ip_seg like '%${ipSeg}%'
+   		</if>
+        </where>
+  </select>
+  
+  <insert id="save" parameterType="deviceIp" useGeneratedKeys="true" keyProperty="id">
+        insert into bss_device_ip(ip_seg, mask_length,start_ip_value,end_ip_value) values
+        (#{ipSeg,jdbcType=VARCHAR},#{maskLength,jdbcType=BIGINT},#{startIpValue,jdbcType=BIGINT},
+        #{endIpValue,jdbcType=BIGINT})
+  </insert>
+  
+   <update id="update" parameterType="deviceIp">
+        update bss_device_ip
+        set
+        ip_seg = #{ipSeg,jdbcType=VARCHAR},
+        mask_length = #{maskLength,jdbcType=VARCHAR},
+        start_ip_value = #{startIpValue,jdbcType=BIGINT},
+        end_ip_value = #{endIpValue,jdbcType=BIGINT}
+        where
+        id = #{id,jdbcType=BIGINT}
+  </update>
+  
+    <delete id="delete" parameterType="java.util.List">
+       	delete from bss_device_ip where id in 
+        <foreach collection="ids" item="id"  open="(" separator="," close=")">  
+            #{id} 
+        </foreach>
+  </delete>
+	
+</mapper>

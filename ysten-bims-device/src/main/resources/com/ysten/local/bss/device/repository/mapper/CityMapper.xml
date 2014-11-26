@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.device.repository.mapper.CityMapper" >
+	<resultMap id="BaseResultMap" type="city">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="code" property="code" jdbcType="INTEGER" />
+		<result column="district_code" property="distCode" jdbcType="VARCHAR" />
+		<result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+		<result column="leader_id" property="leaderId" jdbcType="BIGINT" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id,name,code,district_code,create_date,leader_id
+	</sql>
+
+	<select id="queryByCode" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from bss_city
+		where
+		code = #{code,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="queryByName" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List" />
+        from bss_city
+        where
+        name = #{name}
+	</select>
+	
+	<select id="getById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+	    select
+		<include refid="Base_Column_List" />
+		from
+		bss_city
+		where id = #{id}
+	</select>
+
+    <select id="getByDistrictCode" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List" />
+        from
+        bss_city
+        where district_code =  #{distCode,jdbcType=VARCHAR}
+    </select>
+	
+	<select id="findCityList" resultMap="BaseResultMap" parameterType="map">
+	    select
+		<include refid="Base_Column_List" />
+		from
+		bss_city
+		<where>
+	       	<if test="name!=null and name!=''">
+	                name like '%${name}%'
+	   		</if>
+	   		<if test="code!=null and code!=''">
+	                and code like '%${code}%'
+	   		</if>
+        </where>
+        order by id desc
+        limit #{pageNo},#{pageSize}
+	</select>
+	
+	<insert id="save" parameterType="city" useGeneratedKeys="true" keyProperty="id">
+        insert into bss_city(name, code,district_code,create_date, leader_id) values
+        (#{name,jdbcType=VARCHAR},#{code,jdbcType=VARCHAR},#{distCode,jdbcType=VARCHAR},#{createDate,jdbcType=TIMESTAMP},#{leaderId,jdbcType=BIGINT})
+  	</insert>
+  
+   <update id="update" parameterType="city">
+        update bss_city
+        set
+        name = #{name,jdbcType=VARCHAR},
+        code = #{code,jdbcType=VARCHAR},
+        district_code = #{distCode,jdbcType=VARCHAR},
+        leader_id = #{leaderId,jdbcType=BIGINT}
+        where
+        id = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <delete id="delete" parameterType="java.util.List">
+      delete from bss_city where id in 
+      <foreach collection="ids" item="id"  open="(" separator="," close=")">  
+           #{id} 
+      </foreach>
+  </delete>
+  
+   <select id="findCitysByIds" resultMap="BaseResultMap" parameterType="java.util.List">
+    select
+    <include refid="Base_Column_List" />
+    from
+    bss_city
+    where id in 
+      <foreach collection="ids" item="id"  open="(" separator="," close=")">  
+           #{id} 
+      </foreach>
+	</select>
+
+   <select id="getCount" resultType="java.lang.Integer">
+        select count(*) from  bss_city
+        <where>
+	       	<if test="name!=null and name!=''">
+	                name like '%${name}%'
+	   		</if>
+	   		<if test="code!=null and code!=''">
+	                and code like '%${code}%'
+	   		</if>
+        </where>
+  </select>
+  
+  <select id="findAllCity" resultMap="BaseResultMap" parameterType="map">
+    select
+    <include refid="Base_Column_List" />
+    from
+    bss_city
+    order by id
+</select>
+
+    <select id="findAllProvince" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List" />
+        from
+        bss_city where substring(district_code,3,4) ='0000'
+        order by id
+    </select>
+
+	<select id="findAllCityByLeaderId" resultMap="BaseResultMap"  parameterType="java.lang.Long">
+	    select
+		<include refid="Base_Column_List" />
+		from
+		bss_city
+		where leader_id = #{leaderId}
+        order by id 
+	</select>
+  	<select id="getLeadIdsByUserAreaId" parameterType="java.lang.String" resultType="java.lang.Long">
+  		select distinct leader_id
+  		from bss_city
+  		where code like '${code}%'
+  	</select>
+
+    <select id="getAreaIdsByDistrictCode" parameterType="java.lang.String" resultType="java.lang.Long">
+  		select id
+  		from bss_area
+  		where dist_code = #{districtCode}
+  		limit 1
+</select>
+
+</mapper>

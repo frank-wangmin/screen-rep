@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.device.remote.repository.mapper.RemoteUserActivateSumMapper">
+	<resultMap id="BaseResultMap" type="remoteUserActivateSum">
+		<result column="province_id" property="provinceId" jdbcType="VARCHAR" />
+		<result column="city_id" property="cityId" jdbcType="VARCHAR" />
+		<result column="telecom_id" property="telecomId" jdbcType="VARCHAR" />
+		<result column="vendor_id" property="vendorId" jdbcType="VARCHAR" />
+		<result column="terminal_id" property="terminalId" jdbcType="VARCHAR" />
+		<result column="activate_all" property="activateAll" jdbcType="BIGINT" />
+		<result column="activate_day" property="activateDay" jdbcType="BIGINT" />
+		<result column="user_all" property="userAll" jdbcType="BIGINT" />
+		<result column="user_day" property="userDay" jdbcType="BIGINT" />
+		<result column="stb_return_day" property="stbReturnDay" jdbcType="BIGINT" />
+		<result column="stb_receive_day" property="stbReceiveDay" jdbcType="BIGINT" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		date, province_id, city_id, telecom_id, vendor_id,
+		terminal_id, activate_all, activate_day, user_all, user_day, stb_return_day, stb_receive_day
+	</sql>
+
+	<insert id="save" parameterType="remoteUserActivateSum" useGeneratedKeys="true" keyProperty="id">
+		insert into user_activate_day_sum
+		(date, province_id, city_id, telecom_id, vendor_id, terminal_id, activate_all, activate_day, user_all, user_day, stb_return_day, stb_receive_day)
+		values
+		(#{date,jdbcType=VARCHAR},
+		 #{provinceId,jdbcType=VARCHAR},
+		 #{cityId,jdbcType=VARCHAR},
+		 #{telecomId,jdbcType=VARCHAR},
+		 #{vendorId,jdbcType=VARCHAR},
+		 #{terminalId,jdbcType=VARCHAR},
+		 #{activateAll,jdbcType=BIGINT},
+		 #{activateDay,jdbcType=BIGINT},
+		 #{userAll,jdbcType=BIGINT},
+		 #{userDay,jdbcType=BIGINT},
+		 #{stbReturnDay,jdbcType=BIGINT},
+		 #{stbReceiveDay,jdbcType=BIGINT})
+	</insert>
+	
+	<insert id="saveList" parameterType="java.util.List" >
+		insert into user_activate_day_sum
+		(date, province_id, city_id, telecom_id, vendor_id, terminal_id, activate_all, activate_day, user_all, user_day, stb_return_day, stb_receive_day)
+		values
+		<foreach collection="list" item="item" index="index" separator="," >  
+		(#{item.date,jdbcType=VARCHAR},
+		 #{item.provinceId,jdbcType=VARCHAR},
+		 #{item.cityId,jdbcType=VARCHAR},
+		 #{item.telecomId,jdbcType=VARCHAR},
+		 #{item.vendorId,jdbcType=VARCHAR},
+		 #{item.terminalId,jdbcType=VARCHAR},
+		 #{item.activateAll,jdbcType=BIGINT},
+		 #{item.activateDay,jdbcType=BIGINT},
+		 #{item.userAll,jdbcType=BIGINT},
+		 #{item.userDay,jdbcType=BIGINT},
+		 #{item.stbReturnDay,jdbcType=BIGINT},
+		 #{item.stbReceiveDay,jdbcType=BIGINT})
+		</foreach>
+	</insert>
+</mapper>

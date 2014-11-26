@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.device.repository.mapper.AccountDetailMapper" >
+  <resultMap id="BaseResultMap" type="accountDetail" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="current_balance" property="currentBalance" jdbcType="DECIMAL" />
+    <result column="cost" property="cost" jdbcType="DECIMAL" />
+    <result column="operate_type" property="operateType" jdbcType="VARCHAR" />
+    <result column="consum_type" property="consumType" jdbcType="VARCHAR" />
+    <result column="rechange_type" property="rechargeType" jdbcType="VARCHAR" />
+    <result column="outer_code" property="outerCode" jdbcType="VARCHAR" />
+    <result column="operate_date" property="operateDate" jdbcType="TIMESTAMP" />
+    <result column="result" property="result" jdbcType="VARCHAR" />
+    <result column="operate_no" property="operateNo" jdbcType="VARCHAR" />
+    <result column="business_no" property="businessNo" jdbcType="VARCHAR" />
+    <result column="customer_id" property="customerId" jdbcType="VARCHAR" />
+    <result column="syn_flag" property="synFlag" jdbcType="BIGINT" />
+    <association property="account" javaType="account">
+        <id column="account_id" property="id"/>
+    </association>
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, account_id, customer_id, current_balance, cost, operate_type, consum_type, recharge_type, 
+    outer_code, operate_date, result, operate_no, business_no,syn_flag
+  </sql>
+ 
+  <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+        <include refid="Base_Column_List"/>
+    from 
+        bss_account_detail 
+    where 
+        id = #{id,jdbcType=BIGINT}
+  </select>
+  
+   <select id="findByAccountId" resultMap="BaseResultMap" parameterType="map">
+    select 
+        <include refid="Base_Column_List"/>
+    from 
+        bss_account_detail 
+    where 
+        account_id = #{accountId}
+    <if test="operateType!=null">
+        and operate_type = #{operateType}
+    </if>
+    <if test="begintime!=null">
+    	and operate_date >= #{begintime}
+    </if>
+    <if test="endtime!=null">
+    	and operate_date &lt; #{endtime}
+    </if>
+    <if test="(startRowNo != null and size != null) and (startRowNo>=0 and size>0)">
+        limit #{startRowNo},#{size}
+    </if>
+  </select>
+ 
+  <select id="findNotSynAccountDetails" resultMap="BaseResultMap">
+    select 
+        <include refid="Base_Column_List"/>
+    from 
+        bss_account_detail 
+    where
+        syn_flag != 1
+  </select>
+  
+   <insert id="save" parameterType="accountDetail" useGeneratedKeys="true" keyProperty="id">
+    insert into  bss_account_detail 
+        (account_id, customer_id,current_balance,cost,operate_type,consum_type,recharge_type,outer_code,operate_date,result,
+        operate_no,business_no,syn_flag,customer_code)
+    values 
+        (#{account.id,jdbcType=BIGINT}, #{customerId,jdbcType=BIGINT},#{currentBalance,jdbcType=DECIMAL}, #{cost,jdbcType=DECIMAL},
+        #{operateType,jdbcType=VARCHAR},#{consumType,jdbcType=VARCHAR}, #{rechargeType,jdbcType=VARCHAR}, #{outerCode,jdbcType=VARCHAR},
+        #{operateDate,jdbcType=TIMESTAMP}, #{result,jdbcType=VARCHAR},#{operateNo,jdbcType=VARCHAR}, #{businessNo,jdbcType=VARCHAR},
+        #{synFlag,jdbcType=BIGINT},#{customerCode,jdbcType=VARCHAR})
+  </insert>
+  <update id="update" parameterType="accountDetail" >
+    update 
+        bss_account_detail
+    set 
+        account_id = #{account.id,jdbcType=BIGINT},
+        customer_id = #{customerId,jdbcType=BIGINT},
+        customer_code = #{customerCode,jdbcType=VARCHAR},
+        current_balance = #{currentBalance,jdbcType=DECIMAL},
+        cost = #{cost,jdbcType=DECIMAL},
+        operate_type = #{operateType,jdbcType=VARCHAR},
+        consum_type = #{consumType,jdbcType=VARCHAR},
+        recharge_type = #{rechargeType,jdbcType=VARCHAR},
+        outer_code = #{outerCode,jdbcType=VARCHAR},
+        operate_date = #{operateDate,jdbcType=TIMESTAMP},
+        result = #{result,jdbcType=VARCHAR},
+        operate_no = #{operateNo,jdbcType=VARCHAR},
+        business_no = #{businessNo,jdbcType=VARCHAR},
+        syn_flag = #{synFlag,jdbcType=BIGINT}
+    where 
+        id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

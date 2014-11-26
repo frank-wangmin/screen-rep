@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.device.repository.mapper.BackgroundImageMapper">
+    <resultMap id="BaseResultMap" type="backgroundImage">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="url" property="url" jdbcType="VARCHAR"/>
+        <!--<result column="md5_hd" property="md5Hd" jdbcType="VARCHAR"/>-->
+        <!--<result column="md5_sd" property="md5Sd" jdbcType="VARCHAR"/>-->
+        <result column="blur_url" property="blurUrl" jdbcType="VARCHAR"/>
+        <result column="create_date" property="createDate" jdbcType="TIMESTAMP"/>
+        <result column="is_default" property="isDefault" jdbcType="INTEGER"/>
+        <result column="state" property="state" jdbcType="VARCHAR"/>
+        <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    </resultMap>
+
+    <resultMap id="RelResultMap" type="backgroundImage">
+        <id column="img_id" property="id" jdbcType="BIGINT"/>
+        <result column="img_name" property="name" jdbcType="VARCHAR"/>
+        <result column="img_url" property="url" jdbcType="VARCHAR"/>
+        <!--<result column="img_md5_hd" property="md5Hd" jdbcType="VARCHAR"/>-->
+        <!--<result column="img_md5_sd" property="md5Sd" jdbcType="VARCHAR"/>-->
+        <result column="img_blur_url" property="blurUrl" jdbcType="VARCHAR"/>
+        <result column="img_create_date" property="createDate" jdbcType="TIMESTAMP"/>
+        <result column="img_is_default" property="isDefault" jdbcType="INTEGER"/>
+        <result column="img_state" property="state" jdbcType="VARCHAR"/>
+        <result column="map_loop_time" property="loopTime" jdbcType="INTEGER"/>
+        <result column="img_update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    </resultMap>
+    <!--delete the md5_sd and md5_hd characters by joyce on  2014-6-12-->
+    <sql id="Base_Column_List">
+    id, name,url, blur_url, create_date, is_default,state,update_date
+    </sql>
+    <!--delete the md5_sd and md5_hd characters by joyce on  2014-6-12-->
+    <sql id="Rel_Column_List">
+    img.id as img_id, img.name as img_name ,img.state as img_state,img.update_date as img_update_date, img.url as img_url, img.blur_url as img_blur_url, img.create_date as img_create_date, img.is_default as img_is_default, map.loop_time as map_loop_time
+    </sql>
+    <!-- delete the MD5 characters by joyce on 2014-6-12-->
+    <insert id="save" parameterType="backgroundImage" useGeneratedKeys="true" keyProperty="id">
+    	insert into bss_background_image
+    	(name,state,url,blur_url, create_date, is_default,update_date)
+    	values
+    	(#{name,jdbcType=VARCHAR},#{state,jdbcType=VARCHAR},#{url,jdbcType=VARCHAR},#{blurUrl,jdbcType=VARCHAR},#{createDate,jdbcType=TIMESTAMP},#{isDefault,jdbcType=INTEGER}, #{updateDate,jdbcType=TIMESTAMP})
+    </insert>
+    
+    <update id="update" parameterType="backgroundImage">
+    	update bss_background_image
+    	set name = #{name,jdbcType=VARCHAR},
+    		state = #{state,jdbcType=VARCHAR},
+        	url = #{url,jdbcType=VARCHAR},
+<!--         	md5_hd = #{md5Hd,jdbcType=VARCHAR},deleted by joyce on 2014-6-12
+         	md5_sd = #{md5Sd,jdbcType=VARCHAR},-->
+    	    blur_url = #{blurUrl,jdbcType=VARCHAR},
+    	    is_default = #{isDefault,jdbcType=INTEGER},
+        	update_date = #{updateDate,jdbcType=TIMESTAMP}
+    	where id = #{id,jdbcType=BIGINT}
+    </update>
+    
+    <select id="findBackgroundImageById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        bss_background_image
+        where
+        id = #{id,jdbcType=BIGINT}
+    </select>
+    
+    <select id="getBackgroundImageByIdAndUseable" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        bss_background_image
+        where
+        id = #{id,jdbcType=BIGINT} and state = #{state,jdbcType=VARCHAR}
+    </select>
+
+    <select id="findDefaultBackgroundImage" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        bss_background_image
+        where
+        is_default = #{isDefault,jdbcType=INTEGER}
+    </select>
+
+    <select id="findBackgroundImageByDeviceCode" resultMap="RelResultMap" parameterType="map">
+        select
+        <include refid="Rel_Column_List"/>
+        from bss_background_image img
+        join bss_background_image_device_map map
+        on map.background_image_id = img.id
+        where
+        map.ysten_id = #{ystenId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="findBackgroundImageByYstenId" resultMap="RelResultMap" parameterType="map">
+        select
+        <include refid="Rel_Column_List"/>
+        from bss_background_image img
+        join bss_background_image_device_map map
+        on map.background_image_id = img.id
+        where
+        map.ysten_id = #{ystenId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="findAllBackgroundImage" resultMap="RelResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from bss_background_image img
+        where img.is_default = 0
+        and img.state = 'USEABLE'
+    </select>
+    
+    <select id="findBackgroundImageByYstenIdOrGroupId" resultMap="RelResultMap" parameterType="map">
+        select
+        <include refid="Rel_Column_List"/>
+        from bss_background_image img
+        join bss_background_image_device_map map
+        where  map.background_image_id = img.id
+        <if test="ystenId !=null ">
+            and map.ysten_id = #{ystenId, jdbcType=VARCHAR}
+        </if>
+        <if test="groupId !=null ">
+            and map.device_group_id = #{groupId, jdbcType=BIGINT}
+        </if>
+        and img.state = 'USEABLE'
+        and img.is_default = 0
+    </select>
+
+    <select id="findBackgroundImageByCustomerCodeOrGroupId" resultMap="RelResultMap" parameterType="map">
+        select
+        <include refid="Rel_Column_List"/>
+        from bss_background_image img
+        join bss_background_image_user_map map
+        where  map.background_image_id = img.id
+        <if test="customerCode !=null ">
+            and map.code = #{customerCode, jdbcType=VARCHAR}
+        </if>
+        <if test="groupId !=null ">
+            and map.user_group_id = #{groupId, jdbcType=BIGINT}
+        </if>
+        and img.state = 'USEABLE'
+        and img.is_default = 0
+    </select>
+    
+    <select id="findBackgroundImageByDeviceGroupId" resultMap="RelResultMap" parameterType="map">
+        select
+        <include refid="Rel_Column_List"/>
+        from bss_background_image img
+        join bss_background_image_device_map map
+        on map.background_image_id = img.id
+        where
+        map.device_group_id = #{deviceGroupId,jdbcType=VARCHAR}
+    </select>
+    
+    <select id="findBackgroundImageByDeviceGroupIdAndState" resultMap="RelResultMap" parameterType="map">
+        select
+        <include refid="Rel_Column_List"/>
+        from bss_background_image img
+        join bss_background_image_device_map map
+        on map.background_image_id = img.id
+        where
+        map.device_group_id = #{deviceGroupId,jdbcType=VARCHAR} and img.state = #{state,jdbcType=VARCHAR}
+    </select>
+    
+	<select id="findBackGroundList" resultMap="BaseResultMap" parameterType="map">
+		select <include refid="Base_Column_List"/>
+        	from bss_background_image
+        	<where>
+        		<if test="name != null and name!=''">
+        			name like '%${name}%'
+        		</if>
+        	</where>
+        	order by id desc
+		limit ${pageNo},${pageSize}
+	</select>
+	<select id="getCountByCondition" resultType="java.lang.Integer" parameterType="java.lang.String">
+		select count(*)
+        	from bss_background_image
+        	<where>
+        		<if test="name != null and name!=''">
+        			name like '%${name}%'
+        		</if>
+        	</where>
+	</select>
+	<delete id="deleteById" parameterType="java.lang.Long">
+      delete from bss_background_image where id = #{id,jdbcType=BIGINT} 
+  </delete>
+	<delete id="deleteByIds" parameterType="java.util.List">
+      delete from bss_background_image where id in 
+      <foreach collection="ids" item="id"  open="(" separator="," close=")">  
+           #{id} 
+      </foreach>
+  </delete>
+</mapper>

@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.device.repository.mapper.ApkSoftwarePackageMapper" >
+  <resultMap id="BaseResultMap" type="apkSoftwarePackage" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="version_seq" property="versionSeq" jdbcType="INTEGER" />
+    <result column="version_name" property="versionName" jdbcType="VARCHAR" />
+    <result column="package_type" property="packageType" jdbcType="VARCHAR" />
+    <result column = "package_status" property = "packageStatus" jdbcType = "VARCHAR"/>
+    <result column="package_location" property="packageLocation" jdbcType="VARCHAR" />
+    <result column="is_mandatory" property="mandatoryStatus" jdbcType="VARCHAR" />
+    <result column="md5" property="md5" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="device_version_seq" property="deviceVersionSeq" jdbcType="INTEGER" />
+    <result column="full_software_id" property="fullSoftwareId" jdbcType="BIGINT" />
+    <result column="last_modify_time" property="lastModifyTime" jdbcType="TIMESTAMP" />
+    <result column="oper_user" property="operUser" jdbcType="VARCHAR" />
+    <result column="is_all" property="isAll" jdbcType="INTEGER" />
+    <result column="upgradeTaskId" property="upgradeTaskId" jdbcType="INTEGER" />
+    <association property="softCodeId" javaType="apkSoftwareCode">
+			<id column="soft_code_id" property="id" jdbcType="BIGINT" />
+    </association>
+  </resultMap>
+  
+  <resultMap id="AllResultMap" type="com.ysten.local.bss.device.domain.ApkSoftwarePackage" >
+        <id  column = "p_id" property = "id" jdbcType = "BIGINT"/>
+		<result  column = "p_version_seq"        property = "versionSeq" jdbcType = "INTEGER"/>
+		<result  column = "p_version_name"       property = "versionName" jdbcType = "VARCHAR"/>
+		<result  column = "p_package_type"       property = "packageType" jdbcType = "VARCHAR"/>
+		<result  column = "p_package_location"   property = "packageLocation" jdbcType = "VARCHAR"/>
+		<result  column = "p_package_status"     property = "packageStatus" jdbcType = "VARCHAR"/>
+		<result  column = "p_is_mandatory"       property = "mandatoryStatus" jdbcType = "VARCHAR"/>
+		<result  column = "p_md5"                property = "md5" jdbcType = "VARCHAR"/>
+		<result  column = "p_create_date"        property = "createDate" jdbcType = "TIMESTAMP"/>
+		<result  column = "p_device_version_seq" property = "deviceVersionSeq" jdbcType = "INTEGER"/>
+		<result  column = "p_full_software_id"   property = "fullSoftwareId" jdbcType = "BIGINT"/>		
+		<result  column = "p_last_modify_time"   property = "lastModifyTime" jdbcType = "TIMESTAMP"/>
+		<result  column = "p_oper_user" property = "operUser" jdbcType = "VARCHAR"/>
+        <association property="softCodeId" javaType="com.ysten.local.bss.device.domain.ApkSoftwareCode">
+			<id column = "c_id"     property = "id" jdbcType = "BIGINT" />
+			<result column = "c_name" property = "name" jdbcType = "VARCHAR" />
+			<result column = "c_code"   property = "code" jdbcType = "VARCHAR" />
+			<result column = "c_status"   property = "status" jdbcType = "VARCHAR" />
+			<result column = "c_description"   property = "description" jdbcType = "VARCHAR" />
+			<result column = "c_create_date"   property = "createDate" jdbcType = "TIMESTAMP" />
+			<result  column = "c_last_modify_time"   property = "lastModifyTime" jdbcType = "TIMESTAMP"/>
+			<result  column = "c_oper_user" property = "operUser" jdbcType = "VARCHAR"/>
+		</association>
+  </resultMap>
+  
+  <sql id="Advanced_Column_List" > 
+        p.id as p_id,p.version_seq as p_version_seq,p.soft_code_id as p_soft_code_id,p.version_name as p_version_name,
+        p.package_type as p_package_type,p.package_location as p_package_location,p.package_status as p_package_status,
+        p.is_mandatory as p_is_mandatory,p.md5 as p_md5,p.create_date as p_create_date,p.device_version_seq as p_device_version_seq,
+        p.full_software_id as p_full_software_id,p.last_modify_time as p_last_modify_time,p.oper_user as p_oper_user,
+	    c.id as c_id,c.name as c_name,c.code as c_code,c.status as c_status,c.description as c_description,c.create_date as c_create_date,
+	    c.last_modify_time as c_last_modify_time,c.oper_user as c_oper_user
+  </sql>
+
+  <sql id="Advanced_Table_List" > 
+        bss_apk_software_package p 
+        left outer join bss_apk_software_code c on c.id = p.soft_code_id       
+  </sql>
+  <sql id="Base_Column_List" >
+    id, soft_code_id, version_seq, version_name, package_type, package_status, package_location, is_mandatory, 
+    md5, create_date, device_version_seq, full_software_id, last_modify_time, oper_user
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from bss_apk_software_package
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="findSoftwarePackageBySoftCode" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  	select 
+  	<include refid="Base_Column_List" />    
+  	from  bss_apk_software_package
+     <where>
+     	<if test="softwareCodeId != null and softwareCodeId != ''">
+     	 	soft_code_id = #{softwareCodeId,jdbcType=INTEGER}
+     	</if> 
+     </where>
+  </select>
+   <select id="findListBySoftCodeNameAndVersionName"  resultMap="AllResultMap" parameterType="map" >
+	      select 
+          <include refid="Advanced_Column_List"/>
+          from 
+          <include refid="Advanced_Table_List"/>
+	    <where>
+     	<if test="versionName != null and versionName != ''">
+     	 	p.version_name like '%${versionName}%'
+     	</if> 
+     	<if test="softCodeName != null and softCodeName != ''">
+     	 	and c.name like '%${softCodeName}%'
+     	</if>
+     	<if test="packageType != null and packageType != ''">
+     		and p.package_type = #{packageType}
+     	</if>
+     	<if test="softCodeId != null and softCodeId != ''">
+     		and p.soft_code_id = #{softCodeId}
+     	</if>   	
+        </where>
+       order by p.id desc
+     <if test="pageNo != null and pageSize != null">
+      limit ${pageNo},${pageSize}
+    </if>
+  </select>
+   <select id="getCountByBySoftCodeNameAndVersionName" parameterType="map" resultType="java.lang.Integer">
+	     select 
+	     count(p.id)
+	     from <include refid="Advanced_Table_List"/>
+	    <where>
+     	<if test="versionName != null and versionName != ''">
+     	 	p.version_name like '%${versionName}%'
+     	</if> 
+     	<if test="softCodeName != null and softCodeName != ''">
+     	 	and c.name like '%${softCodeName}%'
+     	</if> 
+     	<if test="packageType != null and packageType != ''">
+     		and p.package_type = #{packageType}
+     	</if>
+     	<if test="softCodeId != null and softCodeId != ''">
+     		and p.soft_code_id = #{softCodeId}
+     	</if>     	
+        </where>
+    </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from bss_apk_software_package
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.ysten.local.bss.device.domain.ApkSoftwarePackage"  useGeneratedKeys="true" keyProperty="id">
+    insert into bss_apk_software_package (soft_code_id, version_seq, 
+      version_name, package_type,package_status, package_location, 
+      is_mandatory, md5, create_date, 
+      device_version_seq, full_software_id, last_modify_time, 
+      oper_user)
+    values (#{softCodeId.id,jdbcType=BIGINT}, #{versionSeq,jdbcType=INTEGER}, 
+      #{versionName,jdbcType=VARCHAR}, #{packageType,jdbcType=VARCHAR}, #{packageStatus,jdbcType=VARCHAR}, #{packageLocation,jdbcType=VARCHAR}, 
+      #{mandatoryStatus,jdbcType=VARCHAR}, #{md5,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{deviceVersionSeq,jdbcType=INTEGER}, #{fullSoftwareId,jdbcType=BIGINT}, #{lastModifyTime,jdbcType=TIMESTAMP}, 
+      #{operUser,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.ysten.local.bss.device.domain.ApkSoftwarePackage" >
+    update bss_apk_software_package
+    set soft_code_id = #{softCodeId.id,jdbcType=BIGINT},
+        version_seq = #{versionSeq,jdbcType=INTEGER},
+        version_name = #{versionName,jdbcType=VARCHAR},
+        package_type = #{packageType,jdbcType=VARCHAR},
+        package_status = #{packageStatus,jdbcType=VARCHAR},
+        package_location = #{packageLocation,jdbcType=VARCHAR},
+        is_mandatory = #{mandatoryStatus,jdbcType=VARCHAR},
+        md5 = #{md5,jdbcType=VARCHAR},
+        device_version_seq = #{deviceVersionSeq,jdbcType=INTEGER},
+        full_software_id = #{fullSoftwareId,jdbcType=BIGINT},
+        last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP},
+        oper_user = #{operUser,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+    <select id="getSoftwarePackageListBySoftCodeIdAndVersionSeq"  resultMap="BaseResultMap" parameterType="map" >
+        select dsp.*, ut.is_all, ut.id as upgradeTaskId
+        from bss_apk_upgrade_task ut
+        join bss_apk_software_package dsp on dsp.id = ut.software_package_id
+        where ut.soft_code_id = #{softwareCodeId, jdbcType=BIGINT}
+        and sysdate() between ut.start_date and ut.end_date
+        and dsp.version_seq > #{deviceVersionSeq, jdbcType=BIGINT}
+        and dsp.device_version_seq = #{deviceVersionSeq, jdbcType=INTEGER}
+        and dsp.package_type = 'INCREMENT'
+        UNION
+        select dsp.*, ut.is_all, ut.id as upgradeTaskId
+        from bss_apk_upgrade_task ut
+        join bss_apk_software_package dsp on dsp.id = ut.software_package_id
+        where ut.soft_code_id = #{softwareCodeId, jdbcType=BIGINT}
+        and sysdate() between ut.start_date and ut.end_date
+        and dsp.version_seq > #{deviceVersionSeq, jdbcType=BIGINT}
+        and dsp.package_type = 'FULL'
+    </select>
+    
+      <select id="getApkSoftwarePackageByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+  	select 
+  	<include refid="Base_Column_List" />
+     from bss_apk_software_package
+     where version_name = #{versionName}
+  </select>
+</mapper>

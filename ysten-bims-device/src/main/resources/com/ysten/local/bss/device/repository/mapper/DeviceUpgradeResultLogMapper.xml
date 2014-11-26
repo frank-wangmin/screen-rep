@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.device.repository.mapper.DeviceUpgradeResultLogMapper" >
+  <resultMap id="BaseResultMap" type="deviceUpgradeResultLog" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="device_code" property="deviceCode" jdbcType="VARCHAR" />
+    <result column="ysten_id" property="ystenId" jdbcType="VARCHAR" />
+    <result column="district_code" property="distCode" jdbcType="VARCHAR" />
+    <result column="soft_code" property="softCode" jdbcType="VARCHAR" /> 
+    <result column="device_version_seq" property="deviceVersionSeq" jdbcType="INTEGER" />
+    <result column="version_seq" property="versionSeq" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="duration" property="duration" jdbcType="BIGINT" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, device_code, ysten_id, district_code, soft_code, device_version_seq, version_seq, status, duration, create_date
+  </sql>
+ 
+   <insert id="insertDeviceUpgradeResultLog" parameterType="deviceUpgradeResultLog" useGeneratedKeys="true" keyProperty="id">
+     insert into bss_device_upgrade_result_log (
+     	device_code, ysten_id, district_code, soft_code, device_version_seq, version_seq, status, duration, create_date
+     ) values(
+     	#{deviceCode,jdbcType=VARCHAR}, 
+     	#{ystenId,jdbcType=VARCHAR}, 
+     	#{distCode,jdbcType=VARCHAR}, 
+     	#{softCode,jdbcType=VARCHAR},
+     	#{deviceVersionSeq,jdbcType=INTEGER}, 
+     	#{versionSeq,jdbcType=INTEGER},
+     	#{status,jdbcType=VARCHAR},
+     	#{duration,jdbcType=BIGINT},
+     	#{createDate,jdbcType=TIMESTAMP}
+       )
+   </insert>
+    <select id="findListByDeviceCodeAndYstenId" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        bss_device_upgrade_result_log
+        <where>
+        <if test="ystenId != null and ystenId != ''">
+       			ysten_id = #{ystenId}
+       		</if>
+       		<if test="deviceCode!=null and deviceCode!=''">
+       			and device_code = #{deviceCode}
+       		</if>
+       	</where>
+        
+    </select>
+    
+   <select id="getCountByCodeAndYstId" resultType="java.lang.Integer">
+        select count(*) from
+        bss_device_upgrade_result_log
+        	<where>
+       		<if test="deviceCode!=null and deviceCode!=''">
+       			device_code like '%${deviceCode}%'
+       		</if>
+       		<if test="ystenId != null and ystenId !=''">
+       			and ysten_id like '%${ystenId}%'
+       		</if>
+       	</where>
+  </select>
+  
+      <select id="findDeviceUpgradeResultLogByCodeAndYstId" resultMap="BaseResultMap" parameterType="map">
+        select 
+        <include refid="Base_Column_List"/>
+        from
+        bss_device_upgrade_result_log
+       	<where>
+       		<if test="deviceCode!=null and deviceCode!=''">
+       			device_code like '%${deviceCode}%'
+       		</if>
+       		<if test="ystenId != null and ystenId !=''">
+       			and ysten_id like '%${ystenId}%'
+       		</if>
+       	</where>
+        order by id desc
+        limit #{pageNo},#{pageSize}
+    </select>
+    <select id="findDeviceUpgradeResultLogByCondition" resultMap="BaseResultMap" parameterType="map" >
+	    select 
+	    	<include refid="Base_Column_List"/>
+	    from 
+	    bss_device_upgrade_result_log
+	    <where>
+	        <if test="ystenIds != null and ystenIds != ''">
+	            ysten_id in 
+		        <foreach collection="ystenIds" item="ystId"  open="(" separator="," close=")">  
+		            #{ystId} 
+		        </foreach>
+	        </if>
+	        <if test="deviceCodes !=null and deviceCodes !=''">
+	             and device_code in 
+		        <foreach collection="deviceCodes" item="code"  open="(" separator="," close=")">  
+		            #{code}
+		        </foreach>
+	        </if>
+	        <if test="state!=null and state!=''">
+	            and status = #{state}
+	        </if>
+	        <if test="softCode !=null and softCode !=''">
+	            and soft_code like '%${softCode}%'
+	        </if>
+	        <if test="distCode !=null and distCode !=''">
+	            and district_code like '%${distCode}%'
+	        </if>
+	        <if test="deviceVersionSeq !=null and deviceVersionSeq !=''">
+	        	and device_version_seq like '%${deviceVersionSeq}%'
+	    	</if>
+	    	<if test="versionSeq !=null and versionSeq !=''">
+	        	and version_seq like '%${versionSeq}%'
+	    	</if>
+	        <if test="startDate!=null and startDate!='' and endDate !=null and endDate !=''">
+	      	 	and create_date between #{startDate} and #{endDate} 
+	        </if>
+	    </where>
+	    order by id desc
+	    <if  test="pageSize != null">
+	    limit ${pageNo} , ${pageSize}
+	    </if>
+  </select>
+  
+  <select id="getCountByCondition" resultType="java.lang.Integer">
+        select count(*) from
+        bss_device_upgrade_result_log
+        	<where>
+       		 <if test="ystenIds != null and ystenIds != ''">
+	            ysten_id in 
+		        <foreach collection="ystenIds" item="ystId"  open="(" separator="," close=")">  
+		            #{ystId} 
+		        </foreach>
+	        </if>
+	        <if test="deviceCodes !=null and deviceCodes !=''">
+	             and device_code in 
+		        <foreach collection="deviceCodes" item="code"  open="(" separator="," close=")">  
+		            #{code}
+		        </foreach>
+	        </if>
+	        <if test="state!=null and state!=''">
+	            and status = #{state}
+	        </if>
+	        <if test="softCode !=null and softCode !=''">
+	            and soft_code like '%${softCode}%'
+	        </if>
+	        <if test="distCode !=null and distCode !=''">
+	            and district_code like '%${distCode}%'
+	        </if>
+	        <if test="deviceVersionSeq !=null and deviceVersionSeq !=''">
+	        	and device_version_seq like '%${deviceVersionSeq}%'
+	    	</if>
+	    	<if test="versionSeq !=null and versionSeq !=''">
+	        	and version_seq like '%${versionSeq}%'
+	    	</if>
+	        <if test="startDate!=null and startDate!='' and endDate !=null and endDate !=''">
+	      	 	and create_date between #{startDate} and #{endDate} 
+	        </if>
+       	</where>
+  </select>
+  
+  	<select id="findDeviceUpgradeResultLogByIds" resultMap="BaseResultMap" parameterType="java.util.List">
+        select 
+        <include refid="Base_Column_List"/>
+        from
+        bss_device_upgrade_result_log
+        where id in 
+        <foreach collection="ids" item="id"  open="(" separator="," close=")">  
+            #{id} 
+        </foreach>
+        order by id desc
+    </select>
+    
+    <select id="findExportDeviceUpgradeResultLog" resultMap="BaseResultMap" parameterType="map" >
+	    select 
+	    	<include refid="Base_Column_List"/>
+	    from 
+	    bss_device_upgrade_result_log
+	    <where>
+	    	<if test="deviceCodeValue !=null and deviceCodeValue !=''">
+       			device_code like '%${deviceCodeValue}%'
+       		</if>
+       		<if test="ystenValue != null and ystenValue !=''">
+       			and ysten_id like '%${ystenValue}%'
+       		</if>
+	        <if test="ystenIdHvalue != null and ystenIdHvalue != ''">
+	            and ysten_id in 
+		        <foreach collection="ystenIdHvalue" item="yId"  open="(" separator="," close=")">  
+		            #{yId} 
+		        </foreach>
+	        </if>
+	        <if test="deviceCodeHvalue !=null and deviceCodeHvalue !=''">
+	             and device_code in 
+		        <foreach collection="deviceCodeHvalue" item="dC"  open="(" separator="," close=")">  
+		            #{dC}
+		        </foreach>
+	        </if>
+	        <if test="stateValue !=null and stateValue !=''">
+	            and status = #{stateValue}
+	        </if>
+	        <if test="softCodevalue !=null and softCodevalue !=''">
+	            and soft_code like '%${softCodevalue}%'
+	        </if>
+	        <if test="distCodeValue !=null and distCodeValue !=''">
+	            and district_code like '%${distCodeValue}%'
+	        </if>
+	        <if test="deviceVersionSeqValue !=null and deviceVersionSeqValue !=''">
+	        	and device_version_seq like '%${deviceVersionSeqValue}%'
+	    	</if>
+	    	<if test="versionSeqValue !=null and versionSeqValue !=''">
+	        	and version_seq like '%${versionSeqValue}%'
+	    	</if>
+	        <if test="startDateValue !=null and startDateValue !='' and endDateValue !=null and endDateValue !=''">
+	      	 	and create_date between #{startDateValue} and #{endDateValue} 
+	        </if>
+	    </where>
+  </select>
+    <!--
+     <select id="findListByDeviceGroupIdList" parameterType="map" resultMap="BaseResultMap">
+       select <include refid="Base_Column_List" />
+       from bss_device_group edg
+       where device_group_id in(${deviceGroupIds})
+
+      </select>
+
+      <select id="findDeviceGroupList" parameterType="java.lang.Long" resultMap="BaseResultMap">
+       select <include refid="Base_Column_List" />
+       from bss_device_group edg
+       <if test="pDeviceGroupId != null">
+               where p_device_group_id = #{pDeviceGroupId,jdbcType=BIGINT}
+       </if>
+      </select>
+
+      <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+       select
+       <include refid="Base_Column_List" />
+       from bss_device_group
+       where device_group_id = #{deviceGroupId,jdbcType=BIGINT}
+     </select>
+
+     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+       delete from bss_device_group
+       where device_group_id = #{deviceGroupId,jdbcType=BIGINT}
+     </delete>
+
+     <insert id="insert" parameterType="deviceGroup" useGeneratedKeys="true" keyProperty="deviceGroupId">
+       insert into bss_device_group (
+           id,name,description,create_date,p_device_group_id,type,dynamic_flag,sql_expression
+         )
+       values ( #{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}
+               , #{description,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP},#{pDeviceGroupId,jdbcType=BIGINT},#{type,jdbcType=BIGINT},#{dynamicFlag,jdbcType=BIGINT},#{sqlExpression,jdbcType=VARCHAR}
+         )
+     </insert>
+
+     <update id="updateByPrimaryKey" parameterType="deviceGroup" >
+       update bss_device_group
+       set
+           name = #{name,jdbcType=VARCHAR},
+           description = #{description,jdbcType=VARCHAR},
+           create_date = #{createDate,jdbcType=TIMESTAMP},
+           p_device_group_id = #{pDeviceGroupId,jdbcType=BIGINT},
+           type = #{type,jdbcType=BIGINT},
+           dynamic_flag = #{dynamicFlag,jdbcType=BIGINT},
+           sql_expression = #{sqlExpression,jdbcType=VARCHAR}
+       where
+          id = #{id,jdbcType=BIGINT}
+     </update>
+      -->
+    
+</mapper>

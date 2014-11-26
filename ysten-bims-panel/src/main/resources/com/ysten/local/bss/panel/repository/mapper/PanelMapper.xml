@@ -1,0 +1,410 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.panel.repository.mapper.PanelMapper">
+    <resultMap id="BaseResultMap" type="panel">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="panel_id" property="panelId" jdbcType="BIGINT"/>
+        <result column="template_id" property="templateId" jdbcType="BIGINT"/>
+        <result column="panel_mark" property="panelMark" jdbcType="VARCHAR"/>
+        <result column="panel_name" property="panelName" jdbcType="VARCHAR"/>
+        <result column="panel_title" property="panelTitle" jdbcType="VARCHAR"/>
+        <!--<result column="panel_type" property="panelType" jdbcType="INTEGER"/>-->
+        <result column="panel_style" property="panelStyle" jdbcType="VARCHAR"/>
+        <result column="panel_icon" property="panelIcon" jdbcType="VARCHAR"/>
+        <result column="link_url" property="linkUrl" jdbcType="VARCHAR"/>
+        <result column="img_url" property="imgUrl" jdbcType="VARCHAR"/>
+        <result column="online_status" property="onlineStatus" jdbcType="INTEGER"/>
+        <result column="online_status_time" property="onlineStatueTime" jdbcType="TIMESTAMP"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="opr_userid" property="oprUserId" jdbcType="BIGINT"/>
+        <result column="epg_1_data" property="epg1Data" jdbcType="VARCHAR"/>
+        <result column="epg_1_style" property="epg1Style" jdbcType="VARCHAR"/>
+        <result column="epg_2_data" property="epg2Data" jdbcType="VARCHAR"/>
+        <result column="epg_2_style" property="epg2Style" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <!--<result column="display" property="display" jdbcType="VARCHAR"/>-->
+        <result column="big_img" property="bigimg" jdbcType="VARCHAR"/>
+        <result column="small_img" property="smallimg" jdbcType="VARCHAR"/>
+        <!--<result column="is_lock" property="isLock" jdbcType="VARCHAR"/>-->
+        <result column="is_custom" property="isCustom" jdbcType="INTEGER"/>
+        <result column="epg_panel_id" property="epgPanelId" jdbcType="BIGINT"/>
+        <result column="ref_panel_id" property="refPanelId" jdbcType="BIGINT"/>
+        <result column="district_code" property="districtCode" jdbcType="VARCHAR"/>
+
+        <result column="version" property="version" jdbcType="BIGINT"/>
+        <result column="resolution" property="resolution" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    id,template_id, panel_mark,panel_name,panel_title,panel_style,panel_icon,link_url,img_url,online_status,online_status_time,status,opr_userid,epg_1_data,epg_1_style,
+    epg_2_data,epg_2_style,create_time,update_time,big_img,small_img,epg_panel_id,epg_template_id,is_custom,ref_panel_id,district_code,version,resolution
+    </sql>
+
+    <sql id="Map_Column_List">
+    p.id,p.template_id, p.panel_mark,p.panel_name,p.panel_title,p.panel_style,p.panel_icon,p.link_url,p.img_url,p.online_status,p.online_status_time,p.status,p.opr_userid,p.epg_1_data,p.epg_1_style,
+    p.epg_2_data,p.epg_2_style,p.create_time,p.update_time,p.big_img,p.small_img,p.epg_panel_id,p.epg_template_id,p.is_custom,p.ref_panel_id,p.district_code,p.version,p.resolution
+    </sql>
+
+
+    <select id="getPanelByName" resultMap="BaseResultMap" >
+        select
+        <include refid="Base_Column_List"/>
+        from bss_panel
+        where panel_name = #{panelName,jdbcType=VARCHAR}
+    </select>
+
+    <select id="getPanelById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from bss_panel
+        where id = #{panelId,jdbcType=BIGINT}
+    </select>
+
+    <select id="getPanelList" resultMap="BaseResultMap" parameterType="PanelQueryCriteria">
+        select
+        <include refid="Base_Column_List"/>
+        from bss_panel
+        <where>
+            ref_panel_id is null
+            <if test="title != null and title != ''">
+                and panel_title like '%${title}%'
+            </if>
+            <if test="name != null and name != ''">
+                and panel_name like '%${name}%'
+            </if>
+            <if test="Id != null">
+                and id = #{Id,jdbcType=BIGINT}
+            </if>
+            <if test="dataScope!=null and dataScope!=''">
+                and district_code=#{dataScope}
+            </if>
+        </where>
+        order by id desc
+        limit #{start} , #{limit}
+    </select>
+
+    <select id="getPanelCount" resultType="java.lang.Integer" parameterType="PanelQueryCriteria">
+        select
+        count(id)
+        from bss_panel
+        <where>
+            ref_panel_id is null
+            <if test="title != null and title != ''">
+                and panel_title like '%${title}%'
+            </if>
+            <if test="name != null and name != ''">
+                and panel_name like '%${name}%'
+            </if>
+            <if test="Id != null">
+                and id = #{Id,jdbcType=BIGINT}
+            </if>
+            <if test="dataScope!=null and dataScope!=''">
+                and district_code=#{dataScope}
+            </if>
+        </where>
+    </select>
+
+
+
+    <select id="getPanelListByPackageId" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Map_Column_List"/>
+        from bss_panel p
+        left join bss_panel_package_panel_map m on p.id = m.panel_id
+        where m.package_id = #{packageId,jdbcType=BIGINT}
+        order by m.sort_num
+        limit ${pageNo} , ${pageSize}
+    </select>
+
+    <select id="selectPanelListByPackageId" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Map_Column_List"/>
+        from bss_panel p
+        left join bss_panel_package_panel_map m on p.id = m.panel_id
+        <where>
+	        <if test="packageId!=null and packageId!=''">
+	            m.package_id = #{packageId,jdbcType=BIGINT}
+	        </if>
+	        <if test="onlineStatus!=null and onlineStatus!=''">
+	          and p.online_status=#{onlineStatus,jdbcType=BIGINT}
+	        </if>
+	        <if test="display!=null and display!=''">
+	          and m.display=#{display,jdbcType=VARCHAR}
+	        </if>
+            <if test="dpi!=null and dpi!=''">
+                and p.resolution=#{dpi,jdbcType=VARCHAR}
+            </if>
+        </where>
+        order by m.sort_num asc
+    </select>
+
+    <select id="getPanelCountByPackageId" resultType="java.lang.Integer" parameterType="map">
+        select
+        count(m.id)
+        from bss_panel p
+        left join bss_panel_package_panel_map m on p.id = m.panel_id
+        where m.package_id = #{packageId,jdbcType=BIGINT}
+    </select>
+    <select id="getPanelByEpgPanelId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from bss_panel
+        where epg_panel_id=#{epgPanelId,jdbcType=BIGINT}
+    </select>
+
+
+    <select id="findAllList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bss_panel
+        order by id
+    </select>
+
+    <select id="findAllEpgList" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from bss_panel
+    where epg_panel_id IS NOT NULL and district_code=#{districtCode,jdbcType=VARCHAR}
+    order by id
+    </select>
+
+
+    <select id="findIdAndEpgIdList" resultMap="BaseResultMap">
+        select
+       epg_panel_id,id
+        from bss_panel
+        where epg_panel_id IS NOT NULL and district_code=#{districtCode,jdbcType=VARCHAR}
+        order by id desc
+    </select>
+    <select id="getAllOnlinePanels" resultMap="BaseResultMap" >
+        select
+        <include refid="Base_Column_List"/>
+        from bss_panel
+        where
+        online_status =#{onlineStatus}
+        and resolution = #{dpi}
+        order by id
+    </select>
+    <!--
+    <select id="findAllPanelList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bss_panel
+        where epg_panel_id IS NOT NULL and template_id is NOT NULL
+        order by id desc
+    </select>
+-->
+    <delete id="deleteById" parameterType="java.lang.Long">
+     delete from bss_panel
+     where id = #{panelId,jdbcType=BIGINT}
+   </delete>
+
+    <delete id="deleteByEpgPanelId" parameterType="java.lang.Long">
+     delete from bss_panel
+     where epg_panel_id is NOT NULL
+   </delete>
+
+
+    <delete id="deleteByIds" parameterType="java.util.List">
+        delete from bss_panel
+        where id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+    <insert id="batchInsert" parameterType="java.util.List">
+     insert into bss_panel (
+              panel_id,
+     	      panel_mark,
+     	      template_id,
+     	      panel_name,
+     	      panel_title,
+     	      panel_style,
+     	      panel_icon,
+     	      link_url,
+     	      img_url,
+     	      online_status,
+     	      online_status_time,
+     	      status,
+     	      opr_userid,
+     	      epg_1_data,
+     	      epg_1_style,
+              epg_2_data,
+              epg_2_style,
+              epg_panel_id,
+              epg_template_id,
+              create_time,
+              update_time,
+              big_img,
+              small_img,
+              is_custom,
+              ref_panel_id
+       )
+     values
+        <foreach collection="list" item="item" index="index" separator="," >
+            (
+            #{item.panelId,jdbcType=BIGINT},
+            #{item.panelMark,jdbcType=VARCHAR},
+            #{item.templateId,jdbcType=BIGINT},
+            #{item.panelName,jdbcType=VARCHAR},
+            #{item.panelTitle,jdbcType=VARCHAR},
+            #{item.panelStyle,jdbcType=VARCHAR},
+            #{item.panelIcon,jdbcType=VARCHAR},
+            #{item.linkUrl,jdbcType=VARCHAR},
+            #{item.imgUrl,jdbcType=VARCHAR},
+            #{item.onlineStatus,jdbcType=INTEGER},
+            #{item.onlineStatueTime,jdbcType=TIMESTAMP},
+            #{item.status,jdbcType=INTEGER},
+            #{item.oprUserId,jdbcType=BIGINT},
+            #{item.epg1Data,jdbcType=VARCHAR},
+            #{item.epg1Style,jdbcType=VARCHAR},
+            #{item.epg2Data,jdbcType=VARCHAR},
+            #{item.epg2Style,jdbcType=VARCHAR},
+            #{item.epgPanelId,jdbcType=BIGINT},
+            #{item.epgTemplateId,jdbcType=BIGINT},
+            #{item.createTime,jdbcType=TIMESTAMP},
+            #{item.updateTime,jdbcType=TIMESTAMP},
+            #{item.bigimg,jdbcType=VARCHAR},
+            #{item.smallimg,jdbcType=VARCHAR},
+            #{item.isLock,jdbcType=VARCHAR},
+            #{item.isCustom,jdbcType=BIGINT},
+            #{item.refPanelId,jdbcType=BIGINT}
+            )
+        </foreach>
+
+   </insert>
+
+
+    <insert id="insert" parameterType="panel" useGeneratedKeys="true" keyProperty="id">
+     insert into bss_panel (
+              panel_id,
+     	      panel_mark,
+     	      template_id,
+     	      panel_name,
+     	      panel_title,
+     	      panel_style,
+     	      panel_icon,
+     	      link_url,
+     	      img_url,
+     	      online_status,
+     	      online_status_time,
+     	      status,
+     	      opr_userid,
+     	      epg_1_data,
+     	      epg_1_style,
+              epg_2_data,
+              epg_2_style,
+              epg_panel_id,
+              epg_template_id,
+              create_time,
+              update_time,
+              big_img,
+              small_img,
+              is_custom,
+              ref_panel_id,
+              district_code,
+              version,
+              resolution
+       )
+     values (
+              #{panelId,jdbcType=BIGINT},
+              #{panelMark,jdbcType=VARCHAR},
+              #{templateId,jdbcType=BIGINT},
+              #{panelName,jdbcType=VARCHAR},
+              #{panelTitle,jdbcType=VARCHAR},
+     		  #{panelStyle,jdbcType=VARCHAR},
+     		  #{panelIcon,jdbcType=VARCHAR},
+     		  #{linkUrl,jdbcType=VARCHAR},
+     		  #{imgUrl,jdbcType=VARCHAR},
+     		  #{onlineStatus,jdbcType=INTEGER},
+     		  #{onlineStatueTime,jdbcType=TIMESTAMP},
+     		  #{status,jdbcType=INTEGER},
+     		  #{oprUserId,jdbcType=BIGINT},
+     		  #{epg1Data,jdbcType=VARCHAR},
+     		  #{epg1Style,jdbcType=VARCHAR},
+     		  #{epg2Data,jdbcType=VARCHAR},
+     		  #{epg2Style,jdbcType=VARCHAR},
+     		  #{epgPanelId,jdbcType=BIGINT},
+     		  #{epgTemplateId,jdbcType=BIGINT},
+     		  #{createTime,jdbcType=TIMESTAMP},
+     		  #{updateTime,jdbcType=TIMESTAMP},
+     		  #{bigimg,jdbcType=VARCHAR},
+     		  #{smallimg,jdbcType=VARCHAR},
+     		  #{isCustom,jdbcType=BIGINT},
+     		  #{refPanelId,jdbcType=BIGINT},
+     		  #{districtCode,jdbcType=VARCHAR},
+     		  #{version,jdbcType=BIGINT},
+     		  #{resolution,jdbcType=VARCHAR}
+       )
+   </insert>
+
+
+    <update id="batchUpdate" parameterType="java.util.List">
+     update bss_panel
+     set
+     	panel_mark = #{item.panelMark,jdbcType=VARCHAR},
+     	template_id = #{item.templateId,jdbcType=BIGINT},
+     	panel_name = #{item.panelName,jdbcType=VARCHAR},
+     	panel_title = #{item.panelTitle,jdbcType=VARCHAR},
+     	panel_style = #{item.panelStyle,jdbcType=VARCHAR},
+     	panel_icon = #{item.panelIcon,jdbcType=VARCHAR},
+     	link_url = #{item.linkUrl,jdbcType=VARCHAR},
+     	img_url = #{item.imgUrl,jdbcType=VARCHAR},
+        ref_panel_id = #{item.refPanelId,jdbcType=BIGINT},
+     	online_status = #{item.onlineStatus,jdbcType=INTEGER},
+     	online_status_time = #{item.onlineStatueTime,jdbcType=TIMESTAMP},
+     	status = #{item.status,jdbcType=INTEGER},
+     	opr_userid = #{item.oprUserId,jdbcType=BIGINT},
+     	epg_1_data = #{item.epg1Data,jdbcType=VARCHAR},
+     	epg_1_style = #{item.epg1Style,jdbcType=VARCHAR},
+     	epg_2_data = #{item.epg2Data,jdbcType=VARCHAR},
+     	epg_2_style = #{item.epg2Style,jdbcType=VARCHAR},
+     	update_time = #{item.updateTime,jdbcType=TIMESTAMP},
+     	big_img = #{item.bigimg,jdbcType=VARCHAR},
+     	small_img = #{item.smallimg,jdbcType=VARCHAR},
+     	is_custom = #{item.isCustom,jdbcType=INTEGER},
+     	epg_template_id = #{item.epgTemplateId,jdbcType=BIGINT}
+     where
+
+        epg_panel_id in
+        <foreach collection="list" item="item" index="index" open="(" separator="," close=")" >
+            #{item.epgPanelId}
+        </foreach>
+   </update>
+
+    <update id="updatePanel" parameterType="panel">
+     update bss_panel
+     set 
+     	panel_mark = #{panelMark,jdbcType=VARCHAR},
+     	template_id = #{templateId,jdbcType=BIGINT},
+     	panel_name = #{panelName,jdbcType=VARCHAR},
+     	panel_title = #{panelTitle,jdbcType=VARCHAR},
+     	panel_style = #{panelStyle,jdbcType=VARCHAR},
+     	panel_icon = #{panelIcon,jdbcType=VARCHAR},
+     	link_url = #{linkUrl,jdbcType=VARCHAR},
+     	img_url = #{imgUrl,jdbcType=VARCHAR},
+       ref_panel_id = #{refPanelId,jdbcType=BIGINT},
+     	online_status = #{onlineStatus,jdbcType=INTEGER},
+     	online_status_time = #{onlineStatueTime,jdbcType=TIMESTAMP},
+     	status = #{status,jdbcType=INTEGER},
+     	opr_userid = #{oprUserId,jdbcType=BIGINT},
+     	epg_1_data = #{epg1Data,jdbcType=VARCHAR},
+     	epg_1_style = #{epg1Style,jdbcType=VARCHAR},
+     	epg_2_data = #{epg2Data,jdbcType=VARCHAR},
+     	epg_2_style = #{epg2Style,jdbcType=VARCHAR},
+     	update_time = #{updateTime,jdbcType=TIMESTAMP},
+     	big_img = #{bigimg,jdbcType=VARCHAR},
+     	small_img = #{smallimg,jdbcType=VARCHAR},
+     	is_custom = #{isCustom,jdbcType=INTEGER},
+     	epg_panel_id = #{epgPanelId,jdbcType=BIGINT},
+     	version = #{version,jdbcType=BIGINT},
+     	resolution = #{resolution,jdbcType=VARCHAR},
+     	epg_template_id = #{epgTemplateId,jdbcType=BIGINT}
+     where
+        id = #{id,jdbcType=BIGINT}
+   </update>
+
+</mapper>

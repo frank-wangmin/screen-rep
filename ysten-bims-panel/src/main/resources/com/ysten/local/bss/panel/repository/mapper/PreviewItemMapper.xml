@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.panel.repository.mapper.PreviewItemMapper">
+    <resultMap id="BaseResultMap" type="previewItem">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="template_id" property="templateId" jdbcType="BIGINT"/>
+        <result column="left" property="left" jdbcType="INTEGER"/>
+        <result column="top" property="top" jdbcType="INTEGER"/>
+        <result column="width" property="width" jdbcType="INTEGER"/>
+        <result column="height" property="height" jdbcType="INTEGER"/>
+        <result column="type" property="type" jdbcType="INTEGER"/>
+        <result column="sort" property="sort" jdbcType="INTEGER"/>
+        <result column="epg_ioid" property="epgIoid" jdbcType="BIGINT"/>
+        <result column="epg_template_id" property="epgTemplateId" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    id,template_id,`left`,top,width,height,type,sort,epg_ioid,epg_template_id
+    </sql>
+
+    <sql id="Base_Table_Name">
+  	 bss_preview_item
+    </sql>
+
+
+    <select id="getPreviewItemById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Base_Table_Name"/>
+        where id = #{previewItemId,jdbcType=BIGINT}
+    </select>
+
+    <select id="getPreviewItemList" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from <include refid="Base_Table_Name"/>
+        order by id desc
+        limit ${pageNo} , ${pageSize}
+    </select>
+
+    <select id="getPreviewItemCount" resultType="java.lang.Integer" parameterType="map">
+        select
+        count(id)
+        from <include refid="Base_Table_Name"/>
+    </select>
+
+    <delete id="deleteByIds" parameterType="java.util.List">
+        delete from <include refid="Base_Table_Name"/>
+        where id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteById" parameterType="java.lang.Long">
+        delete from <include refid="Base_Table_Name"/>
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <delete id="deleteByTemplateId" parameterType="map">
+        delete from <include refid="Base_Table_Name"/>
+        where template_id = #{templateId,jdbcType=BIGINT}
+    </delete>
+
+    <select id="getPreviewItemListByTemplateId" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from <include refid="Base_Table_Name"/>
+        where template_id = #{templateId,jdbcType=BIGINT}
+        order by sort
+    </select>
+    <select id="findAllItems" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from <include refid="Base_Table_Name"/>
+        where epg_ioid is NOT NULL
+        order by id
+    </select>
+    <!--<select id="findAllItems" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from <include refid="Base_Table_Name"/>
+        where epg_ioid is NOT NULL and template_id is NOT NULL
+        order by id desc
+    </select>-->
+
+
+    <insert id="batchSavePreviewItem" parameterType="java.util.List">
+        insert into <include refid="Base_Table_Name"/> (
+        template_id,
+        `left`,
+        top,
+        width,
+        height,
+        type,
+        sort,
+        epg_ioid,
+        epg_template_id
+        )
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+        (
+        #{item.templateId,jdbcType=BIGINT},
+        #{item.left,jdbcType=INTEGER},
+        #{item.top,jdbcType=INTEGER},
+        #{item.width,jdbcType=INTEGER},
+        #{item.height,jdbcType=INTEGER},
+        #{item.type,jdbcType=INTEGER},
+        #{item.sort,jdbcType=INTEGER},
+        #{item.epgIoid,jdbcType=BIGINT},
+        #{item.epgTemplateId,jdbcType=BIGINT}
+        )
+        </foreach>
+    </insert>
+
+    <insert id="insert" parameterType="previewItem" useGeneratedKeys="true" keyProperty="id">
+     insert into <include refid="Base_Table_Name"/> (
+        template_id,
+        `left`,
+        top,
+        width,
+        height,
+        type,
+        sort,
+        epg_ioid,
+        epg_template_id
+       )
+     values (
+              #{templateId,jdbcType=BIGINT},
+              #{left,jdbcType=INTEGER},
+              #{top,jdbcType=INTEGER},
+              #{width,jdbcType=INTEGER},
+              #{height,jdbcType=INTEGER},
+     		  #{type,jdbcType=INTEGER},
+     		  #{sort,jdbcType=INTEGER},
+     		  #{epgIoid,jdbcType=BIGINT},
+     		  #{epgTemplateId,jdbcType=BIGINT}
+       )
+   </insert>
+
+
+    <!--<update id="updatePreviewItemByEpgIoid" parameterType="previewItem">
+        update <include refid="Base_Table_Name"/>
+        set
+       template_id = #{templateId,jdbcType=BIGINT},
+        `left` = #{left,jdbcType=INTEGER},
+        top = #{top,jdbcType=INTEGER},
+        width = #{width,jdbcType=INTEGER},
+        height = #{height,jdbcType=INTEGER},
+        type = #{type,jdbcType=INTEGER},
+        sort = #{sort,jdbcType=INTEGER},
+        epg_template_id = #{epgTemplateId,jdbcType=BIGINT}
+        where
+        epg_ioid = #{epgIoid,jdbcType=BIGINT}
+    </update>-->
+
+
+    <update id="updatePreviewItem" parameterType="previewItem">
+     update <include refid="Base_Table_Name"/>
+     set
+        `left` = #{left,jdbcType=INTEGER},
+        top = #{top,jdbcType=INTEGER},
+        width = #{width,jdbcType=INTEGER},
+        height = #{height,jdbcType=INTEGER},
+        type = #{type,jdbcType=INTEGER},
+        sort = #{sort,jdbcType=INTEGER},
+        epg_ioid = #{epgIoid,jdbcType=BIGINT},
+        epg_template_id = #{epgTemplateId,jdbcType=BIGINT}
+     where
+        id = #{id,jdbcType=BIGINT}
+   </update>
+
+    <delete id="deleteByEpgIoid" >
+        delete from <include refid="Base_Table_Name"/>
+        where epg_ioid is NOT NULL
+    </delete>
+
+</mapper>

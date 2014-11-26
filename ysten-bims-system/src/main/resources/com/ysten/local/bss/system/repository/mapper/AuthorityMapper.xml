@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.system.repository.mapper.AuthorityMapper" >
+  <resultMap id="BaseResultMap" type="authority" >
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="parent_id" jdbcType="BIGINT" property="parentId" />
+    <result column="sort_order" jdbcType="BIGINT" property="sortOrder" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, code, name,description,parent_id,sort_order
+  </sql>
+  <select id="get" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+        <include refid="Base_Column_List" />
+    from 
+        bss_authority
+    where 
+        id = #{id,jdbcType=BIGINT}
+  </select>
+   <select id="findAuthoritys" resultMap="BaseResultMap" parameterType="map" >
+    select 
+    <include refid="Base_Column_List" />
+    from bss_authority
+    order by id desc
+    limit #{currentPage} , #{pageSize}
+  </select>
+  <select id="findAll" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from bss_authority
+    order by sort_order desc
+  </select>
+  <select id="findByName" resultMap="BaseResultMap" parameterType="map" >
+    select 
+        <include refid="Base_Column_List" />
+    from 
+        bss_authority
+    <where>
+        <if test="name != null and name !=''">
+            name like '%${name}%'
+        </if>
+    </where>
+    order by id desc
+    <if test="(startRowNo != null and size != null) and (startRowNo >=0 and size >0)">
+        limit #{startRowNo},#{size}
+    </if>
+  </select>
+   <select id="findByRoleIds" resultMap="BaseResultMap" parameterType="map">
+    select 
+        a.id as id, a.code as code, a.name as name, a.description as description
+    from 
+        bss_role_authority_map map
+        left outer join bss_authority a on map.AUTHORITY_ID = a.id
+    <where>
+        map.ROLE_ID in
+        <foreach collection="roleIds" close=")" open="(" separator="," item="id">
+            #{id}
+        </foreach>
+    </where>
+    order by a.id 
+  </select>
+   
+  <select id="getCountByName"  parameterType="map" resultType="java.lang.Integer" >
+    select 
+        count(*) 
+    from 
+        bss_authority
+    <where>
+        <if test="name != null and name !=''">
+            name like '%${name}%'
+        </if>
+    </where>
+  </select>
+  
+    <select id="getCount"  resultType="java.lang.Integer" >
+    select count(*) from bss_authority
+  </select>
+  
+  <insert id="save" parameterType="authority" useGeneratedKeys="true" keyProperty="id">
+    insert into 
+        bss_authority 
+        (
+            code, name,description,parent_id,sort_order
+        )
+    values 
+        (
+            #{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR},#{description,jdbcType=VARCHAR},#{parentId,jdbcType=BIGINT},#{sortOrder}
+        )
+  </insert>
+  
+  <delete id="delete" parameterType="java.lang.Long" >
+    delete from 
+        bss_authority
+    where 
+        id = #{id,jdbcType=BIGINT}
+  </delete>
+  
+  <update id="update" parameterType="authority" >
+    update 
+        bss_authority
+    set 
+        code = #{code,jdbcType=VARCHAR},
+        name = #{name,jdbcType=VARCHAR},
+        description = #{description,jdbcType=VARCHAR},
+        parent_id = #{parentId,jdbcType=BIGINT}
+    where 
+        id = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <select id="findAuthoritiesByParentId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+    select 
+        <include refid="Base_Column_List" />
+    from 
+        bss_authority
+    <where>
+        parent_id=#{parentId}
+    </where>
+  </select>
+  
+  <delete id="deleteByIds" parameterType="java.util.List" >
+    delete from 
+        bss_authority
+    where 
+        id in
+        <foreach collection="ids" close=")" open="(" separator="," item="id">
+            #{id}
+        </foreach>
+  </delete>
+</mapper>

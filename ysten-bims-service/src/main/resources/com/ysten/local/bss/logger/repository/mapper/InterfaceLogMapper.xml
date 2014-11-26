@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.ysten.local.bss.logger.repository.mapper.InterfaceLogMapper">
+	<resultMap id="BaseResultMap" type="interfaceLog">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="interface_name" property="interfaceName" jdbcType="VARCHAR" />
+		<result column="caller" property="caller" jdbcType="VARCHAR" />
+		<result column="call_time" property="callTime" jdbcType="VARCHAR" />
+		<result column="input" property="input" jdbcType="VARCHAR" />
+		<result column="output" property="output" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id,interface_name,caller,call_time,input,output
+	</sql>
+
+	<insert id="save" parameterType="interfaceLog" useGeneratedKeys="true"
+		keyProperty="id">
+		insert into bss_interface_log
+		(interface_name, caller,
+		call_time, input, output)
+		values (#{interfaceName,jdbcType=VARCHAR},
+		#{caller,jdbcType=VARCHAR}, #{callTime,jdbcType=TIMESTAMP},
+		#{input,jdbcType=VARCHAR}, #{output,jdbcType=VARCHAR})
+  </insert>
+
+  <insert id="saveList">
+      insert into bss_interface_log
+      (interface_name, caller, call_time, input, output)
+      values
+      <foreach collection="list" item="item" index="index" separator="," >
+          (#{item.interfaceName,jdbcType=VARCHAR},
+          #{item.caller,jdbcType=VARCHAR}, #{item.callTime,jdbcType=TIMESTAMP},
+          #{item.input,jdbcType=VARCHAR}, #{item.output,jdbcType=VARCHAR})
+      </foreach>
+  </insert>
+
+    <select id="getByDeviceSno" parameterType="map" resultMap="BaseResultMap">
+		select <include refid="Base_Column_List"/> 
+		from bss_interface_log
+		where interface_name = #{interfaceName} and input like #{deviceId} order by call_time DESC limit 0,1
+	</select>
+
+    <select id="getByUserName" parameterType="map" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from bss_interface_log
+        where interface_name = #{interfaceName} and input like #{userId} order by call_time DESC limit 0,1
+    </select>
+	
+	 <select id="findAllInterfaceLog" resultMap="BaseResultMap" parameterType="map" >
+    select 
+    	<include refid="Base_Column_List" />
+    from 
+    	bss_interface_log
+    <where> 
+		<if test="interfaceName != null and interfaceName !=''">
+    		interface_name like '%${interfaceName}%'
+    	</if>
+    	<if test="caller != null and caller != ''">
+    		and caller like '%${caller}%'
+    	</if>
+    	<if test="input != null and input != ''">
+    		and input like '%${input}%'
+    	</if>
+    	<if test="output != null and output != ''">
+    		and output like '%${output}%'
+    	</if>
+	</where>
+    order by id desc
+    <if test="pageNo != null">
+    		limit ${pageNo},${pageSize}
+    	</if>
+  </select>
+  
+  <select id="getCountByCondition" resultType="java.lang.Integer" parameterType="map">
+  	select 
+  		count(*)
+    from 
+    	bss_interface_log
+    <where> 
+		<if test="interfaceName != null and interfaceName !=''">
+    		interface_name like '%${interfaceName}%'
+    	</if>
+    	<if test="caller != null and caller != ''">
+    		and caller like '%${caller}%'
+    	</if>
+    	<if test="input != null and input != ''">
+    		and input like '%${input}%'
+    	</if>
+    	<if test="output != null and output != ''">
+    		and output like '%${output}%'
+    	</if>
+	</where>
+  </select>
+  
+  <select id="findInterfaceLogByIds" resultMap="BaseResultMap" parameterType="java.util.List">
+        select 
+        <include refid="Base_Column_List"/>
+        from
+        bss_interface_log
+        where id in 
+        <foreach collection="ids" item="id"  open="(" separator="," close=")">  
+            #{id} 
+        </foreach>
+        order by id desc
+    </select>
+</mapper>

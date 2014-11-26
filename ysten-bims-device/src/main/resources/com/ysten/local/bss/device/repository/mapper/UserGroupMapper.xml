@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.device.repository.mapper.UserGroupMapper">
+    <resultMap id="BaseResultMap" type="userGroup">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="create_date" property="createDate" jdbcType="TIMESTAMP"/>
+        <result column="description" property="description" jdbcType="VARCHAR"/>
+        <result column="type" property="type" jdbcType="VARCHAR"/>
+        <result column="dynamic_flag" property="dynamicFlag" jdbcType="BIGINT"/>
+        <result column="sql_expression" property="sqlExpression" jdbcType="VARCHAR"/>
+        <result column="update_date" property="updateDate" jdbcType="TIMESTAMP"/>
+        <result column="area_name" property="areaName" jdbcType="VARCHAR"/>
+        <result column="area_id" property="areaId" jdbcType="BIGINT"/>
+        <result column="user_id" property="userId" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    id, name,create_date,description,type,dynamic_flag,sql_expression,update_date,area_id
+  </sql>
+
+    <sql id="Advanced_Column_List">
+   bsg.id, bsg.name,bsg.create_date,bsg.description,bsg.type,bsg.dynamic_flag,bsg.sql_expression,bsg.update_date
+  </sql>
+
+    <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from bss_user_group
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <select id="getList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bss_user_group
+        order by id desc
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+     delete from bss_user_group
+     where id = #{id,jdbcType=BIGINT}
+   </delete>
+
+    <insert id="insert" parameterType="userGroup" useGeneratedKeys="true" keyProperty="id">
+     insert into bss_user_group (
+     	id,name,description,create_date,type,dynamic_flag,sql_expression,update_date,area_id
+       )
+     values ( #{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}
+     		, #{description,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}
+     		,#{type,jdbcType=VARCHAR},#{dynamicFlag,jdbcType=BIGINT},#{sqlExpression,jdbcType=VARCHAR}, #{updateDate,jdbcType=TIMESTAMP},
+     		#{areaId,jdbcType=INTEGER}
+       )
+   </insert>
+
+    <update id="updateByPrimaryKey" parameterType="userGroup">
+        update bss_user_group
+        set
+        name = #{name,jdbcType=VARCHAR},
+        description = #{description,jdbcType=VARCHAR},
+        <!-- create_date = #{createDate,jdbcType=TIMESTAMP}, -->
+        type = #{type,jdbcType=VARCHAR},
+        dynamic_flag = #{dynamicFlag,jdbcType=BIGINT},
+        sql_expression = #{sqlExpression,jdbcType=VARCHAR},
+        update_date = #{updateDate,jdbcType=TIMESTAMP}
+        where
+        id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <delete id="delete" parameterType="java.util.List">
+        delete from bss_user_group
+        where id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="findUserGroupByNameAndType" resultMap="BaseResultMap" parameterType="map">
+        select
+        t.id, t.name,t.create_date,t.description,t.type,t.dynamic_flag,t.sql_expression,t.update_date,t.area_id,
+        (select b.name from bss_area b where b.id = t.area_id) as area_name
+        from bss_user_group t
+        <where>
+            <if test="type!=null and type!=''">
+                t.type = #{type,jdbcType=VARCHAR}
+            </if>
+            <if test="name!=null and name!=''">
+                and t.name like '%${name}%'
+            </if>
+            <if test="areaId!=null and areaId!=''">
+                and t.area_id = #{areaId}
+            </if>
+        </where>
+        order by t.id desc
+        limit ${pageNo} , ${pageSize}
+    </select>
+
+    <select id="findUserGroupsByNameAndType" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from bss_user_group
+        <where>
+            <if test="type!=null and type!=''">
+                type = #{type,jdbcType=VARCHAR}
+            </if>
+            <if test="name!=null and name!=''">
+                and name = #{name,jdbcType=VARCHAR}
+            </if>
+        </where>
+        order by id desc
+        limit 1
+    </select>
+
+    <select id="findUserGroupCountByNameAndType" resultType="java.lang.Integer" parameterType="map">
+        select count(*) from bss_user_group
+        <where>
+            <if test="type!=null and type!=''">
+                type = #{type,jdbcType=VARCHAR}
+            </if>
+            <if test="name!=null and name!=''">
+                and name like '%${name}%'
+            </if>
+            <if test="areaId!=null and areaId!=''">
+                and area_id = #{areaId}
+            </if>
+        </where>
+    </select>
+
+    <select id="findByNameAndType" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from bss_user_group
+        <where>
+            <if test="name!=null and name!=''">
+                name = #{name,jdbcType=VARCHAR}
+            </if>
+            <if test="type!=null and type!=''">
+                and type = #{type,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+
+    <select id="findUserGroupListByType" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from bss_user_group
+        <where>
+            <if test="dynamicFlag != null and dynamicFlag != ''">
+                dynamic_flag = 0
+            </if>
+            <if test="type != null and type != ''">
+                and type = #{type,jdbcType=VARCHAR}
+            </if>
+        </where>
+        order by id desc
+    </select>
+
+    <select id="findUserGroupByNoticeIdAndType" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from bss_user_group d
+        where EXISTS (select m.user_group_id from bss_user_notice_map m where m.notice_id = #{noticeId,jdbcType=BIGINT}
+        and m.type = #{type,jdbcType=VARCHAR});
+
+    </select>
+    <select id="findUserGroupListByIdsAndType" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from bss_user_group
+        <where>
+            <if test="list != null and list.size() > 0">
+                id in
+                <foreach collection="list" open="(" close=")" separator="," item="item">
+                    #{item.userGroupId}
+                </foreach>
+            </if>
+            <if test="type != null">
+                and type = #{type}
+            </if>
+        </where>
+    </select>
+
+
+    <select id="findUserGroupByAppIdAndType" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from bss_user_group d
+        where EXISTS (select m.user_group_id from bss_user_app_upgrade_map m where m.type = #{type,jdbcType=VARCHAR});
+
+    </select>
+
+    <select id="findDynamicGroupList" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Advanced_Column_List"/>
+        from bss_user_group bsg left join ${tableName} map
+        on bsg.id=map.user_group_id
+        <where>
+            <if test="type!=null and type!=''">
+                bsg.type = #{type,jdbcType=VARCHAR}
+            </if>
+        </where>
+        and bsg.dynamic_flag=1 and map.type='GROUP'
+    </select>
+
+    <select id="findUserGroupsByUserCode" resultMap="BaseResultMap" parameterType="map">
+        select b.*
+        from bss_user_group b , bss_user_group_map m
+        where m.code=#{code,jdbcType=VARCHAR} and b.id=m.user_group_id
+        <if test="areaId!=null and areaId!=''">
+	          and b.area_id = #{areaId}
+	        </if>
+    </select>
+
+    <select id="findUserGroupByArea" resultMap="BaseResultMap" parameterType="map">
+        select a.*,(select c.name from bss_area c where c.id=a.area_id) as area_name
+        from(
+        select id,name,area_id
+        from bss_user_group
+        <where>
+            <if test="type!=null and type!=''">
+                type = #{type,jdbcType=VARCHAR}
+            </if>
+            <if test="areaId!=null and areaId!=''">
+                and area_id in
+                <foreach collection="areaId" item="areaId"  open="(" separator="," close=")">
+                    #{areaId}
+                </foreach>
+            </if>
+        </where>
+        UNION
+        select
+        b.id,b.name,b.area_id from bss_user_group b left JOIN ${tableName} m on b.id=m.user_group_id where m.${character}=#{id,jdbcType=BIGINT}
+        order by id desc
+        )a
+    </select>
+
+    <select id="findUserGroupById" resultType="java.lang.Long" parameterType="map">
+        select distinct d.area_id from bss_user_group d left JOIN ${tableName} m on m.user_group_id=d.id where m.${character}=#{Id,jdbcType=BIGINT}
+    </select>
+
+
+    <select id="findUserGroupsByUserCodesAndType" resultMap="BaseResultMap" parameterType="map">
+        select d.*,m.code as user_id
+        from bss_user_group d LEFT JOIN bss_user_group_map m  on m.user_group_id=d.id
+        where m.code in
+        <foreach collection="codes" item="id"  open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        <if test="type!=null and type!=''">
+            and type = #{type,jdbcType=VARCHAR}
+        </if>
+
+    </select>
+
+    <select id="findUserGroupsByProductIdAndAreaId" resultMap="BaseResultMap" parameterType="map">
+        select ug.*
+        from bss_user_group ug LEFT JOIN bss_user_group_pp_info_map ugp on ug.id = ugp.user_group_id
+        where ugp.product_id = #{productId,jdbcType=VARCHAR}
+        and ug.area_id = #{areaId,jdbcType=BIGINT}
+    </select>
+
+</mapper>

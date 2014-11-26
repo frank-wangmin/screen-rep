@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.boss.systemconfig.repository.mapper.SystemConfigMapper" >
+    <resultMap id="BaseResultMap" type="systemConfig">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="configkey" property="configKey" jdbcType="VARCHAR"/>
+        <result column="configvalue" property="configValue" jdbcType="VARCHAR"/>
+        <result column="zhname" property="zhName" jdbcType="VARCHAR"/>
+        <result column="depiction" property="depiction" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, configkey,configvalue, zhname, depiction
+    </sql>
+   <select id="findAllSystemConfig" resultType="SystemConfig">
+    select <include refid="Base_Column_List" /> from system_config order by id asc
+  </select>
+  
+  <select id="findSystemConfigByConfigKey" parameterType="map" resultType="SystemConfig">
+    select <include refid="Base_Column_List" /> from system_config where configkey = #{configKey}
+  </select>
+  
+  <select id="findSystemConfigByNameAndKey" parameterType="map" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from system_config 
+    <where>
+    	<if test="configKey!=null and configKey!=''">
+                configkey like '%${configKey}%'
+   		</if>
+   		<if test="name!=null and name !=''">
+               and zhname like '%${name}%'
+   		</if>
+    </where>
+    order by id desc
+		limit ${pageNo},${pageSize}
+  </select>
+  
+  <select id="findCountByNameAndKey" parameterType="map" resultType="int">
+    select count(id) from system_config 
+    <where>
+    	<if test="configKey!=null and configKey!=''">
+                configkey like '%${configKey}%'
+   		</if>
+   		<if test="name!=null and name !=''">
+               and zhname like '%${name}%'
+   		</if>
+    </where>
+    order by id desc
+  </select>
+  
+  <update id="updateSystemConfig" parameterType="SystemConfig">
+  	update system_config set configvalue = #{configValue} where configkey = #{configKey}
+  </update>
+</mapper>

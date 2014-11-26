@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.device.repository.mapper.ServiceCollectDeviceGroupMapMapper">
+    <resultMap id="BaseResultMap" type="serviceCollectDeviceGroupMap">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="service_collect_id" property="serviceCollectId" jdbcType="BIGINT"/>
+        <result column="device_group_id" property="deviceGroupId" jdbcType="BIGINT"/>
+        <result column="ysten_id" property="ystenId" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+   		id, service_collect_id, device_group_id,ysten_id
+    </sql>
+
+	<insert id="saveServiceCollectDeviceGroupMap" useGeneratedKeys="true" keyProperty="id">
+		insert into bss_service_collect_device_group_map(service_collect_id, device_group_id, ysten_id)
+		values (#{serviceCollectId}, #{deviceGroupId}, #{ystenId})
+	</insert>
+	
+	<insert id="saveServiceCollectDeviceCodeMap" parameterType="serviceCollectDeviceGroupMap" useGeneratedKeys="true" keyProperty="id">
+		insert into bss_service_collect_device_group_map(service_collect_id, ysten_id)
+		values (#{serviceCollectId}, #{ystenId})
+	</insert>
+	 <insert id="bulkSaveServiceCollectMap" parameterType="java.util.List">
+    	insert into bss_service_collect_device_group_map 
+    	(service_collect_id, ysten_id,device_group_id)
+    	values
+    	 <foreach collection="list" item="item" index="index" separator="," >
+    	 (#{item.serviceCollectId}, #{item.ystenId},#{item.deviceGroupId})
+    	</foreach>
+    </insert>
+	<select id="getServiceCollectGroupmapByGroupId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+		 select
+        <include refid="Base_Column_List" />
+         from bss_service_collect_device_group_map
+		where device_group_id = #{groupId}
+	</select>
+	
+	<select id="getServiceCollectGroupmapByYstenId" parameterType="java.lang.String" resultMap="BaseResultMap">
+		 select
+        <include refid="Base_Column_List" />
+         from bss_service_collect_device_group_map
+		where ysten_id = #{ystenId,jdbcType=VARCHAR}
+	</select>
+
+
+
+    <select id="finDeviceCodeServiceCollectMap" resultMap="BaseResultMap" >
+        select
+        <include refid="Base_Column_List" />
+        from bss_service_collect_device_group_map d
+        where d.ysten_id is not null
+    </select>
+	
+	<select id="getDeviceCodesById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List" />
+        from bss_service_collect_device_group_map d
+        where d.service_collect_id = #{id} and device_group_id is not null
+    </select>
+	
+	<delete id="deleteServiceCollectGroupmapByGroupId" parameterType="java.lang.Long">
+		delete from bss_service_collect_device_group_map
+		where device_group_id = #{groupId}
+	</delete>
+	
+	<delete id="deleteServiceCollectGroupmapByDeviceCode">
+		delete from bss_service_collect_device_group_map
+		where ysten_id = #{ystenId,jdbcType=VARCHAR}
+	</delete>
+	
+	<delete id="deleteServiceCollectGroupBoundGIByServiceCollectId" parameterType="java.lang.Long">
+		delete from bss_service_collect_device_group_map d
+		where d.service_collect_id = #{serviceCollectId} and d.device_group_id is not NULL
+	</delete>
+	
+	<delete id="deleteServiceCollectGroupBoundDCByServiceCollectId" parameterType="java.lang.Long">
+		delete from bss_service_collect_device_group_map
+		where service_collect_id = #{serviceCollectId} and ysten_id is not NULL
+	</delete>
+	
+	<delete id="deleteServiceCollectDeviceGroupMap" parameterType="map">
+    delete from bss_service_collect_device_group_map
+    where service_collect_id = #{serviceCollectId}
+    <if test="isALL!=null and isALL!=''">
+        and device_group_id is not NULL
+    </if>
+
+</delete>
+	<delete id="deleteServiceCollectMapByGroupIdsAndYstenIds" parameterType="java.util.List">
+      delete from bss_service_collect_device_group_map
+      <where>
+      	<if test="ystenIds != null and  ystenIds != '' ">
+      		ysten_id in 
+	      	<foreach collection="ystenIds" item="ystenId"  open="(" separator="," close=")">  
+	            #{ystenId} 
+	        </foreach>
+        </if>
+        <if test="groupIds != null and  groupIds != '' ">
+        	and device_group_id in
+	      	<foreach collection="groupIds" item="groupId"  open="(" separator="," close=")">  
+	            #{groupId} 
+	        </foreach>
+        </if>
+      </where>
+      
+      </delete>
+</mapper>

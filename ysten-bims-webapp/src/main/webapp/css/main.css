@@ -1,0 +1,239 @@
+@import url(fonts.css);
+@import url(widget.css);
+* {
+	margin:0; padding:0;
+}
+
+#loginInfo {
+	position: absolute;
+	right: 20px;
+	top: 10px;
+}
+#loginInfo_left {
+	position: absolute;
+	width: 2px;
+	height: 21px;
+	background-color: red;
+	background-image: url(../images/widgets/quit_left.png);
+}
+#loginInfo_content {
+	margin-left: 2px;
+	margin-right: 53px;
+	padding-left: 1em;
+	padding-right: 1em;
+	height: 21px;
+	color: #ffffff;
+	font-weight: normal ;
+	_width: 7em;
+	line-height: 21px;
+	vertical-align: middle;
+	background-image: url(../images/widgets/quit_middle.png);
+	background-repeat: repeat-x;
+}
+#loginInfo_right {
+	top: 0px;
+	right: 0px;
+	position: absolute;
+	width: 33px;
+	height: 21px;
+	line-height: 21px;
+	vertical-align: middle;
+	padding-left: 20px;
+	background-image: url(../images/widgets/quit_right.png);
+	background-repeat: no-repeat;
+}
+#loginInfo_right a {
+	color: #ffffff;
+	text-decoration: none;
+	font-weight: normal;
+}
+#loginInfo_right a:hover {
+	text-decoration: underline;
+}
+#content {
+	background-image: url(../images/content_bg.jpg);
+	background-repeat: repeat-x;
+	padding: 7px 10px;
+	padding-top: 5px;
+	background-position: 0px 0px;
+	position: relative;
+	min-width: 900px;
+}
+#content1 {
+	background-image: url(../images/content_bg.jpg);
+	background-repeat: repeat-x;
+	padding: 7px 10px;
+	padding-top: 5px;
+	background-position: 0px 0px;
+	position: relative;
+	min-width: 470px;
+	min-height: 280px;
+}
+#left {
+	width: 159px;
+	display: block;
+	padding: 20px 21px 20px 20px;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	background-image: url(../images/left_bg.png);
+	background-repeat: no-repeat;
+}
+#right {
+	width: 159px;
+	display: block;
+	padding: 20px 21px 20px 20px;
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	background-image: url(../images/left_bg.png);
+}
+.fleet {
+	position: relative ;
+}
+div.mainContent {
+	margin: 0px 200px 10px 200px;
+	border: 1px solid #AEAFAA;
+	background-color: #FDFDFD;
+}
+div.event {
+	height: 179px;
+	background-image: url(../images/maing/bg_mid.gif);
+	border: 1px solid #C5CDDA;
+	padding: 3px 10px;
+	background-repeat: repeat-x;
+	overflow: auto;
+}
+div.event h2.fleet {
+	margin-right: 40px;
+}
+div.event a.moreWord {
+	border-bottom: 2px solid #D8DBE2;
+	padding-top: 3px;
+	_padding-top: 4px;
+}
+div#news {
+	height: 214px;
+	overflow: auto;
+}
+a.icon {
+	margin-top: 5px;
+	position: absolute;
+	right: 0px;
+}
+iframe {
+	border: 0px;
+}
+#rightFrame {
+	display: block;
+	margin-left: 200px;
+}
+.label {
+	height: 24px;
+	width: 100%;
+	border-bottom: 1px solid #637991;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+	margin-left: 0px;
+	padding: 0px;
+}
+.label li {
+	float: left;
+	display: inline-block;
+}
+.label li a.active {
+	color: #000000;
+	background-image: url(../images/widgets/lable_active.png);
+}
+.label li a {
+	display: inline-block;
+	height: 25px;
+	width: 84px;
+	line-height: 25px;
+	vertical-align: middle;
+	background-image: url(../images/widgets/label.png);
+	background-repeat: no-repeat;
+	background-position: 0px 0px;
+	text-align: center;
+}
+#main {
+	border: 1px solid #637991;
+	border-top: 0px;
+	padding: 10px 20px;
+	background-image: url(../images/content_bg.gif);
+	background-repeat: repeat-x;
+}
+#userLabel {
+	margin-top: 15px;
+	margin-bottom: 5px;
+}
+#deptLabel {
+	margin-bottom: 10px;
+}
+#newWindowBig {
+	background-image: url(../images/widgets/newWindow.gif);
+	background-repeat: repeat-x;
+	margin: 10px;
+	border: 1px solid #667C94;
+	padding: 5px 20px;
+}
+
+  
+.pagination{
+padding: 2px;
+}
+	 
+.pagination ul{
+margin: 0;
+padding: 0;
+font-size: 16px;
+}
+ 
+.pagination li{
+list-style-type: none;
+display: inline;
+padding-bottom: 1px;
+}
+.pagination li.select{
+list-style-type: none;
+display: inline;
+padding-bottom: 1px;
+color: #2e6ab1;
+}
+	 
+.pagination a, .pagination a:visited{
+padding: 0 5px;
+border: 1px solid #9aafe5;
+text-decoration: none; 
+color: #2e6ab1;
+}
+	 
+.pagination a:hover, .pagination a:active{
+border: 1px solid #2b66a5;
+color: #000;
+background-color: lightyellow;
+}
+	 
+.pagination li.currentpage{
+font-weight: bold;
+padding: 0 5px;
+border: 1px solid navy;
+background-color: #2e6ab1;
+color: #FFF;
+}
+ 
+.pagination li.disablepage{
+padding: 0 5px;
+border: 1px solid #929292;
+color: #929292;
+}
+ 
+.pagination li.nextpage{
+font-weight: bold;
+}
+	 
+* html .pagination li.currentpage, * html .pagination li.disablepage{ /*IE 6 and below. Adjust non linked LIs slightly to account for bugs*/
+margin-right: 5px;
+padding-right: 0;
+}

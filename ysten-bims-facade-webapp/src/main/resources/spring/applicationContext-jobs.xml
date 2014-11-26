@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+	<bean id="scanExpiringDeviceTaskJob" class="com.ysten.local.bss.facade.job.ScanExpiringDeviceJob">
+        <property name="cache" ref="cache"></property>
+        <property name="sysNoticeService" ref="sysNoticeService"></property>
+    </bean>
+
+    <bean id="scanExpiringDeviceTaskJobDetail"
+          class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <ref bean="scanExpiringDeviceTaskJob"/>
+        </property>
+        <property name="targetMethod">
+            <value>scanExpiringDevice</value>
+        </property>
+        <property name="concurrent">
+            <value>false</value>
+        </property>
+    </bean>
+
+    <bean id="scanExpiringDeviceTaskJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail">
+            <ref bean="scanExpiringDeviceTaskJobDetail"/>
+        </property>
+        <property name="cronExpression">
+            <value>59 59 0/23 * * ?</value>
+        </property>
+    </bean>
+    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+                <ref local="scanExpiringDeviceTaskJobTrigger"/>
+            </list>
+        </property>
+        <property name="autoStartup" value="true"/>
+        
+    </bean>
+</beans>

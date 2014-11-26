@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.panel.repository.mapper.PanelPackageMapMapper">
+    <resultMap id="BaseResultMap" type="panelPackageMap">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="panel_id" property="panelId" jdbcType="BIGINT"/>
+        <result column="package_id" property="packageId" jdbcType="BIGINT"/>
+        <result column="nav_id" property="navId" jdbcType="VARCHAR"/>
+        <result column="sort_num" property="sortNum" jdbcType="INTEGER"/>
+        <result column="panel_logo" property="panelLogo" jdbcType="VARCHAR"/>
+        <result column="epg_rel_id" property="epgRelId" jdbcType="BIGINT"/>
+        <result column="epg_panel_id" property="epgPanelId" jdbcType="BIGINT"/>
+        <result column="epg_package_id" property="epgPackageId" jdbcType="BIGINT"/>
+        <result column="epg_nav_id" property="epgNavId" jdbcType="VARCHAR"/>
+        <result column="display" property="display" jdbcType="VARCHAR"/>
+        <result column="is_lock" property="isLock" jdbcType="VARCHAR"/>
+        <result column="opr_userid" jdbcType="BIGINT" property="oprUserId"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    id,panel_id,package_id,nav_id,sort_num,panel_logo,epg_rel_id,epg_panel_id,epg_package_id,epg_nav_id,is_lock,display
+    </sql>
+
+    <sql id="Base_Table_Name">
+  	 bss_panel_package_panel_map
+    </sql>
+
+
+    <!--    <select id="getMapById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+            select   <include refid="Base_Column_List"/>
+            from  <include refid="Base_Table_Name"/>
+            where  id=#{id,jdbcType=BIGINT}
+        </select>-->
+
+
+    <!-- <update id="updateMapByEpgRelId" parameterType="panelPackageMap" >
+          update  bss_panel_package_panel_map
+         set
+         panel_id=#{panelId,jdbcType=BIGINT},
+         package_id=#{packageId,jdbcType=BIGINT},
+         nav_id=#{navId,jdbcType=VARCHAR},
+         sort_num=#{sortNum,jdbcType=INTEGER},
+         epg_panel_id=#{epgPanelId,jdbcType=BIGINT},
+         epg_package_id=#{epgPackageId,jdbcType=BIGINT},
+         epg_nav_id=#{epgNavId,jdbcType=VARCHAR}
+         where  epg_rel_id=#{epgRelId,jdbcType=BIGINT}
+     </update>
+ -->
+    <update id="updateMap" parameterType="panelPackageMap">
+         update  bss_panel_package_panel_map
+        set
+        panel_id=#{panelId,jdbcType=BIGINT},
+        nav_id=#{navId,jdbcType=VARCHAR},
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+        opr_userid = #{oprUserId,jdbcType=BIGINT},
+        where id=#{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateSort" parameterType="panelPackageMap">
+        update  bss_panel_package_panel_map
+        set
+        sort_num=#{sortNum,jdbcType=INTEGER},
+       is_lock =#{isLock,jdbcType=VARCHAR},
+        display = #{display,jdbcType=VARCHAR},
+        panel_logo =  #{panelLogo,jdbcType=VARCHAR},
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+        opr_userid = #{oprUserId,jdbcType=BIGINT},
+        where id=#{id,jdbcType=BIGINT}
+    </update>
+
+    <select id="verifyIfExistBinded" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Base_Table_Name"/>
+        where panel_id = #{panelId,jdbcType=BIGINT}
+        and package_id = #{packageId,jdbcType=BIGINT}
+    </select>
+
+
+    <insert id="batchInsert" parameterType="java.util.List">
+        insert into
+        <include refid="Base_Table_Name"/>
+        (
+        panel_id,
+        package_id,
+        nav_id,
+        sort_num,
+        panel_logo,
+        epg_rel_id,
+        epg_panel_id,
+        epg_package_id,
+        epg_nav_id,
+        is_lock,
+        display,
+        opr_userid,
+        create_time,
+        update_time
+        )
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            ( #{item.panelId,jdbcType=BIGINT},
+            #{item.packageId,jdbcType=BIGINT},
+            #{item.navId,jdbcType=VARCHAR},
+            #{item.sortNum,jdbcType=INTEGER},
+            #{item.panelLogo,jdbcType=VARCHAR},
+            #{item.epgRelId,jdbcType=BIGINT},
+            #{item.epgPanelId,jdbcType=BIGINT},
+            #{item.epgPackageId,jdbcType=BIGINT},
+            #{item.epgNavId,jdbcType=VARCHAR},
+            #{item.isLock,jdbcType=VARCHAR},
+            #{item.display,jdbcType=VARCHAR},
+            #{item.oprUserId,jdbcType=BIGINT},
+            #{item.createTime,jdbcType=TIMESTAMP},
+            #{item.updateTime,jdbcType=TIMESTAMP}
+            )
+        </foreach>
+    </insert>
+    <insert id="insert" parameterType="panelPackageMap" useGeneratedKeys="true" keyProperty="id">
+        insert into
+        <include refid="Base_Table_Name"/>
+        (
+        panel_id,
+        package_id,
+        nav_id,
+        sort_num,
+        panel_logo,
+        epg_rel_id,
+        epg_panel_id,
+        epg_package_id,
+        epg_nav_id,
+        is_lock,
+        display,
+        opr_userid,
+        create_time,
+        update_time
+        )
+        values (
+        #{panelId,jdbcType=BIGINT},
+        #{packageId,jdbcType=BIGINT},
+        #{navId,jdbcType=VARCHAR},
+        #{sortNum,jdbcType=INTEGER},
+        #{panelLogo,jdbcType=VARCHAR},
+        #{epgRelId,jdbcType=BIGINT},
+        #{epgPanelId,jdbcType=BIGINT},
+        #{epgPackageId,jdbcType=BIGINT},
+        #{epgNavId,jdbcType=VARCHAR},
+        #{isLock,jdbcType=VARCHAR},
+        #{display,jdbcType=VARCHAR},
+        #{oprUserId,jdbcType=BIGINT},
+        #{createTime,jdbcType=TIMESTAMP},
+        #{updateTime,jdbcType=TIMESTAMP}
+        )
+
+    </insert>
+    <select id="getNavIds" resultType="java.lang.String" parameterType="map">
+        select
+        nav_id
+        from
+        <include refid="Base_Table_Name"/>
+        where panel_id = #{panelId,jdbcType=BIGINT}
+        and package_id = #{packageId,jdbcType=BIGINT}
+    </select>
+
+    <select id="getMapByNavId" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Base_Table_Name"/>
+        where nav_id like '%${navIdBetween}%' or nav_id like '${navIdEnd}%' or nav_id like '%${navIdStart}'
+        or nav_id = #{navId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="getMapByPackageId" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Base_Table_Name"/>
+        where package_id = #{packageId,jdbcType=BIGINT}
+        order by sort_num
+    </select>
+
+	<select id="getMapByPanelIds" resultMap="BaseResultMap" parameterType="java.util.List">
+	    select 
+	     <include refid="Base_Column_List"/>
+	    from 
+	    <include refid="Base_Table_Name"/>  
+	     where panel_id in 
+	        <foreach collection="panelList" item="panel"  open="(" separator="," close=")">  
+	            #{panel.id} 
+	   </foreach>
+	   and package_id =#{packageId,jdbcType=BIGINT}
+	</select>
+	
+    <select id="getMapByPackageIdAndPanelId" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Base_Table_Name"/>
+        where package_id = #{packageId,jdbcType=BIGINT}
+        and panel_id = #{panelId,jdbcType=BIGINT}
+    </select>
+
+    <select id="getPaginationMapByPackageId" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Base_Table_Name"/>
+        where package_id = #{packageId,jdbcType=BIGINT}
+        order by sort_num
+        limit ${pageNo} , ${pageSize}
+    </select>
+
+    <select id="findCustomMapsWithEpgData" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Base_Table_Name"/>
+        where epg_nav_id is NOT NULL and epg_rel_id is NULL
+        order by id desc
+    </select>
+
+
+    <select id="findMapList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Base_Table_Name"/>
+        where epg_rel_id is NOT NULL and nav_id is NOT NULL and epg_package_id is NOT NULL
+        order by id
+    </select>
+
+    <delete id="deleteByPanelId" parameterType="map">
+        delete from
+        <include refid="Base_Table_Name"/>
+        where panel_id = #{panelId,jdbcType=BIGINT}
+    </delete>
+
+    <delete id="deleteByPackagelId" parameterType="map">
+        delete from
+        <include refid="Base_Table_Name"/>
+        where package_id = #{packageId,jdbcType=BIGINT}
+    </delete>
+
+    <delete id="deleteByPackagelIdAndPanelId" parameterType="map">
+        delete from
+        <include refid="Base_Table_Name"/>
+        where package_id = #{packageId,jdbcType=BIGINT}
+        and panel_id in
+        <foreach collection="panelIds" item="panelId"  open="(" separator="," close=")">
+            #{panelId}
+        </foreach>
+    </delete>
+
+    <delete id="deleteMapByPackagelIdAndPanelId" parameterType="map">
+        delete from
+        <include refid="Base_Table_Name"/>
+        where package_id = #{packageId,jdbcType=BIGINT}
+        and panel_id = #{panelId,jdbcType=BIGINT}
+    </delete>
+
+    <delete id="deleteByEpgRelId" parameterType="map">
+        delete from
+        <include refid="Base_Table_Name"/>
+        where epg_rel_id is NOT NULL
+    </delete>
+</mapper>

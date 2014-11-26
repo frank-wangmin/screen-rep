@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.device.repository.mapper.AppUpgradeTaskMapper" >
+  <resultMap id="BaseResultMap" type="appUpgradeTask" >
+    <id column="id" property="id" jdbcType="BIGINT" />    
+    <!--  result column="device_group_ids" property="deviceGroupIds" jdbcType="VARCHAR" /--> 
+    <result column="software_package_id" property="softwarePackageId" jdbcType="BIGINT" />    
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="vendor_ids" property="vendorIds" jdbcType="VARCHAR" /> 
+    <result column = "version_seq" property = "versionSeq" jdbcType = "INTEGER"/>
+    <result column = "max_num" property = "maxNum" jdbcType = "INTEGER"/>
+    <result column = "time_interval" property = "timeInterval" jdbcType = "INTEGER"/>
+    <result column = "is_all" property = "isAll" jdbcType = "INTEGER"/>
+    <result column="start_date" property="startDate" jdbcType="TIMESTAMP" />
+	<result column="end_date" property="endDate" jdbcType="TIMESTAMP" />
+    <result column="last_modify_time" property="lastModifyTime" jdbcType="TIMESTAMP" />
+    <result column="oper_user" property="operUser" jdbcType="VARCHAR" /> 
+    <association property="softCodeId" javaType="appSoftwareCode">
+			<id column="soft_code_id" property="id" jdbcType="BIGINT" />
+	</association>
+	<association property="softwarePackageId" javaType="appSoftwarePackage">
+			<id column="software_package_id" property="id" jdbcType="BIGINT" />
+	</association>
+  </resultMap>
+  
+   <resultMap id="AllResultMap" type="appUpgradeTask" >
+        <id column="u_id" property="id" jdbcType="BIGINT" />    
+	    <!--  result column="u_device_group_ids" property="deviceGroupIds" jdbcType="VARCHAR" /--> 
+	    <result column="u_software_package_id" property="softwarePackageId" jdbcType="BIGINT" />    
+	    <result column="u_create_date" property="createDate" jdbcType="TIMESTAMP" />
+	    <result column="u_vendor_ids" property="vendorIds" jdbcType="VARCHAR" /> 
+	    <result column = "u_version_seq" property = "versionSeq" jdbcType = "INTEGER"/>
+	    <result column = "u_max_num" property = "maxNum" jdbcType = "INTEGER"/>
+	    <result column = "u_time_interval" property = "timeInterval" jdbcType = "INTEGER"/>
+	    <result column = "u_is_all" property = "isAll" jdbcType = "INTEGER"/>
+	    <result column="u_start_date" property="startDate" jdbcType="TIMESTAMP" />
+		<result column="u_end_date" property="endDate" jdbcType="TIMESTAMP" />
+	    <result column="u_last_modify_time" property="lastModifyTime" jdbcType="TIMESTAMP" />
+	    <result column="u_oper_user" property="operUser" jdbcType="VARCHAR" /> 
+        <association property="softCodeId" javaType="appSoftwareCode">
+			<id column = "c_id"     property = "id" jdbcType = "BIGINT" />
+			<result column = "c_name" property = "name" jdbcType = "VARCHAR" />
+			<result column = "c_code"   property = "code" jdbcType = "VARCHAR" />
+			<result column = "c_status"   property = "status" jdbcType = "VARCHAR" />
+			<result column = "c_description"   property = "description" jdbcType = "VARCHAR" />
+			<result column = "c_create_date"   property = "createDate" jdbcType = "TIMESTAMP" />
+			<result  column = "c_last_modify_time"   property = "lastModifyTime" jdbcType = "TIMESTAMP"/>
+			<result  column = "c_oper_user" property = "operUser" jdbcType = "VARCHAR"/>
+		</association>
+		<association property="softwarePackageId" javaType="appSoftwarePackage">
+			<id  column = "p_id" property = "id" jdbcType = "BIGINT"/>
+			<result  column = "p_version_seq"        property = "versionSeq" jdbcType = "INTEGER"/>
+			<result  column = "p_version_name"       property = "versionName" jdbcType = "VARCHAR"/>
+			<result  column = "p_package_type"       property = "packageType" jdbcType = "VARCHAR"/>
+			<result  column = "p_package_location"   property = "packageLocation" jdbcType = "VARCHAR"/>
+			<result  column = "p_package_status"     property = "packageStatus" jdbcType = "VARCHAR"/>
+			<result  column = "p_is_mandatory"       property = "mandatoryStatus" jdbcType = "VARCHAR"/>
+			<result  column = "p_md5"                property = "md5" jdbcType = "VARCHAR"/>
+			<result  column = "p_create_date"        property = "createDate" jdbcType = "TIMESTAMP"/>
+			<result  column = "p_app_version_seq"    property = "appVersionSeq" jdbcType = "INTEGER"/>
+			<result  column="p_sdk_version" property="sdkVersion" jdbcType="VARCHAR" />
+			<result  column = "p_full_software_id"   property = "fullSoftwareId" jdbcType = "BIGINT"/>		
+			<result  column = "p_last_modify_time"   property = "lastModifyTime" jdbcType = "TIMESTAMP"/>
+			<result  column = "p_oper_user" property = "operUser" jdbcType = "VARCHAR"/>
+	    </association>
+  </resultMap>
+   
+   <sql id="Advanced_Column_List" >
+        u.id as u_id,u.soft_code_id as u_soft_code_id,u.start_date as u_start_date,u.end_date as u_end_date,
+        u.software_package_id as u_software_package_id,u.create_date as u_create_date,u.vendor_ids as u_vendor_ids,u.version_seq as u_version_seq,u.max_num as u_max_num,
+        u.time_interval as u_time_interval,u.is_all as u_is_all,u.last_modify_time as u_last_modify_time,u.oper_user as u_oper_user,
+        p.id as p_id,p.version_seq as p_version_seq,p.soft_code_id as p_soft_code_id,p.version_name as p_version_name,
+        p.package_type as p_package_type,p.package_location as p_package_location,p.package_status as p_package_status,
+        p.is_mandatory as p_is_mandatory,p.md5 as p_md5,p.create_date as p_create_date,p.app_version_seq as p_app_version_seq,
+        p.sdk_version as p_sdk_version,p.full_software_id as p_full_software_id,p.last_modify_time as p_last_modify_time,p.oper_user as p_oper_user,
+	    c.id as c_id,c.name as c_name,c.code as c_code,c.status as c_status,c.description as c_description,c.create_date as c_create_date,
+	    c.last_modify_time as c_last_modify_time,c.oper_user as c_oper_user	   <!--   u.device_group_ids as u_device_group_ids,-->
+  </sql>
+  <sql id="Advanced_Table_List" >
+  		bss_app_upgrade_task u 
+        left outer join bss_app_software_package p on p.id = u.software_package_id
+        left outer join bss_app_software_code c on c.id = u.soft_code_id       
+  </sql>
+  
+  <sql id="Base_Column_List" >
+    id,soft_code_id,software_package_id,create_date,vendor_ids,version_seq,max_num,time_interval,is_all,last_modify_time,oper_user,start_date,end_date
+    <!-- device_group_ids, -->
+  </sql>
+  
+   <select id="getListByCondition"  resultMap="AllResultMap" parameterType="map" >
+	      select 
+          <include refid="Advanced_Column_List"/>
+          from 
+          <include refid="Advanced_Table_List"/>
+          <where>
+		       <if test="softCodeId!=null and softCodeId!=''">
+               			u.soft_code_id = #{softCodeId}
+   				</if>
+		   		<if test="softwarePackageId!=null and softwarePackageId!='' and softwarePackageId!=0">
+		               and u.software_package_id = #{softwarePackageId}
+		   		</if>
+	      </where>	   
+          order by u.id desc
+	     <if test="pageNo != null and pageSize != null">
+	      limit #{pageNo},#{pageSize}
+	    </if>
+    </select>
+    
+     <select id="findAppUpgradeTaskListByCondition"  resultMap="AllResultMap" parameterType="map" >
+	      select 
+          <include refid="Advanced_Column_List"/>
+          from 
+          <include refid="Advanced_Table_List"/>
+          <where>
+		       <if test="softwarePackageName !=null and softwarePackageName !=''">
+               			p.version_name like '%${softwarePackageName}%'
+   				</if>
+		   		<if test="softCodeName !=null and softCodeName !=''">
+		               and c.name like '%${softCodeName}%'
+		   		</if>
+	      </where>	   
+          order by u.id desc
+	     <if test="pageNo != null and pageSize != null">
+	      limit #{pageNo},#{pageSize}
+	    </if>
+    </select>
+   
+   <select id="getCountByCondition" parameterType="map" resultType="java.lang.Integer">
+	     select 
+	     count(id)
+	     from bss_app_upgrade_task u
+	     <where>
+	     		<if test="softCodeId!=null and softCodeId!=''">
+               			u.soft_code_id = #{softCodeId}
+   				</if>
+		   		<if test="softwarePackageId!=null and softwarePackageId!='' and softwarePackageId!=0">
+		               and u.software_package_id = #{softwarePackageId}
+		   		</if>
+	      </where>	 	    
+       order by id desc    
+    </select>
+     
+     <select id="getCountBySoftCodeAndPackage" parameterType="map" resultType="java.lang.Integer">
+	     select 
+	     count(u.id)
+	     from 
+          <include refid="Advanced_Table_List"/>
+          <where>
+		       <if test="softwarePackageName !=null and softwarePackageName !=''">
+               			p.version_name like '%${softwarePackageName}%'
+   				</if>
+		   		<if test="softCodeName !=null and softCodeName !=''">
+		               and c.name like '%${softCodeName}%'
+		   		</if>
+	      </where>	   
+          order by u.id desc
+    </select>
+    
+	<select id="getById" parameterType="java.lang.Long" resultMap="AllResultMap">
+		 select 
+          <include refid="Advanced_Column_List"/>
+          from 
+          <include refid="Advanced_Table_List"/>
+		where u.id = #{id, jdbcType=BIGINT}
+	</select>
+	
+	
+	<select id="getByVersionSeq" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+		select <include refid="Base_Column_List" />
+		from bss_app_upgrade_task 
+		where version_seq = #{versionSeq, jdbcType=BIGINT}
+	</select>
+	
+	<delete id="delete" parameterType="java.util.List">
+      delete from bss_app_upgrade_task
+       where id in 
+      <foreach collection="ids" item="id"  open="(" separator="," close=")">  
+            #{id} 
+        </foreach>
+     </delete>
+     
+    <update id="updateById" parameterType="appUpgradeTask" >
+     update bss_app_upgrade_task
+     set 
+     	soft_code_id=#{softCodeId.id,jdbcType=BIGINT},
+     	<!-- device_group_ids=#{deviceGroupIds,jdbcType=VARCHAR}, -->
+     	software_package_id=#{softwarePackageId.id,jdbcType=BIGINT},
+     	<!-- create_date=#{createDate,jdbcType=TIMESTAMP}, -->
+     	vendor_ids=#{vendorIds,jdbcType=VARCHAR},
+     	version_seq=#{versionSeq,jdbcType=BIGINT},
+		max_num=#{maxNum,jdbcType=BIGINT},
+		time_interval=#{timeInterval,jdbcType=BIGINT},
+		start_date = #{startDate,jdbcType=TIMESTAMP},
+        end_date = #{endDate,jdbcType=TIMESTAMP},
+		is_all=#{isAll,jdbcType=BIGINT},		
+		oper_user=#{operUser,jdbcType=VARCHAR},
+		last_modify_time=#{lastModifyTime,jdbcType=TIMESTAMP}
+     where  
+        id = #{id,jdbcType=BIGINT}
+   </update>
+   
+   <insert id="save" parameterType="appUpgradeTask" useGeneratedKeys="true" keyProperty="id">
+     insert into bss_app_upgrade_task (
+     	soft_code_id,
+       <!-- device_group_ids, --> 
+        software_package_id,
+        create_date,
+        vendor_ids,
+        version_seq,
+        max_num,
+        time_interval,
+        start_date,
+        end_date,
+        is_all,
+        last_modify_time,
+        oper_user
+       )
+     values (#{softCodeId.id,jdbcType=BIGINT},
+     	<!-- #{deviceGroupIds,jdbcType=VARCHAR}, -->
+     	#{softwarePackageId.id,jdbcType=BIGINT},
+     	#{createDate,jdbcType=TIMESTAMP},
+     	#{vendorIds,jdbcType=VARCHAR},
+     	#{versionSeq,jdbcType=BIGINT},
+		#{maxNum,jdbcType=BIGINT},
+		#{timeInterval,jdbcType=BIGINT},
+		#{startDate,jdbcType=TIMESTAMP},
+		#{endDate,jdbcType=TIMESTAMP},
+		#{isAll,jdbcType=BIGINT},				
+		#{lastModifyTime,jdbcType=TIMESTAMP},
+		#{operUser,jdbcType=VARCHAR}
+       )
+   </insert>
+</mapper>

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.device.repository.mapper.AppUpgradeMapMapper" >
+  <resultMap id="BaseResultMap" type="appUpgradeMap" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <!--result column="device_code" property="deviceCode" jdbcType="VARCHAR" /-->
+    <result column="ysten_id" property="ystenId" jdbcType="VARCHAR"/>
+    <result column="upgrade_id" property="upgradeId" jdbcType="BIGINT" /> 
+    <result column="device_group_id" property="deviceGroupId" jdbcType="BIGINT" /> 
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, ysten_id, upgrade_id, device_group_id, type, create_date
+  </sql>
+  
+	<!-- select id="getByDeviceCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+		select <include refid="Base_Column_List" />
+		from bss_app_upgrade_map
+		where ysten_id = #{ystenId, jdbcType=VARCHAR}
+		order by create_date desc
+    </select> -->
+    
+    <select id="findByGroupIdAndType" parameterType="map" resultMap="BaseResultMap">
+		select <include refid="Base_Column_List" />
+		from bss_app_upgrade_map
+		where type = #{type, jdbcType=VARCHAR}
+		and device_group_id = #{groupId , jdbcType=BIGINT}
+		order by create_date desc
+    </select>
+
+    <select id="findMapByUpgradeId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List" />
+        from
+        bss_app_upgrade_map
+        where
+        upgrade_id = #{upgradeId,jdbcType=BIGINT}
+    </select>
+    
+    <select id="findMapByUpgradeIdAndType" resultMap="BaseResultMap" parameterType="map">
+		select
+		<include refid="Base_Column_List" />
+		from
+		bss_app_upgrade_map
+		where
+		upgrade_id = #{upgradeId,jdbcType=BIGINT} and type = #{type,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="findAppUpgradeMapByYstenId" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from
+		bss_app_upgrade_map
+		where
+		ysten_id = #{ystenId, jdbcType=VARCHAR}
+	</select>
+	
+	<select id="findAppMapByYstenIdAndUpgradeId" resultMap="BaseResultMap" parameterType="map" >
+		select
+		<include refid="Base_Column_List" />
+		from
+		bss_app_upgrade_map
+		where
+		ysten_id = #{ystenId, jdbcType=VARCHAR} and upgrade_id = #{upgradeId,jdbcType=BIGINT}
+	</select>
+	
+     <delete id="deleteByUpgradeId" parameterType="java.util.List">
+      delete from bss_app_upgrade_map
+       where upgrade_id in 
+      <foreach collection="ids" item="id"  open="(" separator="," close=")">  
+            #{id} 
+        </foreach>
+      </delete>
+      
+      <insert id="save" parameterType="appUpgradeMap" useGeneratedKeys="true" keyProperty="id">
+	     insert into bss_app_upgrade_map (
+	        ysten_id, upgrade_id, device_group_id, type, create_date
+	       )
+	     values (
+	     	#{ystenId, jdbcType=VARCHAR},
+	     	#{upgradeId,jdbcType=BIGINT},
+	     	#{deviceGroupId,jdbcType=BIGINT},
+	     	#{type,jdbcType=VARCHAR},
+	     	#{createDate,jdbcType=TIMESTAMP}	     				
+	       )
+     </insert>
+     
+     <update id="updateByUpgradeId" parameterType="appUpgradeMap" >
+     update bss_app_upgrade_map
+     set 
+     	 ysten_id = #{ystenId, jdbcType=VARCHAR},
+		 device_group_id=#{deviceGroupId,jdbcType=BIGINT},
+		 type=#{type,jdbcType=VARCHAR}
+		 <!-- ,create_date=#{createDate,jdbcType=TIMESTAMP} -->
+     where  
+        upgrade_id = #{upgradeId,jdbcType=BIGINT}
+   </update>
+   <delete id="deleteAppUpgradeMapByGroupId" parameterType="java.lang.Long">
+   	delete from bss_app_upgrade_map where device_group_id = #{groupId,jdbcType=BIGINT}
+   </delete>
+   <delete id="deleteAppUpgradeMapByCode" parameterType="java.lang.String">
+		delete from bss_app_upgrade_map where ysten_id = #{ystenId, jdbcType=VARCHAR}
+	</delete>
+
+    <delete id="deleteAppUpgradeMapByUpgradeId" parameterType="java.lang.Long">
+   	delete from bss_app_upgrade_map where upgrade_id = #{upgradeId,jdbcType=BIGINT}
+   </delete>
+   
+    <delete id="deleteAppUpgradeMapByUpgradeIdAndType" parameterType="map">
+      delete from bss_app_upgrade_map where upgrade_id = #{upgradeId,jdbcType=BIGINT} and type = #{type,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>

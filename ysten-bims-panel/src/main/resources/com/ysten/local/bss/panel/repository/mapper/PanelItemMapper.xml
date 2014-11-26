@@ -1,0 +1,559 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.panel.repository.mapper.PanelItemMapper">
+    <resultMap id="BaseResultMap" type="panelItem">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="panel_item_id" property="panelItemId" jdbcType="BIGINT"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="title" property="title" jdbcType="VARCHAR"/>
+        <result column="title_comment" property="titleComment" jdbcType="VARCHAR"/>
+        <result column="action_type" property="actionType" jdbcType="INTEGER"/>
+        <result column="action_url" property="actionUrl" jdbcType="VARCHAR"/>
+        <result column="image_url" property="imageUrl" jdbcType="VARCHAR"/>
+        <result column="install_url" property="installUrl" jdbcType="VARCHAR"/>
+
+        <result column="image_disturl" property="imageDistUrl" jdbcType="VARCHAR"/>
+        <result column="video_url" property="videoUrl" jdbcType="VARCHAR"/>
+        <result column="content_id" property="contentId" jdbcType="BIGINT"/>
+        <result column="content" property="content" jdbcType="VARCHAR"/>
+        <result column="content_type" property="contentType" jdbcType="VARCHAR"/>
+        <result column="ref_item_id" property="refItemId" jdbcType="BIGINT"/>
+        <result column="panelitem_parentid" property="panelItemParentId" jdbcType="BIGINT"/>
+        <result column="auto_run" property="autoRun" jdbcType="INTEGER"/>
+        <result column="focus_run" property="focusRun" jdbcType="INTEGER"/>
+        <result column="has_sub_item" property="hasSubItem" jdbcType="INTEGER"/>
+        <result column="auto_play" property="autoPlay" jdbcType="INTEGER"/>
+        <result column="show_title" property="showTitle" jdbcType="INTEGER"/>
+        <result column="animation_run" property="animationRun" jdbcType="INTEGER"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="opr_userid" property="oprUserId" jdbcType="BIGINT"/>
+        <result column="epg_panelitem_id" property="epgPanelitemId" jdbcType="BIGINT"/>
+        <result column="epg_content_id" property="epgContentId" jdbcType="BIGINT"/>
+        <result column="epg_ref_item_id" property="epgRefItemId" jdbcType="BIGINT"/>
+        <result column="epg_panelitem_parentid" property="epgPanelitemParentid" jdbcType="BIGINT"/>
+        <result column="online_status" property="onlineStatus" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="district_code" property="districtCode" jdbcType="VARCHAR"/>
+        <result column="item_content_type" property="itemContentType" jdbcType="VARCHAR"/>
+        <result column="app_enter_url" property="appEnterUrl" jdbcType="VARCHAR"/>
+        <result column="category_id" property="categoryId" jdbcType="VARCHAR"/>
+
+        <result column="version" property="version" jdbcType="BIGINT"/>
+        <result column="defaultfocus" property="defaultfocus" jdbcType="VARCHAR"/>
+        <result column="params" property="params" jdbcType="VARCHAR"/>
+        <result column="resolution" property="resolution" jdbcType="VARCHAR"/>
+
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    i.id, i.name,i.title,i.title_comment,i.action_type,i.action_url,i.image_url,i.image_disturl,i.video_url,i.content_id,i.content,i.content_type,i.ref_item_id,
+    i.panelitem_parentid,i.auto_run,i.focus_run,i.show_title,i.animation_run,i.status,i.opr_userid,i.epg_panelitem_id,i.epg_content_id,
+    i.epg_ref_item_id,i.epg_panelitem_parentid,i.has_sub_item,i.create_time,i.update_time,auto_play,i.install_url,i.online_status,i.district_code,i.app_enter_url,
+    i.item_content_type,i.category_id,i.version,i.defaultfocus,i.params,i.resolution
+    </sql>
+
+    <sql id="Base_Table_Name">
+  	 bss_panel_item
+    </sql>
+
+    <select id="getTargetById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Base_Table_Name"/>
+        i
+        where i.id = #{id,jdbcType=BIGINT}
+        and i.online_status = 99
+    </select>
+
+    <select id="getPanelItemListByPanelId" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from bss_panel_panel_item_map m
+        left join bss_panel_item i on m.panel_item_id = i.id
+        where m.panel_id = #{panelId,jdbcType=BIGINT}
+        and i.online_status = 99
+        order by i.id desc
+        limit ${pageNo} , ${pageSize}
+    </select>
+
+    <select id="selectPanelItemListByDpi" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from bss_panel_item i where
+        i.resolution=#{dpi,jdbcType=VARCHAR}
+        and i.online_status = 99
+    </select>
+
+    <select id="getSublItemListByPanelItemParentId" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from bss_panel_item i
+        where i.panelitem_parentid = #{panelItemParentId,jdbcType=BIGINT}
+        and i.online_status = 99
+        order by i.id
+    </select>
+
+    <select id="selectPanelItemListByEpgPanelId" resultMap="BaseResultMap" parameterType="java.util.List">
+        select
+        <include refid="Base_Column_List"/>
+        from bss_panel_item i
+        left join bss_panel_panel_item_map m on m.epg_panelItem_id = i.epg_panelitem_id
+        where m.panel_id in
+        <foreach collection="list" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        and i.online_status = 99
+        order by i.epg_panelitem_id desc
+    </select>
+
+    <select id="getPanelItemCountByPanelId" resultType="java.lang.Integer" parameterType="map">
+        select
+        count(m.id)
+        from bss_panel_panel_item_map m
+        left join bss_panel_item i on m.panel_item_id = i.id
+        where m.panel_id = #{panelId,jdbcType=BIGINT}
+        and i.online_status = 99
+    </select>
+
+    <select id="selectParentItemList" resultMap="BaseResultMap" parameterType="map">
+        select
+        id,name
+        from
+        <include refid="Base_Table_Name"/>
+        <where>
+            <if test="contentType != null and contentType != ''">
+                content_type = #{contentType,jdbcType=VARCHAR}
+            </if>
+            <if test="hasSubItem != null">
+                and has_sub_item = #{hasSubItem,jdbcType=INTEGER}
+            </if>
+            <if test="dpi != null and dpi != ''">
+                and resolution = #{dpi}
+            </if>
+            and epg_panelitem_id is NULL
+            and online_status = 99
+        </where>
+        order by id desc
+    </select>
+
+    <select id="selectRelatedItemList" resultMap="BaseResultMap" parameterType="map">
+        select
+        id,name
+        from
+        <include refid="Base_Table_Name"/>
+        <where>
+            <if test="contentType != null and contentType != ''">
+                content_type = #{contentType,jdbcType=VARCHAR}
+            </if>
+            <if test="hasSubItem != null">
+                and has_sub_item = #{hasSubItem,jdbcType=INTEGER}
+            </if>
+            <if test="dpi != null and dpi != ''">
+                and resolution = #{dpi}
+            </if>
+            and ref_item_id is null
+            and epg_panelitem_id is NULL
+            and online_status = 99
+        </where>
+        order by id desc
+    </select>
+
+    <select id="selectRelatedOrParentItemList" resultMap="BaseResultMap" parameterType="map">
+        select
+        id,name
+        from
+        <include refid="Base_Table_Name"/>
+        where (panelitem_parentid = #{panelItemId,jdbcType=BIGINT}
+        or ref_item_id = #{panelItemId,jdbcType=BIGINT})
+        and epg_panelitem_id is NULL
+        and online_status = 99
+    </select>
+
+    <select id="getPanelItemByHasSubItem" resultMap="BaseResultMap" parameterType="map">
+        select
+        id,name
+        from
+        <include refid="Base_Table_Name"/>
+        <where>
+            online_status = 99
+            <if test="hasSubItem != null">
+                and has_sub_item = #{hasSubItem,jdbcType=INTEGER}
+            </if>
+        </where>
+        order by id desc
+    </select>
+
+    <select id="getNotRefPanelItemList" resultMap="BaseResultMap" parameterType="map">
+        select
+        id,name
+        from
+        <include refid="Base_Table_Name"/>
+        <where>
+            <if test="hasSubItem != null">
+                has_sub_item = #{hasSubItem,jdbcType=INTEGER}
+            </if>
+            <if test="refType != null">
+                and content_type != #{refType,jdbcType=VARCHAR}
+            </if>
+            and epg_panelitem_id is NULL
+            and online_status = 99
+        </where>
+        order by id desc
+    </select>
+
+    <select id="getNotRefPanelItemListExcludeSelf" resultMap="BaseResultMap" parameterType="map">
+        select
+        id,name
+        from
+        <include refid="Base_Table_Name"/>
+        <where>
+            <if test="hasSubItem != null">
+                has_sub_item = #{hasSubItem,jdbcType=INTEGER}
+            </if>
+            <if test="refType != null">
+                and content_type != #{refType,jdbcType=VARCHAR}
+            </if>
+            <if test="editPanelItemId != null">
+                and id != #{editPanelItemId,jdbcType=BIGINT}
+            </if>
+            and epg_panelitem_id is NULL
+            and online_status = 99
+        </where>
+        order by id desc
+    </select>
+
+
+    <select id="findAllProvinceList" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Base_Table_Name"/>
+        i
+        order by i.id
+    </select>
+
+    <select id="getAllEpgList" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Base_Table_Name"/>
+        i
+        where i.epg_panelitem_id is NOT NULL and i.district_code=#{districtCode,jdbcType=VARCHAR}
+        order by i.id
+    </select>
+
+    <select id="findIdAndEpgIdList" resultMap="BaseResultMap" parameterType="map">
+        select
+        i.epg_panelitem_id,i.id,i.content_type,i.epg_ref_item_id
+        from
+        <include refid="Base_Table_Name"/>
+        i
+        where i.epg_panelitem_id is NOT NULL and i.district_code=#{districtCode,jdbcType=VARCHAR}
+        order by i.id desc
+    </select>
+
+
+    <select id="getAllTargetList" resultMap="BaseResultMap" parameterType="map">
+        select
+        id,title,name
+        from
+        <include refid="Base_Table_Name"/>
+        where epg_panelitem_id is NULL
+        and online_status = 99
+        order by id desc
+    </select>
+
+    <select id="getPanelItemByName" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Base_Table_Name"/>
+        i
+        where i.name = #{name,jdbcType=VARCHAR}
+        and i.online_status = 99
+        limit 1
+    </select>
+
+    <select id="getTargetList" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Base_Table_Name"/>
+        i
+        <where>
+            i.online_status = 99
+            <if test="title != null and title != ''">
+                and i.title like '%${title}%'
+            </if>
+            <if test="name != null and name != ''">
+                and i.name like '%${name}%'
+            </if>
+            <if test="Id != null">
+                and i.id = #{Id,jdbcType=BIGINT}
+            </if>
+            <if test="epgId != null">
+                and i.epg_panelitem_id = #{epgId,jdbcType=BIGINT}
+            </if>
+            <if test="dataScope != '' and dataScope!=null">
+                and i.district_code=#{dataScope}
+            </if>
+        </where>
+        order by i.id desc
+        limit #{start} , #{limit}
+    </select>
+
+    <select id="getTargetCount" resultType="java.lang.Integer" parameterType="map">
+        select
+        count(i.id)
+        from
+        <include refid="Base_Table_Name"/>
+        i
+        <where>
+            i.online_status = 99
+            <if test="title != null and title != ''">
+                and i.title like '%${title}%'
+            </if>
+            <if test="name != null and name != ''">
+                and i.name like '%${name}%'
+            </if>
+            <if test="Id != null">
+                and i.id = #{Id,jdbcType=BIGINT}
+            </if>
+            <if test="epgId != null">
+                and i.epg_panelitem_id = #{epgId,jdbcType=BIGINT}
+            </if>
+            <if test="dataScope != '' and dataScope!=null">
+                and i.district_code=#{dataScope}
+            </if>
+
+        </where>
+    </select>
+    <select id="getPanelItemByEpgItemId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        <include refid="Base_Table_Name"/>
+        i
+        where epg_panelItem_id = #{epgPanelItemId,jdbcType=BIGINT}
+
+    </select>
+
+    <delete id="deleteByIds" parameterType="java.util.List">
+        delete from
+        <include refid="Base_Table_Name"/>
+        where id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteById" parameterType="java.lang.Long">
+        delete from
+        <include refid="Base_Table_Name"/>
+        where id = #{panelItemId,jdbcType=BIGINT}
+    </delete>
+
+
+    <delete id="deleteByEpgIds" parameterType="java.lang.Long">
+        delete from
+        <include refid="Base_Table_Name"/>
+        where epg_panelitem_id is NOT NULL
+    </delete>
+
+
+    <insert id="batchSavePanelItem" parameterType="java.util.List">
+        insert into bss_panel_item (
+        panel_item_id,name,title,title_comment,action_type,action_url,image_url,image_disturl,video_url,
+        content_id,content,content_type,ref_item_id, panelitem_parentid,auto_run,focus_run,
+        show_title,animation_run,status,opr_userid,create_time,update_time,
+        epg_panelitem_id,epg_content_id,epg_ref_item_id,epg_panelitem_parentid,has_sub_item,auto_play,online_status,item_content_type,
+        app_enter_url,category_id
+        )
+        values
+        <foreach collection="list" index="index" item="item" separator=",">
+            (
+            #{item.panelItemId,jdbcType=BIGINT},
+            #{item.name,jdbcType=VARCHAR},
+            #{item.title,jdbcType=VARCHAR},
+            #{item.titleComment,jdbcType=VARCHAR},
+            #{item.actionType,jdbcType=INTEGER},
+            #{item.actionUrl,jdbcType=VARCHAR},
+            #{item.imageUrl,jdbcType=VARCHAR},
+            #{item.imageDistUrl,jdbcType=VARCHAR},
+            #{item.videoUrl,jdbcType=VARCHAR},
+            #{item.contentId,jdbcType=BIGINT},
+            #{item.content,jdbcType=VARCHAR},
+            #{item.contentType,jdbcType=VARCHAR},
+            #{item.refItemId,jdbcType=BIGINT},
+            #{item.panelItemParentId,jdbcType=BIGINT},
+            #{item.autoRun,jdbcType=INTEGER},
+            #{item.focusRun,jdbcType=INTEGER},
+            #{item.showTitle,jdbcType=INTEGER},
+            #{item.animationRun,jdbcType=INTEGER},
+            #{item.status,jdbcType=INTEGER},
+            #{item.oprUserId,jdbcType=BIGINT},
+            #{item.createTime,jdbcType=TIMESTAMP},
+            #{item.updateTime,jdbcType=TIMESTAMP},
+            #{item.epgPanelitemId,jdbcType=BIGINT},
+            #{item.epgContentId,jdbcType=BIGINT},
+            #{item.epgRefItemId,jdbcType=BIGINT},
+            #{item.epgPanelitemParentid,jdbcType=BIGINT},
+            #{item.hasSubItem,jdbcType=INTEGER},
+            #{item.autoPlay,jdbcType=INTEGER},
+            #{item.onlineStatus,jdbcType=INTEGER},
+            #{item.itemContentType,jdbcType=VARCHAR},
+            #{item.appEnterUrl,jdbcType=VARCHAR},
+            #{item.categoryId,jdbcType=BIGINT}
+            )
+        </foreach>
+    </insert>
+
+    <insert id="save" parameterType="panelItem" useGeneratedKeys="true" keyProperty="id">
+     insert into bss_panel_item (
+     	        panel_item_id,name,title,title_comment,action_type,action_url,image_url,image_disturl,video_url,
+     	        content_id,content,content_type,ref_item_id, panelitem_parentid,auto_run,focus_run,
+     	        show_title,animation_run,status,opr_userid,create_time,update_time,
+     	        epg_panelitem_id,epg_content_id,epg_ref_item_id,epg_panelitem_parentid,has_sub_item,auto_play,install_url,online_status,district_code,
+     	        item_content_type,app_enter_url,category_id,version,defaultfocus,params,resolution
+       )
+     values (
+              #{panelItemId,jdbcType=BIGINT},
+              #{name,jdbcType=VARCHAR},
+              #{title,jdbcType=VARCHAR},
+              #{titleComment,jdbcType=VARCHAR},
+              #{actionType,jdbcType=INTEGER},
+     		  #{actionUrl,jdbcType=VARCHAR},
+     		  #{imageUrl,jdbcType=VARCHAR},
+     		  #{imageDistUrl,jdbcType=VARCHAR},
+     		  #{videoUrl,jdbcType=VARCHAR},
+     		  #{contentId,jdbcType=BIGINT},
+     		  #{content,jdbcType=VARCHAR},
+     		  #{contentType,jdbcType=VARCHAR},
+     		  #{refItemId,jdbcType=BIGINT},
+     		  #{panelItemParentId,jdbcType=BIGINT},
+     		  #{autoRun,jdbcType=INTEGER},
+     		  #{focusRun,jdbcType=INTEGER},
+     		  #{showTitle,jdbcType=INTEGER},
+     		  #{animationRun,jdbcType=INTEGER},
+     		  #{status,jdbcType=INTEGER},
+     		  #{oprUserId,jdbcType=BIGINT},
+     		  #{createTime,jdbcType=TIMESTAMP},
+     		  #{updateTime,jdbcType=TIMESTAMP},
+     		  #{epgPanelitemId,jdbcType=BIGINT},
+     		  #{epgContentId,jdbcType=BIGINT},
+     		  #{epgRefItemId,jdbcType=BIGINT},
+     		  #{epgPanelitemParentid,jdbcType=BIGINT},
+     		  #{hasSubItem,jdbcType=INTEGER},
+     		  #{autoPlay,jdbcType=INTEGER},
+     		  #{installUrl,jdbcType=VARCHAR},
+     		  #{onlineStatus,jdbcType=INTEGER},
+     		  #{districtCode,jdbcType=VARCHAR},
+     		   #{itemContentType,jdbcType=VARCHAR},
+            #{appEnterUrl,jdbcType=VARCHAR},
+            #{categoryId,jdbcType=BIGINT},
+            #{version,jdbcType=BIGINT},
+            #{defaultfocus,jdbcType=VARCHAR},
+            #{params,jdbcType=VARCHAR},
+            #{resolution,jdbcType=VARCHAR}
+       )
+   </insert>
+
+    <update id="batchUpdateRel" parameterType="java.util.List">
+        update
+        <include refid="Base_Table_Name"/>
+        set
+        ref_item_id=#{item.refItemId,jdbcType=BIGINT},
+        panelitem_parentid=#{item.panelItemParentId,jdbcType=BIGINT}
+
+        where epg_panelitem_id in
+        <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+            #{item.epgPanelitemId}
+        </foreach>
+    </update>
+
+
+    <update id="batchUpdatePanelItem" parameterType="panelItem">
+        update
+        <include refid="Base_Table_Name"/>
+        set
+        name = #{item.name,jdbcType=VARCHAR},
+        title= #{item.title,jdbcType=VARCHAR},
+        title_comment=#{item.titleComment,jdbcType=VARCHAR},
+        action_type=#{item.actionType,jdbcType=INTEGER},
+        action_url=#{item.actionUrl,jdbcType=VARCHAR},
+        image_url=#{item.imageUrl,jdbcType=VARCHAR},
+        image_disturl=#{item.imageDistUrl,jdbcType=VARCHAR},
+        video_url=#{item.videoUrl,jdbcType=VARCHAR},
+        content_id=#{item.contentId,jdbcType=BIGINT},
+        content=#{item.content,jdbcType=VARCHAR},
+        content_type=#{item.contentType,jdbcType=VARCHAR},
+        ref_item_id=#{item.refItemId,jdbcType=BIGINT},
+        panelitem_parentid=#{item.panelItemParentId,jdbcType=BIGINT},
+        auto_run=#{item.autoRun,jdbcType=INTEGER},
+        focus_run=#{item.focusRun,jdbcType=INTEGER},
+        show_title=#{item.showTitle,jdbcType=INTEGER},
+        animation_run=#{item.animationRun,jdbcType=INTEGER},
+        status=#{item.status,jdbcType=INTEGER},
+        opr_userid=#{item.oprUserId,jdbcType=INTEGER},
+        has_sub_item=#{item.hasSubItem,jdbcType=INTEGER},
+        update_time =#{item.updateTime,jdbcType=TIMESTAMP},
+        epg_ref_item_id = #{item.epgRefItemId,jdbcType=BIGINT},
+        epg_content_id = #{item.epgContentId,jdbcType=BIGINT},
+        epg_panelitem_parentid = #{item.epgPanelitemParentid,jdbcType=BIGINT},
+        auto_play = #{item.autoPlay,jdbcType=INTEGER},
+        install_url=#{item.installUrl,jdbcType=VARCHAR},
+        online_status=#{item.onlineStatus,jdbcType=INTEGER}
+        where epg_panelitem_id in
+        <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+            #{item.epgPanelitemId}
+        </foreach>
+    </update>
+
+    <update id="update" parameterType="panelItem">
+        update
+        <include refid="Base_Table_Name"/>
+        set
+        name = #{name,jdbcType=VARCHAR},
+        title= #{title,jdbcType=VARCHAR},
+        title_comment=#{titleComment,jdbcType=VARCHAR},
+        action_type=#{actionType,jdbcType=INTEGER},
+        action_url=#{actionUrl,jdbcType=VARCHAR},
+        image_url=#{imageUrl,jdbcType=VARCHAR},
+        image_disturl=#{imageDistUrl,jdbcType=VARCHAR},
+        video_url=#{videoUrl,jdbcType=VARCHAR},
+        content_id=#{contentId,jdbcType=BIGINT},
+        content=#{content,jdbcType=VARCHAR},
+        content_type=#{contentType,jdbcType=VARCHAR},
+        ref_item_id=#{refItemId,jdbcType=BIGINT},
+        panelitem_parentid=#{panelItemParentId,jdbcType=BIGINT},
+        auto_run=#{autoRun,jdbcType=INTEGER},
+        focus_run=#{focusRun,jdbcType=INTEGER},
+        show_title=#{showTitle,jdbcType=INTEGER},
+        animation_run=#{animationRun,jdbcType=INTEGER},
+        status=#{status,jdbcType=INTEGER},
+        opr_userid=#{oprUserId,jdbcType=INTEGER},
+        has_sub_item=#{hasSubItem,jdbcType=INTEGER},
+        update_time =#{updateTime,jdbcType=TIMESTAMP},
+        epg_panelitem_id = #{epgPanelitemId,jdbcType=BIGINT},
+        epg_ref_item_id = #{epgRefItemId,jdbcType=BIGINT},
+        epg_content_id = #{epgContentId,jdbcType=BIGINT},
+        epg_panelitem_parentid = #{epgPanelitemParentid,jdbcType=BIGINT},
+        auto_play = #{autoPlay,jdbcType=INTEGER},
+        install_url=#{installUrl,jdbcType=VARCHAR},
+        online_status=#{onlineStatus,jdbcType=INTEGER},
+        app_enter_url=#{appEnterUrl,jdbcType=VARCHAR},
+        item_content_type=#{itemContentType,jdbcType=VARCHAR},
+        category_id=#{categoryId,jdbcType=BIGINT},
+
+        version=#{version,jdbcType=BIGINT},
+        defaultfocus=#{defaultfocus,jdbcType=VARCHAR},
+        params=#{params,jdbcType=VARCHAR},
+        resolution=#{resolution,jdbcType=VARCHAR}
+        where
+        id = #{id,jdbcType=BIGINT}
+    </update>
+
+
+</mapper>

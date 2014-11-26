@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+    <bean id="scanClearCacheTaskJob" class="com.ysten.local.bss.facade.job.ScanClearCacheTaskJob">
+        <property name="cache" ref="cache"></property>
+    </bean>
+
+    <bean id="scanClearCacheTaskJobDetail"
+          class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <ref bean="scanClearCacheTaskJob"/>
+        </property>
+        <property name="targetMethod">
+            <value>clearRedis</value>
+        </property>
+        <property name="concurrent">
+            <value>false</value>
+        </property>
+    </bean>
+
+    <bean id="scanClearCacheTaskJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail">
+            <ref bean="scanClearCacheTaskJobDetail"/>
+        </property>
+        <property name="cronExpression">
+            <value>${clear_cache_cron}</value>
+        </property>
+    </bean>
+    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+                <!--<ref local="scanClearCacheTaskJobTrigger"/>-->
+            </list>
+        </property>
+        <property name="autoStartup" value="true"/>
+    </bean>
+</beans>

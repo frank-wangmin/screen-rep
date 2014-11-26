@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+ <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+ <mapper namespace="com.ysten.local.bss.device.repository.mapper.DeviceSoftwarePackageMapper" >
+	<resultMap id="BaseResultMap" type="deviceSoftwarePackage" >
+		<id  column = "id" property = "id" jdbcType = "BIGINT"/>
+		<result  column = "version_seq"        property = "versionSeq" jdbcType = "INTEGER"/>
+		<result  column = "version_name"       property = "versionName" jdbcType = "VARCHAR"/>
+		<result  column = "package_type"       property = "packageType" jdbcType = "VARCHAR"/>
+		<result  column = "package_location"   property = "packageLocation" jdbcType = "VARCHAR"/>
+		<result  column = "package_status"     property = "packageStatus" jdbcType = "VARCHAR"/>
+		<result  column = "is_mandatory"       property = "mandatoryStatus" jdbcType = "VARCHAR"/>
+		<result  column = "md5"                property = "md5" jdbcType = "VARCHAR"/>
+		<result  column = "create_date"        property = "createDate" jdbcType = "TIMESTAMP"/>
+		<result  column = "device_version_seq" property = "deviceVersionSeq" jdbcType = "INTEGER"/>
+		<result  column = "full_software_id"   property = "fullSoftwareId" jdbcType = "BIGINT"/>		
+		<result  column = "last_modify_time"   property = "lastModifyTime" jdbcType = "TIMESTAMP"/>
+		<result  column = "oper_user" property = "operUser" jdbcType = "VARCHAR"/>
+		<result column="distribute_state" property="distributeState" jdbcType="VARCHAR" />
+        <result column="is_all" property="isAll" jdbcType="INTEGER" />
+        <result column="upgradeTaskId" property="upgradeTaskId" jdbcType="INTEGER" />
+        <association property="softCodeId" javaType="deviceSoftwareCode">
+			<id column="soft_code_id" property="id" jdbcType="BIGINT" />
+		</association>		
+   </resultMap>
+   
+   <resultMap id="AllResultMap" type="deviceSoftwarePackage" >
+        <id  column = "p_id" property = "id" jdbcType = "BIGINT"/>
+		<result  column = "p_version_seq"        property = "versionSeq" jdbcType = "INTEGER"/>
+		<result  column = "p_version_name"       property = "versionName" jdbcType = "VARCHAR"/>
+		<result  column = "p_package_type"       property = "packageType" jdbcType = "VARCHAR"/>
+		<result  column = "p_package_location"   property = "packageLocation" jdbcType = "VARCHAR"/>
+		<result  column = "p_package_status"     property = "packageStatus" jdbcType = "VARCHAR"/>
+		<result  column = "p_is_mandatory"       property = "mandatoryStatus" jdbcType = "VARCHAR"/>
+		<result  column = "p_md5"                property = "md5" jdbcType = "VARCHAR"/>
+		<result  column = "p_create_date"        property = "createDate" jdbcType = "TIMESTAMP"/>
+		<result  column = "p_device_version_seq" property = "deviceVersionSeq" jdbcType = "INTEGER"/>
+		<result  column = "p_full_software_id"   property = "fullSoftwareId" jdbcType = "BIGINT"/>		
+		<result  column = "p_last_modify_time"   property = "lastModifyTime" jdbcType = "TIMESTAMP"/>
+		<result  column = "p_oper_user" property = "operUser" jdbcType = "VARCHAR"/>
+		<result  column="p_distribute_state" property="distributeState" jdbcType="VARCHAR" />
+        <association property="softCodeId" javaType="deviceSoftwareCode">
+			<id column = "c_id"     property = "id" jdbcType = "BIGINT" />
+			<result column = "c_name" property = "name" jdbcType = "VARCHAR" />
+			<result column = "c_code"   property = "code" jdbcType = "VARCHAR" />
+			<result column = "c_status"   property = "status" jdbcType = "VARCHAR" />
+			<result column = "c_description"   property = "description" jdbcType = "VARCHAR" />
+			<result column = "c_create_date"   property = "createDate" jdbcType = "TIMESTAMP" />
+			<result  column = "c_last_modify_time"   property = "lastModifyTime" jdbcType = "TIMESTAMP"/>
+			<result  column = "c_oper_user" property = "operUser" jdbcType = "VARCHAR"/>
+			<result column="c_distribute_state" property="distributeState" jdbcType="VARCHAR" />
+		</association>
+  </resultMap>
+   
+   <sql id="Advanced_Column_List" > 
+        p.id as p_id,p.version_seq as p_version_seq,p.soft_code_id as p_soft_code_id,p.version_name as p_version_name,
+        p.package_type as p_package_type,p.package_location as p_package_location,p.package_status as p_package_status,
+        p.is_mandatory as p_is_mandatory,p.md5 as p_md5,p.create_date as p_create_date,p.device_version_seq as p_device_version_seq,
+        p.full_software_id as p_full_software_id,p.last_modify_time as p_last_modify_time,p.oper_user as p_oper_user,p.distribute_state as p_distribute_state,
+	    c.id as c_id,c.name as c_name,c.code as c_code,c.status as c_status,c.description as c_description,c.create_date as c_create_date,
+	    c.last_modify_time as c_last_modify_time,c.oper_user as c_oper_user,c.distribute_state as c_distribute_state
+  </sql>
+
+  <sql id="Advanced_Table_List" > 
+        bss_device_software_package p 
+        left outer join bss_device_software_code c on c.id = p.soft_code_id       
+  </sql>
+   
+   <sql id="Base_Column_List" >
+	    id,version_seq,soft_code_id,version_name,package_type,package_location,package_status,is_mandatory,md5,create_date,device_version_seq,full_software_id,
+	    last_modify_time,oper_user,distribute_state
+   </sql>
+
+	<select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+	     select 
+	     <include refid="Base_Column_List" />
+	     from bss_device_software_package 
+	     where id = #{id, jdbcType=BIGINT}
+	</select>
+   
+   <select id="getAll" resultMap="BaseResultMap">
+	     select 
+	     <include refid="Base_Column_List" />
+	     from bss_device_software_package 
+	</select>
+	
+   <sql id="Where_Condition">
+     <where>
+     	<if test="name != null and name != ''">
+     		and version_name like '%${name}%'
+     	</if>
+     	<if test="packageType != null and packageType != ''">
+     		and package_type = #{packageType}
+     	</if>
+     	<if test="softCodeId != null and softCodeId != ''">
+     		and soft_code_id = #{softCodeId}
+     	</if>
+     </where>
+   </sql>
+   
+     <select id="getListByCondition"  resultMap="AllResultMap" parameterType="map" >
+	      select 
+          <include refid="Advanced_Column_List"/>
+          from 
+          <include refid="Advanced_Table_List"/>
+	    <where>
+     	<if test="versionName != null and versionName != ''">
+     	 p.version_name like '%${versionName}%'
+     	</if>   	
+        </where>
+       order by p.id desc
+     <if test="pageNo != null and pageSize != null">
+      limit #{pageNo},#{pageSize}
+    </if>
+    </select>
+   
+   <select id="getCountByCondition" parameterType="map" resultType="java.lang.Integer">
+	     select 
+	     count(id)
+	     from bss_device_software_package 
+	    <where>
+     	<if test="versionName != null and versionName != ''">
+     	 version_name like '%${versionName}%'
+     	</if>   	
+        </where>
+       order by id desc    
+    </select>
+   
+   <select id="findbyCondition" parameterType="map" resultMap="BaseResultMap">
+	     select <include refid="Base_Column_List" />
+	     from bss_device_software_package 
+	     where  id in
+		<foreach collection="softwareIdList" item="softwareId" open="(" separator="," close=")">
+               #{softwareId,jdbcType=BIGINT}
+       </foreach>
+       and soft_code_id = #{softCodeId}
+       and device_version_seq =#{deviceVersionSeq}
+       and package_type = #{packageType}
+       order by version_seq DESC
+    </select>
+   
+    <select id="findDeviceSoftwaresByFullIds" parameterType="map" resultMap="BaseResultMap">
+     select ed.id
+     from bss_device_software_package ed
+     where  ed.full_software_id in
+	<foreach collection="fullSoftwareIds" item="fullSoftwareId" open="(" separator="," close=")">
+               #{fullSoftwareId,jdbcType=BIGINT}
+       </foreach>
+    </select>
+   
+    <select id="findDeviceSoftwaresByCondition" resultMap="AllResultMap" parameterType="com.ysten.local.bss.device.bean.DeviceUpgradeCondition" >
+	      select 
+          <include refid="Advanced_Column_List"/>
+          from 
+          <include refid="Advanced_Table_List"/>
+     <where>
+     	<if test="name != null and name != ''">
+     		and p.version_name like '%${name}%'
+     	</if>
+     	<if test="packageType != null and packageType != ''">
+     		and p.package_type = #{packageType}
+     	</if>
+     	<if test="softCodeId != null and softCodeId != ''">
+     		and p.soft_code_id = #{softCodeId}
+     	</if>
+     </where>
+	 order by p.create_date desc
+	   	limit #{startRow},#{pageSize}
+   </select>
+   
+   <select id="countDeviceSoftwaresByCondition" resultType="int" parameterType="com.ysten.local.bss.device.bean.DeviceUpgradeCondition" >
+     select count(id) 
+     from bss_device_software_package
+     <include refid="Where_Condition"/>
+   </select>
+   
+   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+     select 
+     <include refid="Base_Column_List" />
+     from bss_device_software_package
+     where id = #{softwareId,jdbcType=BIGINT}
+   </select>
+   
+   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+     delete from bss_device_software_package
+     where id = #{softwareId,jdbcType=BIGINT}
+   </delete>
+   
+   <insert id="insertSynchronization" parameterType="deviceSoftwarePackage" useGeneratedKeys="true" keyProperty="id">
+     insert into bss_device_software_package (
+        id,
+     	version_seq,version_name,
+		soft_code_id,package_type,
+		package_location,package_status,
+		is_mandatory,md5,last_modify_time,
+		device_version_seq,full_software_id,
+		create_date,oper_user,distribute_state
+       )
+     values ( #{id,jdbcType=BIGINT},
+              #{versionSeq,jdbcType=BIGINT}, #{versionName,jdbcType=VARCHAR}
+     		, #{softCodeId.id,jdbcType=BIGINT}, #{packageType,jdbcType=VARCHAR}
+     		, #{packageLocation,jdbcType=VARCHAR}, #{packageStatus,jdbcType=VARCHAR}
+     		, #{mandatoryStatus,jdbcType=VARCHAR}, #{md5,jdbcType=VARCHAR},#{lastModifyTime,jdbcType=TIMESTAMP}
+     		, #{deviceVersionSeq,jdbcType=BIGINT}, #{fullSoftwareId,jdbcType=BIGINT}
+     		, #{createDate,jdbcType=TIMESTAMP},#{operUser,jdbcType=VARCHAR},#{distributeState,jdbcType=VARCHAR}
+       )
+   </insert>
+
+    <insert id="insert" parameterType="deviceSoftwarePackage" useGeneratedKeys="true" keyProperty="id">
+     insert into bss_device_software_package (
+     	version_seq,version_name,
+		soft_code_id,package_type,
+		package_location,package_status,
+		is_mandatory,md5,last_modify_time,
+		device_version_seq,full_software_id,
+		create_date,oper_user,distribute_state
+       )
+     values ( #{versionSeq,jdbcType=BIGINT}, #{versionName,jdbcType=VARCHAR}
+     		, #{softCodeId.id,jdbcType=BIGINT}, #{packageType,jdbcType=VARCHAR}
+     		, #{packageLocation,jdbcType=VARCHAR}, #{packageStatus,jdbcType=VARCHAR}
+     		, #{mandatoryStatus,jdbcType=VARCHAR}, #{md5,jdbcType=VARCHAR},#{lastModifyTime,jdbcType=TIMESTAMP}
+     		, #{deviceVersionSeq,jdbcType=BIGINT}, #{fullSoftwareId,jdbcType=BIGINT}
+     		, #{createDate,jdbcType=TIMESTAMP},#{operUser,jdbcType=VARCHAR},#{distributeState,jdbcType=VARCHAR}
+       )
+   </insert>
+   
+   <update id="updateByPrimaryKey" parameterType="deviceSoftwarePackage" >
+     update bss_device_software_package
+     set 
+     	version_seq=#{versionSeq,jdbcType=BIGINT},
+		version_name=#{versionName,jdbcType=VARCHAR},
+		soft_code_id=#{softCodeId.id,jdbcType=BIGINT},
+		package_type=#{packageType,jdbcType=VARCHAR},
+		package_location=#{packageLocation,jdbcType=VARCHAR},
+		package_status=#{packageStatus,jdbcType=VARCHAR},
+		is_mandatory=#{mandatoryStatus,jdbcType=VARCHAR},
+		md5=#{md5,jdbcType=VARCHAR},
+		distribute_state = #{distributeState,jdbcType=VARCHAR},
+		device_version_seq=#{deviceVersionSeq,jdbcType=BIGINT},
+		full_software_id=#{fullSoftwareId,jdbcType=BIGINT},
+		oper_user=#{operUser,jdbcType=VARCHAR},
+		last_modify_time=#{lastModifyTime,jdbcType=TIMESTAMP}
+     where  
+        id = #{id,jdbcType=BIGINT}
+   </update>
+   
+   <update id="updateDistributeStateById" parameterType="map">
+  	 update bss_device_software_package set distribute_state = #{distributeState,jdbcType=VARCHAR} where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+   <delete id="delete" parameterType="java.util.List">
+      delete from bss_device_software_package
+       where id in 
+      <foreach collection="ids" item="id"  open="(" separator="," close=")">  
+            #{id} 
+        </foreach>
+  </delete>
+  <select id="findDeviceSoftwarePackageByVersionAndSoftCodeId" parameterType="map" resultMap="BaseResultMap">
+  	select 
+  	<include refid="Base_Column_List" />
+     from bss_device_software_package
+     <where>
+     	<if test="version != null and version != ''">
+     	 	version_seq = #{version,jdbcType=VARCHAR}
+     	</if> 
+     	<if test="codeId != null and codeId != ''">
+     	 	and soft_code_id = #{codeId,jdbcType=BIGINT}
+     	</if> 
+     </where>
+  </select>
+  <select id="getSoftwarePackageByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+  	select 
+  	<include refid="Base_Column_List" />
+     from bss_device_software_package
+     where version_name = #{versionName}
+  </select>
+  <select id="getSoftwarePackageBySoftCode" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  	select 
+  	<include refid="Base_Column_List" />    
+  	from  bss_device_software_package
+     <where>
+     	<if test="softwareCodeId != null and softwareCodeId != ''">
+     	 	soft_code_id = #{softwareCodeId,jdbcType=INTEGER}
+     	</if> 
+     </where>
+  </select>
+  
+  	<select id="findLatestSoftwarePackageByDevice" parameterType="map" resultMap="BaseResultMap">
+	select dsp.* from bss_device_upgrade_map dum
+	join bss_upgrade_task ut on ut.id = dum.upgrade_id
+	join bss_device_software_package dsp on dsp.id = ut.software_package_id
+	where dum.ysten_id = #{ystenId, jdbcType=VARCHAR}
+	and ut.version_seq = #{deviceVersionSeq, jdbcType=INTEGER}
+	and ut.soft_code_id = #{softwareCodeId, jdbcType=BIGINT}
+	and sysdate() between ut.start_date and ut.end_date
+	and dsp.soft_code_id > #{softwareCodeId, jdbcType=BIGINT}
+	and dum.type = 'DEVICE'
+	and dsp.version_seq > #{deviceVersionSeq, jdbcType=INTEGER}
+	order by dsp.version_seq desc 
+	limit 1;
+   </select>
+   
+   <select id="findLatestSoftwarePackageByUser" parameterType="map" resultMap="BaseResultMap">
+	select dsp.* from bss_user_upgrade_map uum
+	join bss_upgrade_task ut on ut.id = uum.upgrade_id
+	join bss_device_software_package dsp on dsp.id = ut.software_package_id
+	where uum.user_id = #{userId, jdbcType=VARCHAR}
+	and ut.version_seq = #{deviceVersionSeq, jdbcType=INTEGER}
+	and ut.soft_code_id = #{softwareCodeId, jdbcType=BIGINT}
+	and dsp.soft_code_id = #{softwareCodeId, jdbcType=BIGINT}
+	and uum.type = 'USER'
+	and dsp.version_seq > #{deviceVersionSeq, jdbcType=INTEGER}
+	order by dsp.version_seq desc 
+	limit 1;
+   </select>
+   
+   	<select id="findLatestSoftwarePackageByDeviceGroup" parameterType="map" resultMap="BaseResultMap">
+	select dsp.* from bss_device_group_map dgm 
+	join bss_device_group dg on dg.id = dgm.device_group_id
+	join bss_device_upgrade_map dum on dum.device_group_id = dg.id
+	join bss_upgrade_task ut on ut.id = dum.upgrade_id
+	join bss_device_software_package dsp on dsp.id = ut.software_package_id
+	where dgm.ysten_id = #{ystenId, jdbcType=VARCHAR}
+	and dum.type = 'GROUP'
+	and dg.type = 'UPGRADE'
+	and ut.version_seq = #{deviceVersionSeq, jdbcType=INTEGER}
+	and ut.soft_code_id = #{softwareCodeId, jdbcType=BIGINT}
+	and dsp.soft_code_id = #{softwareCodeId, jdbcType=BIGINT}
+	and dsp.version_seq > #{deviceVersionSeq, jdbcType=INTEGER}
+	order by dsp.version_seq desc limit 1;
+   </select>
+
+    <select id="findLatestSoftwarePackageByUserGroup" parameterType="map" resultMap="BaseResultMap">
+	select dsp.* from
+     bss_upgrade_task ut
+	join bss_device_software_package dsp on dsp.id = ut.software_package_id
+	where
+	dsp.soft_code_id = #{softwareCodeId, jdbcType=BIGINT}
+	and dsp.version_seq > #{deviceVersionSeq, jdbcType=INTEGER}
+	and ut.version_seq = #{deviceVersionSeq, jdbcType=INTEGER}
+	and ut.id  = #{upgradeId, jdbcType=BIGINT}
+	order by dsp.version_seq desc
+	 limit 1;
+   </select>
+
+    <select id="getSoftwarePackageListBySoftCodeIdAndVersionSeq"  resultMap="BaseResultMap" parameterType="map" >
+        select dsp.*, ut.is_all, ut.id as upgradeTaskId
+        from bss_upgrade_task ut
+        join bss_device_software_package dsp on dsp.id = ut.software_package_id
+        where ut.soft_code_id = #{softwareCodeId, jdbcType=BIGINT}
+        and sysdate() between ut.start_date and ut.end_date
+        and dsp.version_seq > #{deviceVersionSeq, jdbcType=BIGINT}
+        and dsp.device_version_seq = #{deviceVersionSeq, jdbcType=INTEGER}
+        and dsp.package_type = 'INCREMENT'
+        UNION
+        select dsp.*, ut.is_all, ut.id as upgradeTaskId
+        from bss_upgrade_task ut
+        join bss_device_software_package dsp on dsp.id = ut.software_package_id
+        where ut.soft_code_id = #{softwareCodeId, jdbcType=BIGINT}
+        and sysdate() between ut.start_date and ut.end_date
+        and dsp.version_seq > #{deviceVersionSeq, jdbcType=BIGINT}
+        and dsp.package_type = 'FULL'
+    </select>
+   
+   	<!--<select id="findLatestSoftwarePackageByUserGroup" parameterType="map" resultMap="BaseResultMap">
+	select dsp.* from bss_user_group_map ugm 
+	join bss_user_group ug on ug.id = ugm.user_group_id
+	join bss_user_upgrade_map uum on uum.user_group_id = ug.id
+	join bss_upgrade_task ut on ut.id = uum.upgrade_id
+	join bss_device_software_package dsp on dsp.id = ut.software_package_id
+	where ugm.user_id = #{userId, jdbcType=VARCHAR}
+	and uum.type = 'GROUP'
+	and ug.type = 'UPGRADE'
+	and ut.version_seq = #{deviceVersionSeq, jdbcType=INTEGER}
+	and ut.soft_code_id = #{softwareCodeId, jdbcType=BIGINT}
+	and dsp.soft_code_id = #{softwareCodeId, jdbcType=BIGINT}
+	and dsp.version_seq > #{deviceVersionSeq, jdbcType=INTEGER}
+	order by dsp.version_seq desc limit 1;
+   </select>-->
+ </mapper>
+ 

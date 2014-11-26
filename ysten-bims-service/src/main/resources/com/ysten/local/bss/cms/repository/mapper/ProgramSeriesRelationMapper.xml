@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.cms.repository.mapper.ProgramSeriesRelationMapper" >
+  <resultMap id="BaseResultMap" type="programSeriesRelation" >
+    <id column="rel_id" property="relId" jdbcType="BIGINT" />
+    <result column="program_series_id" property="programSeriesId" jdbcType="BIGINT" />
+    <result column="program_id" property="programId" jdbcType="BIGINT" />
+    <result column="rel_time" property="relTime" jdbcType="TIMESTAMP" />
+    <result column="rel_user" property="relUser" jdbcType="VARCHAR" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="update_user" property="updateUser" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="taxis" property="taxis" jdbcType="INTEGER" />
+    <result column="last_modify_date" property="lastModifyDate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    rel_id, program_series_id, program_id, rel_time, rel_user,update_time, update_user, status,taxis, last_modify_date
+  </sql>
+  
+  <select id="getByProgramSeriesId" resultMap="BaseResultMap" parameterType="map" >
+    select 
+        <include refid="Base_Column_List" />
+    from 
+        cms_program_series_rel
+    where
+        program_series_id = #{programSeriesId,jdbcType=BIGINT} and status = 1
+  </select>
+
+  <select id="getCanUseBySeriesIdAndProgramId" resultMap="BaseResultMap" parameterType="map" >
+    select 
+        <include refid="Base_Column_List" />
+    from 
+        cms_program_series_rel
+    where
+    	status = 1
+    	<if test="programSeriesId != null and programSeriesId != ''">
+    		 and program_series_id = #{programSeriesId,jdbcType=BIGINT}
+    	</if>
+    	<if test="programSeriesId != null and programSeriesId != ''">
+    		 and program_id = #{prgramId,jdbcType=BIGINT}
+    	</if>       
+  </select>  
+  
+  <select id="getCanUseByProgramId" resultMap="BaseResultMap" parameterType="map" >
+    select 
+        <include refid="Base_Column_List" />
+    from 
+        cms_program_series_rel
+    where
+    	program_id = #{programId,jdbcType=BIGINT} and status = 1
+  </select>    
+  
+</mapper>

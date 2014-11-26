@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.ysten.local.bss.notice.repository.mapper.DeviceNoticeMapMapper">
+	<resultMap id="BaseResultMap" type="deviceNoticeMap">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="ysten_id" property="ystenId" jdbcType="VARCHAR" />
+		<result column="notice_id" property="noticeId" jdbcType="BIGINT" />
+		<result column="device_group_id" property="deviceGroupId" jdbcType="BIGINT" />
+		<result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+		<result column="type" property="type" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id,ysten_id,notice_id,device_group_id,create_date,type
+	</sql>
+  
+  	<insert id="save" parameterType="deviceNoticeMap" useGeneratedKeys="true" keyProperty="id">
+		insert into bss_device_notice_map
+		(ysten_id,notice_id,device_group_id,type,create_date)
+		values (#{ystenId,jdbcType=VARCHAR},#{noticeId,jdbcType=BIGINT}, #{deviceGroupId,jdbcType=BIGINT},#{type,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP})
+  	</insert>
+  	
+  	<insert id="bulkSaveDeviceNoticeMap" parameterType="java.util.List">
+    	insert into bss_device_notice_map
+		(ysten_id,notice_id,device_group_id,type,create_date)
+    	values
+    	 <foreach collection="list" item="item" index="index" separator="," >
+    	 (#{item.ystenId,jdbcType=VARCHAR},#{item.noticeId,jdbcType=BIGINT}, 
+    	 #{item.deviceGroupId,jdbcType=BIGINT},#{item.type,jdbcType=VARCHAR}, #{item.createDate,jdbcType=TIMESTAMP})
+    	</foreach>
+    </insert>
+    
+    <delete id="deleteMapByYstenIdsAndNoticeId" parameterType="map">
+      delete from ${tableName}
+       where notice_id = #{noticeId, jdbcType=BIGINT}
+       		 and ${character} in
+        <foreach collection="ystenIds" item="id"  open="(" separator="," close=")">  
+            #{id} 
+        </foreach>
+	</delete>
+	
+  <delete id="deleteByNoticeIdAndType" parameterType="map">
+      delete from ${tableName} where notice_id = #{noticeId,jdbcType=BIGINT}
+      <if test="type != null and type !=''">
+          and type = #{type,jdbcType=VARCHAR}
+      </if>
+  </delete>
+  
+	<select id="findDeviceNoticeMapByNoticeIdAndType" resultMap="BaseResultMap" parameterType="map">
+		select
+		<include refid="Base_Column_List" />
+		from
+		bss_device_notice_map
+		where
+		notice_id = #{noticeId,jdbcType=BIGINT} and type = #{type,jdbcType=VARCHAR}
+	</select>
+
+    <select id="findNoticeIdsByDeviceCode" resultType="long" parameterType="map">
+        select
+        notice_id
+        from
+        bss_device_notice_map
+        where
+        ysten_id = #{ystenId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="findNoticeIdsByDeviceGroupIds" resultType="long" parameterType="java.util.List">
+        select
+        notice_id
+        from
+        bss_device_notice_map
+        where device_group_id in
+        <foreach collection="deviceGroupIds" item="id"  open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+    <select id="findSysNoticeMapByGroupId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    		select
+			<include refid="Base_Column_List" /> 
+			from bss_device_notice_map where device_group_id = #{groupId,jdbcType=BIGINT}
+    </select>
+    <select id="findSysNoticeMapByYstenId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    		select
+			<include refid="Base_Column_List" /> 
+			from bss_device_notice_map where ysten_id = #{ystenId,jdbcType=VARCHAR}
+    </select>
+    <select id="findMapByNoticeIdAndYstenId" parameterType="map" resultMap="BaseResultMap">
+    		select
+			<include refid="Base_Column_List" /> 
+			from bss_device_notice_map where ysten_id = #{ystenId,jdbcType=VARCHAR} and notice_id = #{noticeId,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteSysNoticeMapByGroupId" parameterType="java.lang.Long">
+    		delete from bss_device_notice_map where device_group_id = #{groupId,jdbcType=BIGINT}
+    </delete>
+     <delete id="deleteSysNoticeMapByYstenId" parameterType="java.lang.String">
+    		delete from bss_device_notice_map where ysten_id = #{ystenId,jdbcType=VARCHAR}
+    </delete>
+      <delete id="deleteByNoticeId" parameterType="java.util.List">
+      delete from bss_device_notice_map
+       where notice_id in 
+      <foreach collection="ids" item="id"  open="(" separator="," close=")">  
+            #{id} 
+        </foreach>
+      </delete>
+</mapper>

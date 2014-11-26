@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<!-- Licensed to the Apache Software Foundation (ASF) under one or more contributor 
+	license agreements. See the NOTICE file distributed with this work for additional 
+	information regarding copyright ownership. The ASF licenses this file to 
+	You under the Apache License, Version 2.0 (the "License"); you may not use 
+	this file except in compliance with the License. You may obtain a copy of 
+	the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required 
+	by applicable law or agreed to in writing, software distributed under the 
+	License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS 
+	OF ANY KIND, either express or implied. See the License for the specific 
+	language governing permissions and limitations under the License. -->
+<!-- ERROR、WARN、INFO、DEBUG -->
+<log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'>
+<!-- 输出日志到控制台  ConsoleAppender -->   
+	<appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d %-5p [%t] %C{6} (%F:%L) - %m%n" />
+		</layout>
+	</appender>
+
+<!-- 输出日志到文件  每天一个文件 -->  
+	<appender name="dailyRollingFile" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="DatePattern" value=".yyyy-MM-dd" />
+		<param name="File" value="/data/tomcat/logs/ysten-lbss-facade.log" />
+		<param name="Encoding" value="UTF-8" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d %-5p [%t] %C{6} (%F:%L) - %m%n" />
+		</layout>
+	</appender>
+	<!--   
+        定义全局的日志输出级别,但是在输出目的地的配置中配置的具体输出级别优先级高于全局定义的优先级。  
+        如果在dailyRollingFile中定义<param name="Threshold" value="info"></param>，那么将会把info以上级别的信息输出  
+     --> 
+	<root>
+		<priority value="info" />
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="dailyRollingFile" />
+	</root>
+	
+	<!--通过<category></category>的定义可以将各个包中的类日志输出到不同的日志文件中--> 
+	<!-- 
+	<category name="com.ysten">
+		<priority value="debug" />
+	</category>
+	 -->
+	 
+  <!--通过<logger></logger>的定义可以将各个包中的类日志输出到不同的日志文件中--> 
+  <!-- 
+	<logger name="java.sql" additivity="true">
+		<level value="debug" />
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="FILE" />
+	</logger>
+    -->
+</log4j:configuration>

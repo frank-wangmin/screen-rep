@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.cms.repository.mapper.ProgramBitrateMapper">
+	<resultMap id="BaseResultMap" type="programBitrate">
+	    <id column="program_rate_id" property="programRateId" jdbcType="BIGINT" />
+	    <result column="bitrate_id" property="bitrateId" jdbcType="INTEGER" />
+	    <result column="program_id" property="programId" jdbcType="BIGINT" />
+	    <result column="src_file_name" property="srcFileName" jdbcType="VARCHAR" />
+	    <result column="src_file_path" property="srcFilePath" jdbcType="VARCHAR" />
+	    <result column="covert_path" property="covertPath" jdbcType="VARCHAR" />
+	    <result column="covert_file_name" property="covertFileName" jdbcType="VARCHAR" />
+	    <result column="drm_path" property="drmPath" jdbcType="VARCHAR" />
+	    <result column="drm_file_name" property="drmFileName" jdbcType="VARCHAR" />
+	    <result column="md5" property="md5" jdbcType="VARCHAR" />
+	    <result column="convert_status" property="convertStatus" jdbcType="INTEGER" />
+	    <result column="drm_status" property="drmStatus" jdbcType="INTEGER" />
+	    <result column="need_drm" property="needDrm" jdbcType="INTEGER" />
+	    <result column="uuid" property="uuid" jdbcType="VARCHAR" />
+	    <result column="bitrate_status" property="bitrateStatus" jdbcType="INTEGER" />
+	    <result column="file_type" property="fileType" jdbcType="VARCHAR" />
+	    <result column="file_size" property="fileSize" jdbcType="DOUBLE" />
+	    <result column="cp_code" property="cpCode" jdbcType="VARCHAR" />
+	    <result column="play_url" property="playUrl" jdbcType="VARCHAR" />
+	    <result column="down_url" property="downUrl" jdbcType="VARCHAR" />
+	    <result column="data_provider" property="dataProvider" jdbcType="VARCHAR" />
+	    <result column="out_source_id" property="outSourceId" jdbcType="VARCHAR" />
+	    <result column="definition_code" property="definitionCode" jdbcType="VARCHAR" />
+	    <result column="content_id" property="contentId" jdbcType="BIGINT" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+	    program_rate_id, bitrate_id, program_id, src_file_name, src_file_path, covert_path, covert_file_name, drm_path, drm_file_name, 
+	    md5, convert_status, drm_status, need_drm, uuid, bitrate_status, file_type, file_size, cp_code, play_url, 
+	    down_url, out_source_id,definition_code,content_id,data_provider
+	</sql>
+    
+    <select id="getByProgramIds" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List" />
+        from cms_program_bitrate where program_id in 
+        <foreach collection="programIds" item="programId" open="(" separator="," close=")">
+            #{programId, jdbcType=BIGINT}
+        </foreach>
+    </select>
+    
+    <select id="getByProgramId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List" />
+        from cms_program_bitrate 
+        where 
+        program_id = #{programId, jdbcType=BIGINT}
+    </select>    
+    
+    <select id="getByGroupId" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List" />
+        from
+        cms_program_bitrate
+        <where>
+        	1 = 1 
+        	<if test="programId != null and programId != ''">
+        		and program_id = #{programId, jdbcType=BIGINT}
+        	</if>
+        	<if test="bitrateId != null and bitrateId != ''">
+        		and bitrate_id = #{bitrateId, jdbcType=INTEGER}
+        	</if>
+        </where>	
+    </select>
+    
+    <select id="getById" parameterType="map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from
+        cms_program_bitrate
+		where program_rate_id = #{id, jdbcType=BIGINT}
+    </select>
+    
+</mapper>

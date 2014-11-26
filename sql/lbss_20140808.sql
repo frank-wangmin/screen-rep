@@ -1,0 +1,2 @@
+insert into system_config (configkey, configvalue, zhname, depiction) values ('deployDistrictCode', '320000', '部署区域行政区划码', '系统部署所在区域的行政区划码');
+insert into system_config (configkey, configvalue, zhname, depiction) values ('bootstrapGetScreenId', 'http://192.168.1.1:9144/yst-bims-facade/stb/bootstrapGetPanel.json', '终端启动获取panelpackageId', '终端启动获取panelpackageId');

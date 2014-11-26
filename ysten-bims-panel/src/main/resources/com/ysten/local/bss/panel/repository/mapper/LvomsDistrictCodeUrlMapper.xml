@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.panel.repository.mapper.LvomsDistrictCodeUrlMapper" >
+  <resultMap id="BaseResultMap" type="com.ysten.local.bss.panel.domain.LvomsDistrictCodeUrl" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="district_code" property="districtCode" jdbcType="VARCHAR" />
+    <result column="package_id" property="packageId" jdbcType="BIGINT" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="package_name" property="packageName" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, district_code, package_id, url,status
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from lvoms_district_code_url
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="selectByDistrictCode" resultMap="BaseResultMap" parameterType="map" >
+    select 
+    <include refid="Base_Column_List" />
+    from lvoms_district_code_url
+    where district_code = #{districtCode,jdbcType=VARCHAR}
+    and package_id = #{packageId}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from lvoms_district_code_url
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.ysten.local.bss.panel.domain.LvomsDistrictCodeUrl"  useGeneratedKeys="true" keyProperty="id">
+    insert into lvoms_district_code_url (id, district_code, url, package_id,status
+      )
+    values (#{id,jdbcType=BIGINT}, #{districtCode,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR},#{packageId,jdbcType=BIGINT}
+    ,#{status,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.ysten.local.bss.panel.domain.LvomsDistrictCodeUrl" >
+    insert into lvoms_district_code_url
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="districtCode != null" >
+        district_code,
+      </if>
+      <if test="url != null" >
+        url,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="districtCode != null" >
+        #{districtCode,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null" >
+        #{url,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ysten.local.bss.panel.domain.LvomsDistrictCodeUrl" >
+    update lvoms_district_code_url
+    <set >
+      <if test="districtCode != null" >
+        district_code = #{districtCode,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null" >
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.ysten.local.bss.panel.domain.LvomsDistrictCodeUrl" >
+    update lvoms_district_code_url
+    set district_code = #{districtCode,jdbcType=VARCHAR},
+        package_id=#{packageId,jdbcType=BIGINT},
+        url = #{url,jdbcType=VARCHAR},
+        status = #{status,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="findListByConditions" resultMap="BaseResultMap" parameterType="map" >
+    select 
+    l.id,p.package_name as package_name,l.district_code,l.url,l.status,1.package_id
+    from lvoms_district_code_url l
+    left outer join bss_panel_package p on p.id = l.package_id
+    <where>
+    	<if test="distCode != null and distCode != '' ">
+    		l.district_code = #{distCode,jdbcType=VARCHAR}
+    	</if>
+    	<if test="packageId != null">
+    		and l.package_id = #{packageId}
+    	</if>
+    	<if test="status != null and status != '' ">
+    		and l.status = #{status}
+    	</if>
+    </where>
+    order by l.id desc
+    <if test="size != null"></if>
+        limit ${index} , ${size}
+  </select>
+  <select id="getCountByConditions" resultType="java.lang.Integer" parameterType="map" >
+    select 
+    count(*)
+    from lvoms_district_code_url
+    <where>
+    	<if test="distCode != null and distCode != '' ">
+    		district_code = #{distCode,jdbcType=VARCHAR}
+    	</if>
+    	<if test="packageId != null">
+    		and package_id = #{packageId}
+    	</if>
+    	<if test="status != null and status != '' ">
+    		and status = #{status}
+    	</if>
+    </where>
+  </select>
+  <delete id="deleteByIds" parameterType="java.util.List" >
+    delete from lvoms_district_code_url
+    <where>
+    	<if test="ids != null and ids !=''">
+    		        id in
+		    <foreach collection="ids" item="id" open="(" separator="," close=")">
+		            #{id}
+		    </foreach>
+	    </if>
+    </where>
+  </delete>
+</mapper>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.cms.repository.mapper.CatgSeriesMapper" >
+    <resultMap id="BaseResultMap" type="catgSeries">
+        <id column="rel_id" property="relId" jdbcType="BIGINT" />
+        <result column="catg_item_id" property="catgItemId" jdbcType="BIGINT" />
+        <result column="program_series_id" property="programSeriesId" jdbcType="BIGINT" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="create_user" property="createUser" jdbcType="VARCHAR" />
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+        <result column="update_user" property="updateUser" jdbcType="VARCHAR" />
+        <result column="status" property="status" jdbcType="INTEGER" />
+        <result column="taxis" property="taxis" jdbcType="INTEGER" />
+        <result column="last_modify_date" property="lastModifyDate" jdbcType="TIMESTAMP" />
+    </resultMap>
+    
+    <sql id="Base_Column_List">
+        rel_id, catg_item_id, program_series_id, create_time, create_user, update_time, update_user, status, taxis, last_modify_date
+    </sql> 
+    
+    <select id="findCatrSeriesByProgramSeriesId" resultMap="BaseResultMap">
+    	select <include refid="Base_Column_List"/> from CMS_CATG_SERIES where program_series_id = #{programSeriesId}
+    </select>
+        
+</mapper>

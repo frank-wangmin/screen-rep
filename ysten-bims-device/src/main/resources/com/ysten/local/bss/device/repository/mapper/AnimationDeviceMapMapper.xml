@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.device.repository.mapper.AnimationDeviceMapMapper">
+    <resultMap id="BaseResultMap" type="animationDeviceMap">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="boot_animation_id" property="bootAnimationId" jdbcType="BIGINT"/>
+        <result column="ysten_id" property="ystenId" jdbcType="VARCHAR"/>
+        <result column="device_group_id" property="deviceGroupId" jdbcType="BIGINT"/>
+        <result column="type" property="type" jdbcType="VARCHAR"/>
+        <result column="create_date" property="createDate" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    id, boot_animation_id, device_group_id, type, create_date,ysten_id
+    </sql>
+
+    <select id="findMapByYstenId" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        bss_animation_device_map
+        where
+        ysten_id = #{ystenId,jdbcType=VARCHAR}
+        and type = #{type,jdbcType=VARCHAR}
+    </select>
+
+    <select id="findMapByDeviceGroupId" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        bss_animation_device_map
+        where
+        device_group_id = #{deviceGroupId,jdbcType=BIGINT}
+        <if test="type != null and type != ''">
+    		and type = #{type,jdbcType=VARCHAR}
+    	</if>
+    </select>
+    
+  	<insert id="save" parameterType="animationDeviceMap" useGeneratedKeys="true" keyProperty="id">
+		insert into bss_animation_device_map
+		(boot_animation_id, device_group_id, type, create_date,ysten_id)
+		values (#{bootAnimationId,jdbcType=VARCHAR},#{deviceGroupId,jdbcType=BIGINT},#{type,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, #{ystenId,jdbcType=VARCHAR})
+  	</insert>
+  
+   <insert id="bulkSaveAnimationMap" parameterType="java.util.List">
+    	insert into bss_animation_device_map
+		(boot_animation_id, device_group_id, type, create_date,ysten_id)
+    	values
+    	 <foreach collection="list" item="item" index="index" separator="," >
+    	(#{item.bootAnimationId,jdbcType=VARCHAR},#{item.deviceGroupId,jdbcType=BIGINT},#{item.type,jdbcType=VARCHAR}, #{item.createDate,jdbcType=TIMESTAMP}, #{item.ystenId,jdbcType=VARCHAR})
+    	</foreach>
+    </insert>
+    
+    <delete id="deleteByAnimationIdAndType" parameterType="map">
+      delete from ${tableName} where boot_animation_id = #{bootAnimationId,jdbcType=BIGINT} and type = #{type,jdbcType=VARCHAR}
+    </delete>
+  
+    <delete id="deleteByAnimationId" parameterType="java.util.List">
+      delete from bss_animation_device_map
+       where boot_animation_id in 
+        <foreach collection="ids" item="id"  open="(" separator="," close=")">  
+            #{id} 
+        </foreach>
+	</delete>
+	
+	<select id="findAnimationDeviceMapByAnimationIdAndType" resultMap="BaseResultMap" parameterType="map">
+		select
+		<include refid="Base_Column_List" />
+		from
+		bss_animation_device_map
+		<where>
+		     boot_animation_id = #{bootAnimationId,jdbcType=BIGINT}
+	    	<if test="type != null and type !=''">
+    			 and type = #{type,jdbcType=VARCHAR}
+    		</if>
+	    </where>
+	</select>
+	
+	<delete id="deleteAnimationDeviceMapByGroupId" parameterType="java.lang.Long">
+		delete from bss_animation_device_map where device_group_id = #{groupId,jdbcType=BIGINT}
+	</delete>
+	
+	<delete id="deleteAnimationMapByGroupIds" parameterType="java.util.List">
+      delete from ${tableName}
+       where ${character} in
+        <foreach collection="ids" item="id"  open="(" separator="," close=")">  
+            #{id} 
+        </foreach>
+	</delete>
+	
+	<delete id="deleteAnimationDeviceMapByYstenIds" parameterType="java.util.List">
+      delete from ${tableName}
+       where ${character} in
+        <foreach collection="ystenIds" item="id"  open="(" separator="," close=")">  
+            #{id} 
+        </foreach>
+	</delete>
+	
+	<delete id="deleteAnimationDeviceMapByCode" parameterType="java.lang.String">
+		delete from bss_animation_device_map where ysten_id = #{ystenId,jdbcType=VARCHAR}
+	</delete>
+</mapper>

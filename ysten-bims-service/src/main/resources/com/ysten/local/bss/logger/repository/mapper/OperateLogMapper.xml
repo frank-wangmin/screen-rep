@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ysten.local.bss.logger.repository.mapper.OperateLogMapper" >
+  <resultMap id="BaseResultMap" type="operateLog" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="operation_type" property="operationType" jdbcType="INTEGER" />
+    <result column="primary_key_value" property="primaryKeyValue" jdbcType="VARCHAR" />
+    <result column="module_name" property="moduleName" jdbcType="VARCHAR" />
+    <result column="operation_time" property="operationTime" jdbcType="TIMESTAMP" />
+    <result column="operator" property="operator" jdbcType="VARCHAR" />
+    <result column="operation_ip" property="operationIp" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <resultMap id="moduleNames" type="java.lang.String">
+    <result property="" column="module_name"/>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, operation_type, primary_key_value, module_name, operation_time, operator, operation_ip,description
+  </sql>
+ 
+  <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from bss_operate_log
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <delete id="delete" parameterType="java.lang.Integer" >
+    delete from bss_operate_log where id = #{id,jdbcType=INTEGER}
+  </delete>
+ 
+  <insert id="save" parameterType="operateLog" useGeneratedKeys="true" keyProperty="id">
+    insert into bss_operate_log (operation_type, primary_key_value, 
+      module_name, operation_time, operator, 
+      operation_ip, description)
+    values (#{operationType,jdbcType=INTEGER}, #{primaryKeyValue,jdbcType=VARCHAR}, 
+      #{moduleName,jdbcType=VARCHAR}, #{operationTime,jdbcType=TIMESTAMP}, #{operator,jdbcType=VARCHAR}, 
+      #{operationIp,jdbcType=VARCHAR}, #{description,jdbcType=LONGVARCHAR})
+  </insert>
+ 
+  <update id="update" parameterType="operateLog" >
+    update bss_operate_log
+    set operation_type = #{operationType,jdbcType=INTEGER},
+      primary_key_value = #{primaryKeyValue,jdbcType=VARCHAR},
+      module_name = #{moduleName,jdbcType=VARCHAR},
+      operation_time = #{operationTime,jdbcType=TIMESTAMP},
+      operator = #{operator,jdbcType=VARCHAR},
+      operation_ip = #{operationIp,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <select id="findOperateLogger" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    	<include refid="Base_Column_List" />
+    from 
+    	bss_operate_log
+    <where> 
+		<if test="modelName != null and modelName !=''">
+    		module_name like '${modelName}%'
+    	</if>
+    	<if test="operator != null and operator != ''">
+    		and operator = #{operator}
+    	</if>
+    	<if test="operatorId != null and operatorId != ''">
+    		and primary_key_value = #{operatorId}
+    	</if>
+    	<if test="beginDate != null and beginDate != ''">
+    		and operation_time &gt;= #{beginDate}
+    	</if>
+    	<if test="endDate != null and endDate != ''">
+    		and operation_time &lt;= #{endDate}
+    	</if>
+	</where>
+    order by operation_time desc
+    limit ${pageNo} , ${pageSize}
+  </select>
+  
+  <select id="getCountByCondition" resultType="java.lang.Integer" parameterType="map" >
+    select 
+    	count(*)
+    from 
+    	bss_operate_log
+    <where> 
+    	<if test="modelName != null and modelName !=''">
+    		module_name like '${modelName}%'
+    	</if>
+    	<if test="operator != null and operator != ''">
+    		and operator = #{operator}
+    	</if>
+    	<if test="beginDate != null and beginDate != ''">
+    		and operation_time &gt;= #{beginDate}
+    	</if>
+    	<if test="endDate != null and endDate != ''">
+    		and operation_time &lt;= #{endDate}
+    	</if>
+	</where>
+  </select>
+  <select id="getModuleNameList" resultMap="moduleNames">
+  	  select DISTINCT module_name from bss_operate_log
+  </select>
+</mapper>

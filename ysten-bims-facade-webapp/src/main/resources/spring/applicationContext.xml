@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx" xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jee="http://www.springframework.org/schema/jee"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="
+     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+     http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd
+     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+     http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.0.xsd">
+
+    <!-- 开启注解配置，实现自动注入 -->
+    <context:annotation-config />
+
+    <!-- 开启注解事务，实现自动配置 -->
+    <tx:annotation-driven />
+
+    <!-- 数据源配置,使用应用内的DBCP数据库连接池 -->
+    <jee:jndi-lookup id="bssDataSource" jndi-name="jdbc/LBSS"/>
+
+    <!-- 数据源配置 -->
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:redis.properties</value>
+                <value>classpath:activeMQ.properties</value>
+            </list>
+        </property>
+    </bean>
+
+    <!--BSS事务管理器配置 -->
+    <bean id="bssTransactionManager"
+          class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="bssDataSource" />
+    </bean>
+
+    <!-- 定义BSS系统SqlSessionFactoryBean -->
+    <bean id="bssSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="bssDataSource" />
+        <property name="configLocation" value="classpath:mybatis-config-bss.xml" />
+    </bean>
+
+
+    <!-- 扫描BSS系统Mapper文件，并实施自动注入 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="sqlSessionFactory" ref="bssSqlSessionFactory" />
+        <property name="basePackage"  value="
+        com.ysten.area.repository.mapper;
+        com.ysten.local.bss.order.repository.mapper;
+        com.ysten.local.bss.device.repository.mapper;
+        com.ysten.local.bss.device.remote.repository.mapper;
+        com.ysten.local.bss.product.repository.mapper;
+        com.ysten.local.bss.inquiry.repository.mapper;
+        com.ysten.local.bss.consum.repository.mapper;
+        com.ysten.local.bss.talk.repository.mapper;
+        com.ysten.local.bss.logger.repository.mapper;
+        com.ysten.boss.systemconfig.repository.mapper;
+        com.ysten.local.bss.system.repository.mapper;
+        com.ysten.local.bss.config.repository.mapper;
+        com.ysten.local.bss.screen.repository.mapper;
+        com.ysten.local.bss.notice.repository.mapper;
+        com.ysten.local.bss.device.remote.repository.mapper;
+        com.ysten.local.bss.interfaceUrl.repository.mapper;
+        com.ysten.local.bss.panel.repository.mapper;
+        com.ysten.local.bss.program.repository.mapper;
+        com.ysten.area.repository.mapper;
+        com.ysten.boss.catgprogram.repository.mapper;
+        com.ysten.local.bss.cms.repository.mapper;"/>
+    </bean>
+
+
+    <context:component-scan
+            base-package="com.ysten.area;
+		com.ysten.local.bss.order;
+		com.ysten.local.bss.bootstrap.service;
+		com.ysten.local.bss.device;
+		com.ysten.local.bss.device.remote;
+		com.ysten.local.bss.product;
+		com.ysten.local.bss.inquiry;
+		com.ysten.local.bss.billing;
+		com.ysten.local.bss.consum;
+		com.ysten.local.bss.token;
+		com.ysten.local.bss.talk;
+		com.ysten.local.bss.logger;
+		com.ysten.local.bss.system;
+		com.ysten.local.bss.web;
+		com.ysten.boss.systemconfig;
+		com.ysten.local.bss.screen;
+		com.ysten.local.bss.notice;
+		com.ysten.local.bss.program.repository;
+		com.ysten.local.bss.program.service;
+		com.ysten.local.bss.web.service;
+		com.ysten.local.bss.interfaceUrl;
+		com.ysten.local.bss.panel;
+		com.ysten.local.bss.cms;" />
+
+    <!--配置事务拦截器-->
+    <bean id="bssTransactionInterceptor" class="org.springframework.transaction.interceptor.TransactionInterceptor">
+        <property name="transactionManager">
+            <ref bean="bssTransactionManager" />
+        </property>
+        <!--事务传播属性-->
+        <property name="transactionAttributes">
+            <props>
+                <prop key="save*">PROPAGATION_REQUIRED,-Exception</prop>
+                <prop key="batchSave*">PROPAGATION_REQUIRED,-Exception</prop>
+                <prop key="insert*">PROPAGATION_REQUIRED,-Exception</prop>
+                <prop key="update*">PROPAGATION_REQUIRED,-Exception</prop>
+                <prop key="batchUpdate*">PROPAGATION_REQUIRED,-Exception</prop>
+                <prop key="remove*">PROPAGATION_REQUIRED,-Exception</prop>
+                <prop key="delete*">PROPAGATION_REQUIRED,-Exception</prop>
+                <!--<prop key="*">PROPAGATION_REQUIRED,-Exception</prop>-->
+            </props>
+        </property>
+    </bean>
+
+    <!--   定义BeanNameAutoProxyCreator,该bean是个bean后处理器，无需被引用，因此没有id属性
+           这个bean后处理器，根据事务拦截器为目标bean自动创建事务代理
+   -->
+    <bean class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
+        <!--指定对满足哪些bean name的bean自动生成业务代理 -->
+        <property name="beanNames">
+            <value>*Service*</value>
+        </property>
+
+        <!-- 使用CGLIB代理，added by frank-->
+        <property name="proxyTargetClass" value="true"></property>
+        <!--定义BeanNameAutoProxyCreator所需的事务拦截器-->
+        <property name="interceptorNames">
+            <list>
+                <value>bssTransactionInterceptor</value>
+                <value>cacheInterceptor</value>
+            </list>
+        </property>
+    </bean>
+
+    <!-- added by frank,add redisCache functionality-->
+   <!-- <bean id="cache" class="com.ysten.cache.redis.MasterSlaveRedisCache">
+        <constructor-arg name="redisTemplate" ref="redisTemplate"></constructor-arg>
+        <constructor-arg name="slaveRedisTemplate" ref="slaveRedisTemplate"></constructor-arg>
+    </bean>-->
+
+    <bean id="cache" class="com.ysten.cache.redis.RedisCache">
+        <constructor-arg name="redisTemplate" ref="redisTemplate"></constructor-arg>
+    </bean>
+
+    <bean id="cacheInterceptor" class="com.ysten.cache.spring.interceptor.CacheInterceptor">
+        <property name="cache" ref="cache"></property>
+    </bean>
+
+    <bean class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
+        <property name="beanNames">
+            <list>
+                <value>*Repository*</value>
+            </list>
+        </property>
+        <property name="proxyTargetClass" value="true"></property>
+        <property name="interceptorNames">
+            <list>
+                <value>cacheInterceptor</value>
+            </list>
+        </property>
+    </bean>
+     <!--added by frank,add redisCache functionality-->
+
+    <!--********************************主 redis, added by frank**********************************-->
+    <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <property name="maxActive" value="${redis_master.pool.maxActive}" />
+        <property name="maxIdle" value="${redis_master.pool.maxIdle}" />
+        <property name="maxWait" value="${redis_master.pool.maxWait}" />
+        <property name="testOnBorrow" value="${redis_master.pool.testOnBorrow}" />
+    </bean>
+    <bean id="jedisConnectionFactory"
+          class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+        <property name="hostName" value="${redis_master.ip}" />
+        <property name="port" value="${redis_master.port}" />
+        <property name="poolConfig" ref="jedisPoolConfig" />
+    </bean>
+    <bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate"
+          p:connection-factory-ref="jedisConnectionFactory">
+        <property name="KeySerializer">
+            <bean class="org.springframework.data.redis.serializer.StringRedisSerializer"></bean>
+        </property>
+      <!--  <property name="valueSerializer">
+            <bean class="org.springframework.data.redis.serializer.StringRedisSerializer"></bean>
+        </property>-->
+    </bean>
+    <!--********************************主 redis, added by frank**********************************-->
+
+    <!--********************************从 redis, added by frank**********************************-->
+    <!--<bean id="slaveJedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <property name="maxActive" value="${redis_slave.pool.maxActive}"/>
+        <property name="maxIdle" value="${redis_slave.pool.maxIdle}"/>
+        <property name="maxWait" value="${redis_slave.pool.maxWait}"/>
+        <property name="testOnBorrow" value="${redis_slave.pool.testOnBorrow}"/>
+    </bean>
+    <bean id="slaveJedisConnectionFactory"
+          class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+        <property name="hostName" value="${redis_slave.ip}"/>
+        <property name="port" value="${redis_slave.port}"/>
+        <property name="poolConfig" ref="slaveJedisPoolConfig"/>
+    </bean>
+    <bean id="slaveRedisTemplate" class="org.springframework.data.redis.core.RedisTemplate"
+          p:connection-factory-ref="slaveJedisConnectionFactory">
+        <property name="KeySerializer">
+            <bean class="org.springframework.data.redis.serializer.StringRedisSerializer"></bean>
+        </property>
+        &lt;!&ndash;<property name="valueSerializer">
+            <bean class="org.springframework.data.redis.serializer.StringRedisSerializer"></bean>
+        </property>&ndash;&gt;
+    </bean>-->
+    <!--********************************从 redis, added by frank**********************************-->
+
+    <bean id="systemConfigService" class="com.ysten.boss.systemconfig.service.impl.SystemConfigServiceImpl"/>
+    <bean id="sysNoticeService" class="com.ysten.local.bss.notice.service.impl.SysNoticeServiceImpl" />
+    <bean class="com.ysten.cache.mem.HashTableCache" />
+    <bean id="interfaceLogServiceImpl" class="com.ysten.local.bss.logger.service.impl.InterfaceLogServiceImpl"/>
+    <bean id="logEventQueue" class="java.util.concurrent.LinkedBlockingDeque">
+        <constructor-arg value="20"></constructor-arg>
+    </bean>
+    <bean id="logEventProducer" class="com.ysten.message.queue.QueueMessageProducer">
+        <property name="queue" ref="logEventQueue"></property>
+    </bean>
+    <bean class="com.ysten.message.queue.QueueMessageListenerContainer" init-method="init" destroy-method="destroy">
+        <property name="queue" ref="logEventQueue"></property>
+        <property name="listeners">
+            <list>
+                <bean class="com.ysten.local.bss.logger.service.impl.InterfaceLogListener"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean class="org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean">
+        <qualifier value="freeMarkerEngine" />
+        <property name="freemarkerSettings">
+            <props>
+                <prop key="default_encoding">UTF-8</prop>
+                <prop key="output_encoding">UTF-8</prop>
+                <prop key="number_format">#</prop>
+            </props>
+        </property>
+        <property name="templateLoaderPath">
+            <value>/</value>
+        </property>
+    </bean>
+</beans>
